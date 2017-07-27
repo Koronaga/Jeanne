@@ -1,9 +1,0 @@
-*.tmp
-*.env
-.vscode
-node_modules
-config.json
-db/*
-banned_search_terms.json
-banned_guilds.json
-banned_users.json
