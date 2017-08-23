@@ -31,6 +31,7 @@ module.exports = (bot, _settingsManager, config, guild, unavailable) => {
     }).catch(err => {
         handleError(err);
     });
+    if (logger === undefined) logger = new _Logger(config.logTimestamp);
     logger.logWithHeader('LEFT GUILD', 'bgRed', 'black', `${guild.name} (${guild.id}) owned by ${guild.members.get(guild.ownerID).user.username}#${guild.members.get(guild.ownerID).user.discriminator}`);
     bot.createMessage('306837434275201025', {
         content: ``,
@@ -47,38 +48,18 @@ module.exports = (bot, _settingsManager, config, guild, unavailable) => {
                     inline: true
                 },
                 {
-                    name: `Total members`,
-                    value: `${total}`,
-                    inline: true
-                },
-                {
-                    name: `Humans`,
-                    value: `${humans}, ${round(humanper, 2)}%`,
+                    name: `Members`,
+                    value: guild.memberCount,
                     inline: true
                 },
                 {
                     name: `Bots`,
-                    value: `${bots}, ${round(botper, 2)}%`,
+                    value: guild.members.filter(user => user.user.bot).length,
                     inline: true
                 },
                 {
-                    name: `Emotes`,
-                    value: `${guild.emojis.length}`,
-                    inline: true
-                },
-                {
-                    name: `Roles`,
-                    value: `${roles}`,
-                    inline: true
-                },
-                {
-                    name: `Created on`,
-                    value: `${validate}`,
-                    inline: false
-                },
-                {
-                    name: `Default channel`,
-                    value: `${guild.defaultChannel === null ? `None` : ''}${guild.defaultChannel !== null ? '#' + guild.defaultChannel.id : ''}\n(${defid === null ? `` : ''}${defid !== null ? defid : ''})`,
+                    name: `Humans`,
+                    value: guild.memberCount - guild.members.filter(user => user.user.bot).length,
                     inline: true
                 }
             ]

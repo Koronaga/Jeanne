@@ -48,7 +48,7 @@ module.exports = (bot, _settingsManager, config, guild) => {
                 utils.updateDiscordBots(bot.user.id, config.discordbotsorg, bot.guilds.size, bot.shards.size);
         }
 
-        const createInstantInvite = guild.defaultChannel.permissionsOf(bot.user.id).has('createInstantInvite');
+        const createInstantInvite = guild.members.get(bot.user.id).permission.has('createInstantInvite');
         if (createInstantInvite === false) {
             bot.createMessage('306837434275201025', {
                 content: ``,
