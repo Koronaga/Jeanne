@@ -1,0 +1,11 @@
+*.tmp
+*.env
+.vscode
+node_modules
+custom_modules
+config.json
+db/*
+banned_search_terms.json
+banned_guilds.json
+banned_users.json
+Jeanne-ca41da280a76.json
