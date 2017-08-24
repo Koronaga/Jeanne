@@ -180,7 +180,7 @@ module.exports = (bot, _settingsManager, config, guild) => {
             });
         }
         if (!guild.defaultChannel) return;
-        guild.defaultChannel.createMessage("Awesome a new server!\nType `s.help` for a commands list.\nYou could also view all my commands on https://cmds.jeannedarc.xyz/ (**note:** The website is missing some commands.)")
+        guild.defaultChannel.createMessage("Awesome a new server!\nType `j:help` for a commands list.\nYou could also view all my commands on https://cmds.jeannedarc.xyz")
             .catch(err => {
                 handleError(err);
             });
