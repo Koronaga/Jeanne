@@ -12,7 +12,7 @@ var reload = require('require-reload'),
 moment = require('../node_modules/moment');
 const round = require('../utils/utils.js').round;
 
-module.exports = (bot, _settingsManager, config, guild, unavailable) => {
+module.exports = (bot, _settingsManager, _config, guild, unavailable) => {
     if (config.abalBotsKey) { //Send servercount to Abal's bot list
         if (bot.uptime !== 0)
             utils.updateAbalBots(bot.user.id, config.abalBotsKey, bot.guilds.size);
@@ -31,7 +31,7 @@ module.exports = (bot, _settingsManager, config, guild, unavailable) => {
     }).catch(err => {
         handleError(err);
     });
-    if (logger === undefined) logger = new _Logger(config.logTimestamp);
+    if (logger === undefined) logger = new _Logger(_config.logTimestamp);
     logger.logWithHeader('LEFT GUILD', 'bgRed', 'black', `${guild.name} (${guild.id}) owned by ${guild.members.get(guild.ownerID).user.username}#${guild.members.get(guild.ownerID).user.discriminator}`);
     bot.createMessage('306837434275201025', {
         content: ``,

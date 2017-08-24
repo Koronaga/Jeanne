@@ -12,7 +12,7 @@ var reload = require('require-reload'),
 moment = require('../node_modules/moment');
 const round = require('../utils/utils.js').round;
 
-module.exports = (bot, _settingsManager, config, guild) => {
+module.exports = (bot, _settingsManager, _config, guild) => {
     let defid = guild.defaultChannel ? guild.defaultChannel.id : null;
     const bots = bot.guilds.get(guild.id).members.filter(user => user.user.bot).length,
         total = bot.guilds.get(guild.id).memberCount,
@@ -24,7 +24,7 @@ module.exports = (bot, _settingsManager, config, guild) => {
         botper = bots / total * 100;
 
     bannedGuilds = reload('../banned_guilds.json');
-    if (logger === undefined) logger = new _Logger(config.logTimestamp);
+    if (logger === undefined) logger = new _Logger(_config.logTimestamp);
     logger.logWithHeader('JOINED GUILD', 'bgGreen', 'black', `${guild.name} (${guild.id}) owned by ${guild.members.get(guild.ownerID).user.username}#${guild.members.get(guild.ownerID).user.discriminator}`);
     if (bannedGuilds.bannedGuildIds.includes(guild.id)) {
         logger.logWithHeader('LEFT BANNED GUILD', 'bgRed', 'black', guild.name);
