@@ -135,6 +135,7 @@ suggestTimesUsed = 0;
 supportTimesUsed = 0;
 throwTimesUsed = 0;
 tickleTimesUsed = 0;
+top5TimesUsed = 0;
 translateTimesUsed = 0;
 triggeredTimesUsed = 0;
 twitchTimesUsed = 0;
@@ -539,10 +540,7 @@ setTimeout(() => {
                 }
             })
             .catch(err => {
-                if (!err.response) return logger.error('\n' + err, 'ERROR');
-                let error = JSON.parse(err.response);
-                if ((!error.code) && (!error.message)) return logger.error('\n' + err, 'ERROR');
-                logger.error('An unhandledRejection occurred\n' + 'Code: ' + error.code + '\n' + 'Message: ' + error.message, 'ERROR');
+                handleError(err);
             });
     }, 20000);
 }, 5000);
@@ -579,14 +577,11 @@ process.on('SIGINT', () => {
 });
 
 process.on("uncaughtException", err => {
-    logger.error('An uncaughtException occurred\n' + err, 'ERROR')
+    handleError(err);
 });
 
 process.on("unhandledRejection", err => {
-    if (!err.response) return logger.error('\n' + err, 'ERROR');
-    let error = JSON.parse(err.response);
-    if (error.code !== undefined && error.message !== undefined) return logger.error('An unhandledRejection occurred\n' + 'Code: ' + error.code + '\n' + 'Message: ' + error.message, 'ERROR');
-    logger.error('\n' + err, 'ERROR');
+    handleError(err);
 });
 
 // Voice Connection Events

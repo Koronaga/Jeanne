@@ -3,11 +3,12 @@ const reload = require('require-reload'),
     handleError = require('../../utils/utils.js').handleError,
     handleMsgError = require('../../utils/utils.js').handleMsgError,
     superagent = require('superagent'),
-    moment = require('../../node_modules/moment');
+    moment = require('../../node_modules/moment'),
+    { flag, code, name } = require('country-emoji');
 
 module.exports = {
     desc: "Get info about a steam user.",
-    usage: "<SteamID64/SteamID32/CustomURL>",
+    usage: "<steamid32/steamid64/customurl>",
     cooldown: 5,
     guildOnly: true,
     task(bot, msg, args) {
@@ -26,15 +27,16 @@ module.exports = {
         steamTimesUsed++
         superagent.get(`http://api.thegathering.xyz/steamid/?s=${args}&key=${config.steam_key}`)
             .end((err, res) => {
-                if (err) return logger.error('\n' + err, 'ERROR');
+                if (err) return handleError(err);
                 const data = res.body;
-                if (data.status != 200) return bot.createMessage(msg.channel.id, 'Oops something went wrong. Make sure you used the correct usage, to check do \`s.help steam\`')
-                    .catch(err => {
-                        handleError(err);
-                    });
+                if (data.status != 200) return 'wrong usage';
                 const lastlogoff = new Date(data.profile.lastlogoff * 1000).toISOString();
                 const timecreated = new Date(data.profile.timecreated * 1000).toISOString();
-                bot.createMessage(msg.channel.id, {
+                let location = data.profile.location;
+                if (!location) location = 'n/a';
+                let realname = data.profile.realname;
+                if (!realname) realname = 'n/a';
+                msg.channel.createMessage({
                     content: ``,
                     embed: {
                         color: config.defaultColor,
@@ -43,18 +45,13 @@ module.exports = {
                             url: ``,
                             icon_url: ``
                         },
-                        description: ``,
+                        description: `${flag(data.profile.loccountrycode)} **__${data.profile.username}__**`,
                         thumbnail: {
                             url: `${data.avatars.avatarfull}`
                         },
                         fields: [{
-                                name: `\u200B`,
-                                value: `**__General info:__**`,
-                                inline: false
-                            },
-                            {
                                 name: `Real name`,
-                                value: `${data.profile.realname === '' ? `n/a` : ''}${data.profile.realname !== '' ? data.profile.realname : ''}`,
+                                value: `${realname}`,
                                 inline: true
                             },
                             {
@@ -63,18 +60,13 @@ module.exports = {
                                 inline: true
                             },
                             {
-                                name: `Last logoff`,
-                                value: `${moment(lastlogoff).utc().format('ddd MMM DD YYYY | kk:mm:ss')} UTC`,
-                                inline: true
-                            },
-                            {
                                 name: `Last seen`,
                                 value: `${data.profile.state}`,
                                 inline: true
                             },
                             {
-                                name: `Created at`,
-                                value: `${moment(timecreated).utc().format('ddd MMM DD YYYY | kk:mm:ss')} UTC (${moment(timecreated).fromNow()})`,
+                                name: `Last logoff`,
+                                value: `${moment(lastlogoff).utc().format('dddd - DD/MM/YYYY | kk:mm:ss')} UTC (${moment(lastlogoff).fromNow()})`,
                                 inline: false
                             },
                             {
@@ -84,58 +76,18 @@ module.exports = {
                             },
                             {
                                 name: `Location`,
-                                value: `${data.profile.location === '' ? `n/a` : ''}${data.profile.location !== '' ? data.profile.location : ''}`,
+                                value: `${location}`,
                                 inline: true
                             },
                             {
-                                name: `\u200B`,
-                                value: `**__Bans:__**`,
+                                name: `Created on`,
+                                value: `${moment(timecreated).utc().format('dddd - DD/MM/YYYY | kk:mm:ss')} UTC (${moment(timecreated).fromNow()})`,
                                 inline: false
                             },
                             {
-                                name: `Vac ban`,
-                                value: `${data.bans.vac}`,
-                                inline: true
-                            },
-                            {
-                                name: `Vac bans`,
-                                value: `${data.bans.vacamount}`,
-                                inline: true
-                            },
-                            {
-                                name: `Days since last vac ban`,
-                                value: `${data.bans.dayssince === '' ? `n/a` : ''}${data.bans.dayssince !== '' ? data.bans.dayssince + ' days' : ''}`,
+                                name: `\u200b`,
+                                value: `steamid32: **${data.id.steamid32}**\nsteamid64: **${data.id.steamid64}**\ncustomurl: **${data.id.customurl}**`,
                                 inline: false
-                            },
-                            {
-                                name: `\u200B`,
-                                value: `**__Fav group:__**`,
-                                inline: false
-                            },
-                            {
-                                name: `Name`,
-                                value: `${data.favgroup.name === '' ? `n/a` : ''}${data.favgroup.name !== '' ? data.favgroup.name : ''}`,
-                                inline: true
-                            },
-                            {
-                                name: `ID`,
-                                value: `${data.favgroup.id === '' ? `n/a` : ''}${data.favgroup.id !== '' ? data.favgroup.id : ''}`,
-                                inline: true
-                            },
-                            {
-                                name: `Members`,
-                                value: `${data.favgroup.members === '' ? `n/a` : ''}${data.favgroup.members !== '' ? data.favgroup.members : ''}`,
-                                inline: true
-                            },
-                            {
-                                name: `Avatar`,
-                                value: `${data.favgroup.avatar === '' ? `n/a` : ''}${data.favgroup.avatar !== '' ? data.favgroup.avatar : ''}`,
-                                inline: true
-                            },
-                            {
-                                name: `URL`,
-                                value: `${data.favgroup.url === '' ? `n/a` : ''}${data.favgroup.url !== '' ? data.favgroup.url : ''}`,
-                                inline: true
                             }
                         ]
                     }

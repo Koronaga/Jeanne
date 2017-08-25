@@ -2,12 +2,13 @@ const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
     handleMsgError = require('../../utils/utils.js').handleMsgError,
+    { flag, code, name } = require('country-emoji'),
     Wunderground = require('wunderground-api'),
     wu = new Wunderground(`${config.wu_key}`);
 
 module.exports = {
     desc: "Get the weather from the specified city and state/country.",
-    usage: "<City> | <State/Country>",
+    usage: "<city> | <state>",
     aliases: ['we'],
     cooldown: 30,
     guildOnly: true,
@@ -55,22 +56,57 @@ module.exports = {
             }).catch(err => {
                 handleError(err);
             });
-            bot.createMessage(msg.channel.id, {
+            const originIcon = data.icon_url;
+            let icon = 'https://b.catgirlsare.sexy/Ci0m.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/chanceflurries.gif') icon = 'https://b.catgirlsare.sexy/TIu3.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/chancerain.gif') icon = 'https://b.catgirlsare.sexy/m67u.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/chancesleet.gif') icon = 'https://b.catgirlsare.sexy/PucX.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/chancesnow.gif') icon = 'https://b.catgirlsare.sexy/Aa3n.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/chancetstorms.gif') icon = 'https://b.catgirlsare.sexy/cGwc.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/clear.gif') icon = 'https://b.catgirlsare.sexy/XnXc.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/cloudy.gif') icon = 'https://b.catgirlsare.sexy/safl.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/flurries.gif') icon = 'https://b.catgirlsare.sexy/TIu3.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/fog.gif') icon = 'https://b.catgirlsare.sexy/tX1L.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/hazy.gif') icon = 'https://b.catgirlsare.sexy/XpnO.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/mostlycloudy.gif') icon = 'https://b.catgirlsare.sexy/dREn.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/mostlysunny.gif') icon = 'https://b.catgirlsare.sexy/ETbd.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/partlycloudy.gif') icon = 'https://b.catgirlsare.sexy/FivB.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/partlysunny.gif') icon = 'https://b.catgirlsare.sexy/1dYA.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/sleet.gif') icon = 'https://b.catgirlsare.sexy/PucX.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/rain.gif') icon = 'https://b.catgirlsare.sexy/BqdX.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/snow.gif') icon = 'https://b.catgirlsare.sexy/3KCo.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/sunny.gif') icon = 'https://b.catgirlsare.sexy/XnXc.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/tstorms.gif') icon = 'https://b.catgirlsare.sexy/K8ik.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/nt_chanceflurries.gif') icon = 'https://b.catgirlsare.sexy/tdFC.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/nt_chancerain.gif') icon = 'https://b.catgirlsare.sexy/m67u.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/nt_chancesleet.gif') icon = 'https://b.catgirlsare.sexy/PucX.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/nt_chancesnow.gif') icon = 'https://b.catgirlsare.sexy/Aa3n.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/nt_chancetstorms.gif') icon = 'https://b.catgirlsare.sexy/GmUi.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/nt_clear.gif') icon = 'https://b.catgirlsare.sexy/4Jvx.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/nt_cloudy.gif') icon = 'https://b.catgirlsare.sexy/safl.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/nt_flurries.gif') icon = 'https://b.catgirlsare.sexy/tdFC.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/nt_fog.gif') icon = 'https://b.catgirlsare.sexy/MDBC.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/nt_hazy.gif') icon = 'https://b.catgirlsare.sexy/XpnO.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/nt_mostlycloudy.gif') icon = 'https://b.catgirlsare.sexy/YhUk.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/nt_mostlysunny.gif') icon = 'https://b.catgirlsare.sexy/lRcb.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/nt_partlycloudy.gif') icon = 'https://b.catgirlsare.sexy/CnOr.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/nt_partlysunny.gif') icon = 'https://b.catgirlsare.sexy/yAcT.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/nt_sleet.gif') icon = 'https://b.catgirlsare.sexy/PucX.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/nt_rain.gif') icon = 'https://b.catgirlsare.sexy/BqdX.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/nt_snow.gif') icon = 'https://b.catgirlsare.sexy/3KCo.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/nt_sunny.gif') icon = 'https://b.catgirlsare.sexy/4Jvx.png';
+            if (originIcon === 'http://icons.wxug.com/i/c/k/nt_tstorms.gif') icon = 'https://b.catgirlsare.sexy/K8ik.png';
+            msg.channel.createMessage({
                 content: ``,
                 embed: {
                     color: config.defaultColor,
-                    author: {
-                        name: `${data.icon}`,
-                        url: `${data.icon_url}`,
-                        icon_url: `${data.icon_url}`
-                    },
-                    description: ``,
+                    title: `The weather is ${data.weather}`,
                     thumbnail: {
-                        url: `${data.icon_url}`
+                        url: `${icon}`
                     },
                     fields: [{
                             name: `Location:`,
-                            value: `${data.display_location.full}`,
+                            value: `${flag(data.display_location.country)} ${data.display_location.full}`,
                             inline: false
                         },
                         {

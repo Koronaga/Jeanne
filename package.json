@@ -1,6 +1,6 @@
 {
     "name": "jeannedarc",
-    "version": "3.0.02",
+    "version": "3.0.03",
     "description": "A well made and simple to use bot for discord.\nCreated with the MiraiBot framework!\nLinku: https://github.com/brussell98/Mirai",
     "author": "Pepijn \"Kurozero\" van den Broek",
     "main": "Jeanne.js",
@@ -34,6 +34,7 @@
         "cat-me": "^1.0.3",
         "catfacts": "^0.4.0",
         "chalk": "2.1.0",
+        "country-emoji": "^1.2.0",
         "css-select": "^1.3.0-rc0",
         "css-what": "^2.1.0",
         "date.js": "^0.3.1",

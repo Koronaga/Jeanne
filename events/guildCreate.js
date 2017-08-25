@@ -36,8 +36,7 @@ module.exports = (bot, _settingsManager, _config, guild) => {
         return;
     } else if (config.nowelcomemessageGuild.includes(guild.id)) {
         logger.logWithHeader('DIDNT SEND WELCOME MESSGAE', 'bgBlue', 'black', guild.name);
-    }
-    else {
+    } else {
 
         if (config.abalBotsKey) { //Send servercount to Abal's bot list
             if (bot.uptime !== 0)
@@ -47,12 +46,8 @@ module.exports = (bot, _settingsManager, _config, guild) => {
             if (bot.uptime !== 0)
                 utils.updateDiscordBots(bot.user.id, config.discordbotsorg, bot.guilds.size, bot.shards.size);
         }
-
-        const createInstantInvite = guild.members.get(bot.user.id).permission.has('createInstantInvite');
-        if (createInstantInvite === false) {
-            bot.createMessage('306837434275201025', {
-                content: ``,
-                embed: {
+        bot.executeWebhook(config.join_leaveWebhookID, config.join_leaveWebhookToken, {
+                embeds: [{
                     color: config.defaultColor,
                     title: `Joined guild:`,
                     description: `**__${guild.name} (${guild.id})__**`,
@@ -93,92 +88,15 @@ module.exports = (bot, _settingsManager, _config, guild) => {
                             name: `Created on`,
                             value: `${validate}`,
                             inline: false
-                        },
-                        {
-                            name: `Default channel`,
-                            value: `${guild.defaultChannel === null ? `None` : ''}${guild.defaultChannel !== null ? '#' + guild.defaultChannel.id : ''}\n(${defid === null ? `` : ''}${defid !== null ? defid : ''})`,
-                            inline: true
-                        },
-                        {
-                            name: `Invite`,
-                            value: `I didn't had permission ;(`,
-                            inline: true
                         }
                     ]
-                }
-            }).catch(err => {
+                }],
+                username: `${bot.user.username}`,
+                avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`
+            })
+            .catch(err => {
                 handleError(err);
             });
-        } else {
-            bot.createChannelInvite(defid, {
-                maxAge: Infinity,
-                maxUses: Infinity,
-                temporary: false,
-                unique: true
-            }).then(inv => {
-                bot.createMessage('306837434275201025', {
-                    content: ``,
-                    embed: {
-                        color: config.defaultColor,
-                        title: `Joined guild:`,
-                        description: `**__${guild.name} (${guild.id})__**`,
-                        thumbnail: {
-                            url: `${guild.iconURL === null ? `` : ''}${guild.iconURL !== null ? guild.iconURL : ''}`
-                        },
-                        fields: [{
-                                name: `Owner`,
-                                value: `${guild.members.get(guild.ownerID).user.username}#${guild.members.get(guild.ownerID).user.discriminator}\n(${guild.ownerID})`,
-                                inline: true
-                            },
-                            {
-                                name: `Total members`,
-                                value: `${total}`,
-                                inline: true
-                            },
-                            {
-                                name: `Humans`,
-                                value: `${humans}, ${round(humanper, 2)}%`,
-                                inline: true
-                            },
-                            {
-                                name: `Bots`,
-                                value: `${bots}, ${round(botper, 2)}%`,
-                                inline: true
-                            },
-                            {
-                                name: `Emotes`,
-                                value: `${guild.emojis.length}`,
-                                inline: true
-                            },
-                            {
-                                name: `Roles`,
-                                value: `${roles}`,
-                                inline: true
-                            },
-                            {
-                                name: `Created on`,
-                                value: `${validate}`,
-                                inline: false
-                            },
-                            {
-                                name: `Default channel`,
-                                value: `${guild.defaultChannel === null ? `None` : ''}${guild.defaultChannel !== null ? '#' + guild.defaultChannel.id : ''}\n(${defid === null ? `` : ''}${defid !== null ? defid : ''})`,
-                                inline: true
-                            },
-                            {
-                                name: `Invite`,
-                                value: `https://discord.gg/${inv.code}`,
-                                inline: true
-                            }
-                        ]
-                    }
-                }).catch(err => {
-                    handleError(err);
-                });
-            }).catch(err => {
-                handleError(err);
-            });
-        }
         if (!guild.defaultChannel) return;
         guild.defaultChannel.createMessage("Awesome a new server!\nType `j:help` for a commands list.\nYou could also view all my commands on https://cmds.jeannedarc.xyz")
             .catch(err => {

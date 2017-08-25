@@ -33,38 +33,40 @@ module.exports = (bot, _settingsManager, _config, guild, unavailable) => {
     });
     if (logger === undefined) logger = new _Logger(_config.logTimestamp);
     logger.logWithHeader('LEFT GUILD', 'bgRed', 'black', `${guild.name} (${guild.id}) owned by ${guild.members.get(guild.ownerID).user.username}#${guild.members.get(guild.ownerID).user.discriminator}`);
-    bot.createMessage('306837434275201025', {
-        content: ``,
-        embed: {
-            color: config.errorColor,
-            title: `Left guild:`,
-            description: `**__${guild.name} (${guild.id})__**`,
-            thumbnail: {
-                url: `${guild.iconURL === null ? `` : ''}${guild.iconURL !== null ? guild.iconURL : ''}`
-            },
-            fields: [{
-                    name: `Owner`,
-                    value: `${guild.members.get(guild.ownerID).user.username}#${guild.members.get(guild.ownerID).user.discriminator}\n(${guild.ownerID})`,
-                    inline: true
+    bot.executeWebhook(config.join_leaveWebhookID, config.join_leaveWebhookToken, {
+            embeds: [{
+                color: config.errorColor,
+                title: `Left guild:`,
+                description: `**__${guild.name} (${guild.id})__**`,
+                thumbnail: {
+                    url: `${guild.iconURL === null ? `` : ''}${guild.iconURL !== null ? guild.iconURL : ''}`
                 },
-                {
-                    name: `Members`,
-                    value: guild.memberCount,
-                    inline: true
-                },
-                {
-                    name: `Bots`,
-                    value: guild.members.filter(user => user.user.bot).length,
-                    inline: true
-                },
-                {
-                    name: `Humans`,
-                    value: guild.memberCount - guild.members.filter(user => user.user.bot).length,
-                    inline: true
-                }
-            ]
-        }
-    }).catch(err => {
-        handleError(err);
-    });
+                fields: [{
+                        name: `Owner`,
+                        value: `${guild.members.get(guild.ownerID).user.username}#${guild.members.get(guild.ownerID).user.discriminator}\n(${guild.ownerID})`,
+                        inline: true
+                    },
+                    {
+                        name: `Members`,
+                        value: guild.memberCount,
+                        inline: true
+                    },
+                    {
+                        name: `Bots`,
+                        value: guild.members.filter(user => user.user.bot).length,
+                        inline: true
+                    },
+                    {
+                        name: `Humans`,
+                        value: guild.memberCount - guild.members.filter(user => user.user.bot).length,
+                        inline: true
+                    }
+                ]
+            }],
+            username: `${bot.user.username}`,
+            avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`
+        })
+        .catch(err => {
+            handleError(err);
+        });
 };
