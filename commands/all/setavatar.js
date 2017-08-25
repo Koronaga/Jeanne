@@ -14,7 +14,7 @@ module.exports = {
             .then(() => {
                 bot.createMessage(msg.channel.id, 'Avatar updated')
                     .catch(err => {
-                        handleError(err);
+                        handleError(bot, err);
                     });
             })
             .catch(error => {

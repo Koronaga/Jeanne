@@ -19,12 +19,12 @@ module.exports = {
         if (config.inviteLink) {
             bot.createMessage(msg.channel.id, `Use this to add me to a server: ${config.inviteLink}\nMake sure you are logged in`)
                 .catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
         } else {
             bot.createMessage(msg.channel.id, 'No invite link defined')
                 .catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
         }
     }

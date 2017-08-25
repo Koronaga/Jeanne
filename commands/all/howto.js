@@ -20,7 +20,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         howtoTimesUsed++
         wikihow.howTo(args)
@@ -37,10 +37,10 @@ module.exports = {
                         description: `${succ}`
                     }
                 }).catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
             }).catch(err => {
-                handleMsgError(msg.channel, err);
+                handleMsgError(bot, msg.channel, err);
             });
     }
 };

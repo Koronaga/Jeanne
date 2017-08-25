@@ -20,11 +20,11 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         catTimesUsed++
         request("http://random.cat/meow", (err, response, body) => {
-            if (err) return handleMsgError(msg.channel, err);
+            if (err) return handleMsgError(bot, msg.channel, err);
             var cat = JSON.parse(body);
             if (!cat) return bot.createMessage(msg.channel.id, {
                 content: ``,
@@ -43,7 +43,7 @@ module.exports = {
                     }]
                 }
             }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
             bot.createMessage(msg.channel.id, {
                 content: ``,
@@ -60,7 +60,7 @@ module.exports = {
                     }
                 },
             }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         });
     }

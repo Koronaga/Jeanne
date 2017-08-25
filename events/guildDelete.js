@@ -29,7 +29,7 @@ module.exports = (bot, _settingsManager, _config, guild, unavailable) => {
             description: `Just some random guild bruh.`,
         }
     }).catch(err => {
-        handleError(err);
+        handleError(bot, err);
     });
     if (logger === undefined) logger = new _Logger(_config.logTimestamp);
     logger.logWithHeader('LEFT GUILD', 'bgRed', 'black', `${guild.name} (${guild.id}) owned by ${guild.members.get(guild.ownerID).user.username}#${guild.members.get(guild.ownerID).user.discriminator}`);
@@ -67,6 +67,6 @@ module.exports = (bot, _settingsManager, _config, guild, unavailable) => {
             avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`
         })
         .catch(err => {
-            handleError(err);
+            handleError(bot, err);
         });
 };

@@ -17,19 +17,19 @@ module.exports = {
             game = array[1];
         if (!args) return bot.createMessage(msg.channel.id, 'No args provided')
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
 
         if (game.endsWith('-r')) return bot.editStatus(status, { name: games[~~(Math.random() * games.length)], type: 0 })
             .catch(err => {
-                handleMsgError(msg.channel, err);
+                handleMsgError(bot, msg.channel, err);
             });
 
         if (game.endsWith('-f')) {
             config.cycleGames = false;
             bot.editStatus(status, { name: game.replace(/ *\-f$/, ''), type: 0 })
                 .catch(err => {
-                    handleMsgError(msg.channel, err);
+                    handleMsgError(bot, msg.channel, err);
                 });
         }
     }

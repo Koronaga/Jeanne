@@ -20,7 +20,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         let str = args.split(/ ?\| ?/),
             type = str[0],
@@ -50,7 +50,7 @@ module.exports = {
                         }]
                     }
                 }).catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
                 bot.createMessage(msg.channel.id, {
                     content: ``,
@@ -64,10 +64,10 @@ module.exports = {
                         description: `${encoded}`
                     }
                 }).catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
             } catch (e) {
-                handleMsgError(msg.channel, err);
+                handleMsgError(bot, msg.channel, err);
             }
         } else if (lType === "decode") {
             try {
@@ -89,7 +89,7 @@ module.exports = {
                         }]
                     }
                 }).catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
                 bot.createMessage(msg.channel.id, {
                     content: ``,
@@ -103,10 +103,10 @@ module.exports = {
                         description: `${decoded}`
                     }
                 }).catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
             } catch (e) {
-                handleMsgError(msg.channel, err);
+                handleMsgError(bot, msg.channel, err);
             }
         }
     }

@@ -20,13 +20,13 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         asciicatTimesUsed++
         let cat = catMe();
         if (!args) return msg.channel.createMessage(`\`\`\`${cat}\`\`\``)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         let lower = args.toLowerCase();
         if (lower === 'list') {
@@ -51,13 +51,13 @@ resting`
                     }
                 })
                 .catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
         } else {
             cat = catMe(`${args}`);
             msg.channel.createMessage(`\`\`\`${cat}\`\`\``)
                 .catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
         }
     }

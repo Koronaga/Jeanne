@@ -26,7 +26,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         if (!suffix) return 'wrong usage';
         chooseTimesUsed++
@@ -44,7 +44,7 @@ module.exports = {
         });
         bot.createMessage(msg.channel.id, RESPONSES[~~(Math.random() * RESPONSES.length)](choices[pick]))
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
     }
 };

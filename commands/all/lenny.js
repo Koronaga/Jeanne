@@ -16,7 +16,7 @@ module.exports = {
         lennyTimesUsed++
         bot.createMessage(msg.channel.id, `( ͡° ͜ʖ ͡°)`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
     }
 }

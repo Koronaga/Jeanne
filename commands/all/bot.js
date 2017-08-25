@@ -23,7 +23,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         if (!args) return 'wrong usage';
         botTimesUsed++
@@ -31,13 +31,13 @@ module.exports = {
             const user = msg.mentions[0];
             if (user.bot === false) return msg.channel.createMessage('\\❌ This is not a bot.')
                 .catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
             superagent.get(`https://bots.discord.pw/api/bots/${user.id}`)
                 .set('Authorization', discordpw_key)
                 .end((err, res) => {
                     const data = res.body;
-                    if (err) return handleMsgError(msg.channel, err);
+                    if (err) return handleMsgError(bot, msg.channel, err);
                     const inv = data.invite_url.replace(/ /g, '%20');
                     msg.channel.createMessage({
                             content: ``,
@@ -65,7 +65,7 @@ module.exports = {
                             }
                         })
                         .catch(err => {
-                            handleError(err);
+                            handleError(bot, err);
                         });
                 });
         } else {
@@ -74,17 +74,17 @@ module.exports = {
             const user = bot.users.get(args);
             if (!user) return msg.channel.createMessage('\\❌ Something went wrong, make sure it\'s a valid user.')
                 .catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
             if (user.bot === false) return msg.channel.createMessage('\\❌ This is not a bot.')
                 .catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
             superagent.get(`https://bots.discord.pw/api/bots/${user.id}`)
                 .set('Authorization', discordpw_key)
                 .end((err, res) => {
                     const data = res.body;
-                    if (err) return handleMsgError(msg.channel, err);
+                    if (err) return handleMsgError(bot, msg.channel, err);
                     const inv = data.invite_url.replace(/ /g, '%20');
                     msg.channel.createMessage({
                             content: ``,
@@ -112,7 +112,7 @@ module.exports = {
                             }
                         })
                         .catch(err => {
-                            handleError(err);
+                            handleError(bot, err);
                         });
                 });
         }

@@ -19,7 +19,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         saydTimesUsed++
         bot.createMessage(msg.channel.id, {
@@ -36,10 +36,10 @@ module.exports = {
         }).then(sentMsg => {
             bot.deleteMessage(sentMsg.channel.id, msg.id)
                 .catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
         }).catch(err => {
-            handleError(err);
+            handleError(bot, err);
         });
     }
 };

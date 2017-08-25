@@ -21,7 +21,7 @@ module.exports = {
             if (sendMessages === false) return;
             if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
                 .catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
             if (!args) return 'wrong usage';
             args = args.toString();
@@ -121,7 +121,7 @@ module.exports = {
                     ]
                 }
             }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         } else if (args === 'roles') {
             guildrolesTimesUsed++
@@ -137,7 +137,7 @@ module.exports = {
                     description: `${msg.channel.guild.roles.map(c => c.name).join(', ')}`
                 }
             }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         } else if (args === 'emotes') {
             guildemotesTimesUsed++
@@ -153,7 +153,7 @@ module.exports = {
                     description: `<:${msg.channel.guild.emojis.map(c => c.name + ":" + c.id).join('> <:')}>`
                 }
             }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         } else {
             return 'wrong usage';

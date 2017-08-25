@@ -19,11 +19,11 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         gagTimesUsed++
         new gagScraper().getRandom((err, data) => {
-            if (err) return handleMsgError(msg.channel, err);
+            if (err) return handleMsgError(bot, msg.channel, err);
             bot.createMessage(msg.channel.id, {
                 content: ``,
                 embed: {
@@ -40,7 +40,7 @@ module.exports = {
                 },
             })
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         });
     }

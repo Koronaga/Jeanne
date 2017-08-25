@@ -22,7 +22,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         userinfoTimesUsed++
         if (!args) {
@@ -90,7 +90,7 @@ module.exports = {
                     ]
                 }
             }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         } else {
             const user = findMember(msg, args)
@@ -106,7 +106,7 @@ module.exports = {
                     description: `That is not a valid guild member. Need to specify a name, ID or mention the user.`
                 }
             }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
             const id = msg.channel.guild.members.get(user.id);
             const userroles = id.roles.map(r => msg.channel.guild.roles.get(r).name).join(', ');
@@ -172,7 +172,7 @@ module.exports = {
                     ]
                 }
             }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         }
     }

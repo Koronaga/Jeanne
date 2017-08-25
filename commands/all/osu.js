@@ -24,7 +24,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         // j:osu info | <username>        || j:osu i | <username>
         // j:osu best | <username>    || j:osu b | <username>
@@ -100,10 +100,10 @@ module.exports = {
                         ]
                     }
                 }).catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
             }).catch(err => {
-                handleMsgError(msg.channel, err);
+                handleMsgError(bot, msg.channel, err);
             });
         } else if ((type === 'best') || (type === 'b')) {
             osuApi.getUserBest({ u: `${user}` }).then(s => {
@@ -158,15 +158,15 @@ module.exports = {
                         ]
                     }
                 }).catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
             }).catch(err => {
-                handleMsgError(msg.channel, err);
+                handleMsgError(bot, msg.channel, err);
             });
         } else if ((type === 'recent') || (type === 'r')) {
             bot.createMessage(msg.channel.id, `Function coming soon™, for now you can only use \`info\` and \`best\`.`)
                 .catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
             /*
             osuApi.getUserRecent({ u: `${user}` }).then(s => {

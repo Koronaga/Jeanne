@@ -21,7 +21,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         if (!args) return 'wrong usage'
         hearthstoneTimesUsed++
@@ -34,7 +34,7 @@ module.exports = {
             collectible: 1
         };
         Hearthstone.card(params, (err, data) => {
-            if (err) return handleMsgError(msg.channel, err);
+            if (err) return handleMsgError(bot, msg.channel, err);
             if (!data) return msg.channel.createMessage({
                     content: ``,
                     embed: {
@@ -53,7 +53,7 @@ module.exports = {
                     }
                 })
                 .catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
                 if (!option) return msg.channel.createMessage({
                         content: ``,
@@ -77,7 +77,7 @@ ${data[0] === undefined ? `Make sure to use a card name.` : ''}${data[0] !== und
                         }
                     })
                     .catch(err => {
-                        handleError(err);
+                        handleError(bot, err);
                     });
                 option = option.toLowerCase();
                 if (option === 'gold') return msg.channel.createMessage({
@@ -102,7 +102,7 @@ ${data[0] === undefined ? `Make sure to use a card name.` : ''}${data[0] !== und
                         }
                     })
                     .catch(err => {
-                        handleError(err);
+                        handleError(bot, err);
                     });
                 if ((option) && (option !== 'gold')) return 'wrong usage';
         });

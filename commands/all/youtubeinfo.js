@@ -19,7 +19,7 @@ module.exports = {
             .then(videoInfo => {
                 if (!videoInfo) return msg.channel.createMessage('\\❌ Could not get info on this video.')
                     .catch(err => {
-                        handleError(err);
+                        handleError(bot, err);
                     });
                 let desc = videoInfo.description;
                 desc = desc.replace(/ ?\<br\> ?/g, '\n');
@@ -79,7 +79,7 @@ module.exports = {
                         }
                     })
                     .catch(err => {
-                        handleError(err);
+                        handleError(bot, err);
                     });
             })
             .catch(err => {

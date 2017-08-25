@@ -14,14 +14,14 @@ module.exports = {
         if (!args) return bot.createMessage(msg.channel.id, 'No args provided');
         if (args.endsWith('-r')) return bot.editStatus(null, { name: games[~~(Math.random() * games.length)], type: 1, url: args.replace(/ *\-r$/, '') })
             .catch(err => {
-                handleMsgError(msg.channel, err);
+                handleMsgError(bot, msg.channel, err);
             });
 
         if (args.endsWith('-f')) {
             config.cycleGames = false;
             bot.editStatus(JSON.parse(args.replace(/ *\-f$/, '')))
                 .catch(err => {
-                    handleMsgError(msg.channel, err);
+                    handleMsgError(bot, msg.channel, err);
                 });
         }
     }

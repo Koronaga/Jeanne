@@ -25,7 +25,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         if (!args) return 'wrong usage';
         rpsTimesUsed++
@@ -46,7 +46,7 @@ Jeanne d'Arc: ${chosen}
 Rip it's a tied game...`
                 }
             }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         } else if ((user === 'rock') && (chosen === 'scissors')) {
             bot.createMessage(msg.channel.id, {
@@ -62,7 +62,7 @@ Jeanne d'Arc: scissors
 Rock beats scissors, you win`
                 }
             }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         } else if ((user === 'rock') && (chosen === 'paper')) {
             bot.createMessage(msg.channel.id, {
@@ -78,7 +78,7 @@ Jeanne d'Arc: paper
 Paper beats rock, Jeanne d'Arc wins`
                 }
             }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         } else if ((user === 'paper') && (chosen === 'rock')) {
             bot.createMessage(msg.channel.id, {
@@ -94,7 +94,7 @@ Jeanne d'Arc: rock
 Paper beats rock, you win`
                 }
             }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         } else if ((user === 'paper') && (chosen === 'scissors')) {
             bot.createMessage(msg.channel.id, {
@@ -110,7 +110,7 @@ Jeanne d'Arc: scissors
 Scissors beats paper, Jeanne d'Arc wins`
                 }
             }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         } else if ((user === 'scissors') && (chosen === 'paper')) {
             bot.createMessage(msg.channel.id, {
@@ -126,7 +126,7 @@ Jeanne d'Arc: paper
 Scissor beats paper, you win`
                 }
             }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         } else if ((user === 'scissors') && (chosen === 'rock')) {
             bot.createMessage(msg.channel.id, {
@@ -142,7 +142,7 @@ Jeanne d'Arc: rock
 Rock beats scissors, Jeanne d'Arc wins`
                 }
             }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         }
     }

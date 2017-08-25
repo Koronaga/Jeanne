@@ -23,13 +23,13 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         unsplashTimesUsed++
         superagent.get('https://api.unsplash.com/photos/random')
             .set(auth)
             .end((err, res) => {
-                if (err) return handleMsgError(msg.channel, err);
+                if (err) return handleMsgError(bot, msg.channel, err);
                 const data = res.body;
                 let color = data.color.replace('#', '0x');
                 color = parseInt(color);
@@ -55,7 +55,7 @@ module.exports = {
                         }
                     }
                 }).catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
             });
     }

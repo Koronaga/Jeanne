@@ -21,7 +21,7 @@ module.exports = {
                 description: `${message}`
             },
         }).catch(err => {
-            handleMsgError(msg.channel, err);
+            handleMsgError(bot, msg.channel, err);
         });
     }
 };

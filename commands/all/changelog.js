@@ -18,7 +18,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         changelogTimesUsed++
         let c_ = bot.getChannel('344944294487916544');
@@ -35,11 +35,11 @@ module.exports = {
                         description: `${value[0].content}`
                     }
                 }).catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
             })
             .catch(err => {
-                handleMsgError(msg.channel, err);
+                handleMsgError(bot, msg.channel, err);
             });
     }
 };

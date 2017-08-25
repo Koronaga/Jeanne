@@ -22,7 +22,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         if (!suffix) return 'wrong usage';
         lvlupmessageTimesUsed++
@@ -47,7 +47,7 @@ module.exports = {
                     description: `:white_check_mark: Level up message is now enabled!`
                 },
             }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         } else if (suffix === 'disable') {
             message[msg.channel.guild.id] = {
@@ -68,7 +68,7 @@ module.exports = {
                     description: `:white_check_mark: Level up message is now disabled!`
                 },
             }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         }
     }

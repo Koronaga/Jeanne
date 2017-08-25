@@ -30,7 +30,7 @@ module.exports = {
                         }
                     })
                     .catch(err => {
-                        handleError(err);
+                        handleError(bot, err);
                     });
                 if (check === true) return msg.channel.createMessage({
                         content: ``,
@@ -48,11 +48,11 @@ module.exports = {
                         }
                     })
                     .catch(err => {
-                        handleError(err);
+                        handleError(bot, err);
                     });
             })
             .catch(err => {
-                handleMsgError(msg.channel, err);
+                handleMsgError(bot, msg.channel, err);
             });
     }
 };

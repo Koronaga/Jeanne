@@ -20,7 +20,7 @@ module.exports = {
                 msg.channel.guild.leave();
             })
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
     }
 };

@@ -21,7 +21,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         if (!args) return 'wrong usage'
         sfwbooruTimesUsed++
@@ -45,7 +45,7 @@ safebooru.org, aliases: ["sb","safe","safebooru"]
 dollbooru.org, aliases: ["do","doll","dollbooru"]`
                 }
             }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         } else {
             if ((b) && (!c)) {
@@ -75,7 +75,7 @@ Rating: ${image.common.rating}`,
                                     }
                                 }
                             }).catch(err => {
-                                handleError(err);
+                                handleError(bot, err);
                             });
                         }
                     })
@@ -98,10 +98,10 @@ Rating: ${image.common.rating}`,
                                     }]
                                 }
                             }).catch(err => {
-                                handleError(err);
+                                handleError(bot, err);
                             });
                         } else {
-                            handleMsgError(msg.channel, err);
+                            handleMsgError(bot, msg.channel, err);
                         }
                     });
             } else if ((!b) && (!c)) {
@@ -130,7 +130,7 @@ Rating: ${image.common.rating}`,
                                     }
                                 }
                             }).catch(err => {
-                                handleError(err);
+                                handleError(bot, err);
                             });
                         }
                     })
@@ -153,10 +153,10 @@ Rating: ${image.common.rating}`,
                                     }]
                                 }
                             }).catch(err => {
-                                handleError(err);
+                                handleError(bot, err);
                             });
                         } else {
-                            handleMsgError(msg.channel, err);
+                            handleMsgError(bot, msg.channel, err);
                         }
                     });
             } else {
@@ -186,7 +186,7 @@ Rating: ${image.common.rating}`,
                                     }
                                 }
                             }).catch(err => {
-                                handleError(err);
+                                handleError(bot, err);
                             });
                         }
                     })
@@ -209,10 +209,10 @@ Rating: ${image.common.rating}`,
                                     }]
                                 }
                             }).catch(err => {
-                                handleError(err);
+                                handleError(bot, err);
                             });
                         } else {
-                            handleMsgError(msg.channel, err);
+                            handleMsgError(bot, msg.channel, err);
                         }
                     });
             }

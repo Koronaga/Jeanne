@@ -20,7 +20,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         mariomakerTimesUsed++
         /**
@@ -34,7 +34,7 @@ module.exports = {
             regex = new RegExp(courseID_check);
         if (!courseID.match(regex)) return bot.createMessage(msg.channel.id, `${msg.author.mention}, That is **not** a valid course id.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         mm.getCourse(courseID, function (error, response, json) {
             if (!error && response.statusCode == 200) {
@@ -129,7 +129,7 @@ module.exports = {
                         }
                     }
                 }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
             } else {
                 const errMessage = 'ERROR' + response.statusCode;

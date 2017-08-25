@@ -26,6 +26,10 @@ const fs = require('fs');
 module.exports = {
     handler(bot, msg, CommandManagers, config, settingsManager) {
         if (msg.author.bot === true) return;
+        if (!msg.channel.guild) return bot.createMessage(msg.channel.id, 'Commands do not work in DMs.')
+            .catch(err => {
+                handleError(bot, err);
+            });
 
         if (msg.channel.guild.id === '229007062032580608' && msg.attachments[0] && msg.channel.id !== '311667653771132928' && msg.channel.id !== '311663280588455937') {
             const image = {
@@ -39,19 +43,19 @@ module.exports = {
                     if (data.adult === 'VERY_LIKELY' || data.adult === 'LIKELY') {
                         bot.deleteMessage(msg.channel.id, msg.id, 'NSFW content outside of our NSFW channels')
                             .catch(err => {
-                                handleError(err);
+                                handleError(bot, err);
                             });
                         msg.channel.createMessage(`${msg.author.mention}, NSFW content goes in <#311667653771132928> or <#311663280588455937>`)
                             /*.then(sentMsg => {
                                 setTimeout(() => {
                                     bot.deleteMessage(sentMsg.channel.id, sentMsg.id, 'setTimeout')
                                         .catch(err => {
-                                            handleError(err);
+                                            handleError(bot, err);
                                         })
                                 }, 2000);
                             })*/
                             .catch(err => {
-                                handleError(err);
+                                handleError(bot, err);
                             });
                     }
                 })

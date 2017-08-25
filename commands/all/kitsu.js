@@ -20,11 +20,11 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         msg.channel.createMessage(msg.author.mention + ', This command is not available at the time.')
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         /*
         axios.get(`https://kitsu.io/api/edge/anime?filter[text]="${args}"&page[offset]=0`)

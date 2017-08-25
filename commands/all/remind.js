@@ -22,7 +22,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         if (!args) return 'wrong usage';
         args = args.split(/ ?\| ?/);
@@ -38,7 +38,7 @@ module.exports = {
         if (newDate <= new Date()) {
             return bot.createMessage(msg.channel.id, 'that date doesn\'t seem to be valid.')
                 .catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
         }
 
@@ -46,7 +46,7 @@ module.exports = {
             if (person == 'me') {
                 bot.createMessage(msg.channel.id, `${msg.author.mention}, I'm reminding you to **${reminder}**`)
                     .catch(err => {
-                        handleError(err);
+                        handleError(bot, err);
                     });
             } else {
                 const user = this.findMember(msg, person)
@@ -62,17 +62,17 @@ module.exports = {
                         description: `That is not a valid guild member. Need to specify a name, ID or mention the user.`
                     }
                 }).catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
                 bot.createMessage(msg.channel.id, `${user.mention}, I'm reminding you to **${reminder}**`)
                     .catch(err => {
-                        handleError(err);
+                        handleError(bot, err);
                     });
             }
         });
         bot.createMessage(msg.channel.id, 'reminder set for ' + moment(newDate).format('dddd, MMMM Do YYYY, h:mm:ss a ZZ'))
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
     }
 };

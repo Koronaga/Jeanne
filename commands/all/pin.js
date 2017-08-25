@@ -18,18 +18,18 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         if (!suffix) return 'wrong usage'
         pinTimesUsed++
         const idRegex = /^\d{17,18}$/.test(suffix);
         if (idRegex === false) return bot.createMessage(msg.channel.id, `\\❌ Invalid message id.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         bot.pinMessage(msg.channel.id, suffix)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
     }
 };

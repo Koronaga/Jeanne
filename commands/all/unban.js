@@ -40,7 +40,7 @@ module.exports = {
             });
         bot.unbanGuildMember(msg.channel.guild.id, userToBan, reason)
             .catch(err => {
-                handleMsgError(msg.channel, err);
+                handleMsgError(bot, msg.channel, err);
             });
     }
 };

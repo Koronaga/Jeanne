@@ -20,7 +20,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         if (!suffix) return 'wrong usage';
         roleinfoTimesUsed++
@@ -37,7 +37,7 @@ module.exports = {
                 description: `Couldn't find role, remember it's case-sensitive.`
             }
         }).catch(err => {
-            handleError(err);
+            handleError(bot, err);
         });
         bot.createMessage(msg.channel.id, {
             content: ``,
@@ -78,7 +78,7 @@ module.exports = {
                 }
             }
         }).catch(err => {
-            handleError(err);
+            handleError(bot, err);
         });
     }
 };

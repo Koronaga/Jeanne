@@ -19,7 +19,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         emoteTimesUsed++
         const guilds = bot.guilds.filter(g => g.emojis[0]),
@@ -29,7 +29,7 @@ module.exports = {
         emoji = JSON.parse(emoji);
         msg.channel.createMessage(`<:${emoji.name}:${emoji.id}>`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
     }
 };

@@ -21,7 +21,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         aboutTimesUsed++
         const prefix = Object.keys(config.commandSets);
@@ -90,7 +90,7 @@ module.exports = {
                 }
             })
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
     }
 };

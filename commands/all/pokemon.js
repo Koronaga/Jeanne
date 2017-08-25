@@ -20,7 +20,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         if (!args) return 'wrong usage';
         pokemonTimesUsed++
@@ -30,10 +30,10 @@ module.exports = {
         args = uppercaseFirstLetter + stringWithoutFirstLetter;
         try {
             Pokedex.findPokemon(args, (res, err) => {
-                if (err) return handleMsgError(msg.channel, err);
+                if (err) return handleMsgError(bot, msg.channel, err);
                 if (!res) return bot.createMessage(msg.channel.id, 'Couldn\'t find any data.')
                     .catch(err => {
-                        handleError(err);
+                        handleError(bot, err);
                     });
                 const types = res.types.toString();
                 const egg_groups = res.egg_groups.toString();
@@ -126,7 +126,7 @@ module.exports = {
                         ]
                     },
                 }).catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
             });
         } catch (error) {

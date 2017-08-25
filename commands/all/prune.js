@@ -22,11 +22,11 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return bot.createMessage(msg.channel.id, `\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         if (manageMessages === false) return bot.createMessage(msg.channel.id, `\\❌ I'm missing the \`manageMessages\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         pruneTimesUsed++
         if (!suffix) {
@@ -44,7 +44,7 @@ module.exports = {
                     }
                 })
                 .catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
         }
         bot.purgeChannel(msg.channel.id, limit)
@@ -68,14 +68,14 @@ module.exports = {
                     setTimeout(() => {
                         bot.deleteMessage(sentMsg.channel.id, sentMsg.id)
                             .catch(err => {
-                                handleError(err);
+                                handleError(bot, err);
                             });
                     }, 3000);
                 }).catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
             }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
     }
 };

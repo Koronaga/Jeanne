@@ -20,7 +20,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         if (!args) return 'wrong usage';
         cmdusageTimesUsed++
@@ -49,9 +49,9 @@ j:changelog     -   ${changelogTimesUsed}
 j:channelinfo   -   ${channelinfoTimesUsed}
 j:character     -   ${characterTimesUsed}
 
-page 1/6
+page 1/7
 \`\`\``).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         } else if (args === '2') {
             msg.channel.createMessage(`\`\`\`
@@ -78,9 +78,9 @@ j:guild info        -   ${guildinfoTimesUsed}
 j:guild emotes      -   ${guildemotesTimesUsed}
 j:guild roles       -   ${guildrolesTimesUsed}
 
-page 2/6
+page 2/7
 \`\`\``).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         } else if (args === '3') {
             msg.channel.createMessage(`\`\`\`
@@ -108,9 +108,9 @@ j:lmgtfy        -   ${lmgtfyTimesUsed}
 j:lvlupmessage  -   ${lvlupmessageTimesUsed}
 j:manga         -   ${mangaTimesUsed}
 
-page 3/6
+page 3/7
 \`\`\``).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         } else if (args === '4') {
             msg.channel.createMessage(`\`\`\`
@@ -137,9 +137,9 @@ j:pun           -   ${punTimesUsed}
 j:pussy         -   ${pussyTimesUsed}
 j:radio join    -   ${radioJoinTimesUsed}
 
-page 4/6
+page 4/7
 \`\`\``).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         } else if (args === '5') {
             msg.channel.createMessage(`\`\`\`
@@ -166,9 +166,9 @@ j:smug          -   ${smugTimesUsed}
 j:softban       -   ${softbanTimesUsed}
 j:spin          -   ${spinTimesUsed}
 
-page 5/6
+page 5/7
 \`\`\``).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         } else if (args === '6') {
             msg.channel.createMessage(`\`\`\`
@@ -181,6 +181,7 @@ j:suggest       -   ${suggestTimesUsed}
 j:support       -   ${supportTimesUsed}
 j:throw         -   ${throwTimesUsed}
 j:tickle        -   ${tickleTimesUsed}
+j:top5          -   ${top5TimesUsed}
 j:translate     -   ${translateTimesUsed}
 j:triggered     -   ${triggeredTimesUsed}
 j:twitch        -   ${twitchTimesUsed}
@@ -193,12 +194,21 @@ j:urban         -   ${urbanTimesUsed}
 j:userinfo      -   ${userinfoTimesUsed}
 j:votecheck     -   ${votecheckTimesUsed}
 j:weather       -   ${weatherTimesUsed}
+
+page 6/7
+\`\`\``).catch(err => {
+                handleError(bot, err);
+            });
+        } else if (args === '7') {
+            msg.channel.createMessage(`\`\`\`
+Total           -   ${commandsProcessed}
+            
 j:youtubeinfo   -   ${youtubeinfoTimesUsed}
 j:youtubesearch -   ${youtubesearchTimesUsed}
-
-page 6/6
+            
+page 7/7
 \`\`\``).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         }
     }

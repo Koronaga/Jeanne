@@ -27,15 +27,15 @@ module.exports = {
                     const embedLinks = botMember.permission.has('embedLinks');
                     if (sendMessages === false) return msg.channel.createMessage('I did not have the `Send Messages` permission')
                         .catch(err => {
-                            handleError(err);
+                            handleError(bot, err);
                         });
                     if (embedLinks === false) return msg.channel.createMessage('I did not have the `Embed Links` permission')
                         .catch(err => {
-                            handleError(err);
+                            handleError(bot, err);
                         });
                     if (manageWebhooks === false) return msg.channel.createMessage('I did not have the `Manage Webhooks` permission')
                         .catch(err => {
-                            handleError(err);
+                            handleError(bot, err);
                         });
                     /* Create new channel webhook because there are none */
                     bot.createChannelWebhook(channel_id, { name: 'Announcements' }, 'announce')
@@ -52,11 +52,11 @@ module.exports = {
 
                                 })
                                 .catch(err => {
-                                    handleError(err);
+                                    handleError(bot, err);
                                 });
                         })
                         .catch(err => {
-                            handleError(err);
+                            handleError(bot, err);
                         });
                 } else {
                     /* Parse our data again so we can use it */
@@ -73,12 +73,12 @@ module.exports = {
 
                         })
                         .catch(err => {
-                            handleError(err);
+                            handleError(bot, err);
                         });
                 }
             })
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
     }
 };

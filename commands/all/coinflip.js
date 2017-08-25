@@ -18,7 +18,7 @@ module.exports = {
         coinflipTimesUsed++
         bot.createMessage(msg.channel.id, `${msg.author.username} flipped a coin and it landed on ${Math.random() < .5 ? '**heads**' : '**tails**'}`)
             .catch(err => {
-                handleMsgError(msg.channel, err);
+                handleMsgError(bot, msg.channel, err);
             });
     }
 };

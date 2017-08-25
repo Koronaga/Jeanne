@@ -19,13 +19,13 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         top5TimesUsed++
         let points = JSON.parse(fs.readFileSync(`./db/points.json`, 'utf8'));
         if (!points) {
             const err = 'points.json is empty!';
-            return handleError(err);
+            return handleError(bot, err);
         }
         const sorted = sortProperties(points, 'points', true, true);
         // Number 1
@@ -105,7 +105,7 @@ module.exports = {
             }
         })
         .catch(err => {
-            handleError(err);
+            handleError(bot, err);
         });
     }
 };

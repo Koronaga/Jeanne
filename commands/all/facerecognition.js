@@ -22,7 +22,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         facerecognitionTimesUsed++
         const kairos = new Kairos(config.kairos_id, config.kairos_key);
@@ -50,7 +50,7 @@ Message: ${result.Errors.Message}
 
 For more help join the support server, get the invite link by doing s.support
 \`\`\``).catch(err => {
-                            handleError(err);
+                            handleError(bot, err);
                         });
                     } else {
                         let gender = data.faces.attributes.gender.type;
@@ -87,18 +87,18 @@ Other:        \`${round(data.faces.attributes.other * 100, 2)}%\``,
                                 }]
                             }
                         }).catch(err => {
-                            handleError(err);
+                            handleError(bot, err);
                         });
                     }
                 } else if (res.body.images[0].faces[1]) {
                     bot.createMessage(msg.channel.id, 'Too many faces, please only use images with one face in it.')
                         .catch(err => {
-                            handleError(err);
+                            handleError(bot, err);
                         });
                 }
             })
             .catch(err => {
-                handleMsgError(msg.channel, err);
+                handleMsgError(bot, msg.channel, err);
             });
     }
 };

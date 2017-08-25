@@ -18,7 +18,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         notkawaiiTimesUsed++
         bot.createMessage(msg.channel.id, {
@@ -36,7 +36,7 @@ module.exports = {
                 }
             }
         }).catch(err => {
-            handleError(err);
+            handleError(bot, err);
         });
     }
 };

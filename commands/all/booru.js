@@ -22,12 +22,12 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         var nsfw = settingsManager.getNSFW(msg.channel.guild.id, msg.channel.id);
         if (!nsfw) return msg.channel.createMessage('You can only use this command in an **nsfw** channels, use \`j:settings nsfw <allow/deny>\`.')
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         if (!args) return 'wrong usage'
         booruTimesUsed++
@@ -71,7 +71,7 @@ dollbooru.org, aliases: ["do","doll","dollbooru"]
 rule34.paheal.net, aliases: ["pa","paheal"]`
                 }
             }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         } else {
             if (!c) {
@@ -87,7 +87,7 @@ rule34.paheal.net, aliases: ["pa","paheal"]`
                         description: `Sorry it's against Discord's ToS to search for these tags.`
                     }
                 }).catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
                 booru.search(`${a}`, [`${b}`], {
                         limit: 1,
@@ -109,7 +109,7 @@ rule34.paheal.net, aliases: ["pa","paheal"]`
                                     description: `Sorry, it's against Discord's ToS to show you this images.`
                                 }
                             }).catch(err => {
-                                handleError(err);
+                                handleError(bot, err);
                             });
                             var tags = tag.split(',').join(', ');
                             var img = image.common.file_url.toString(" ");
@@ -132,7 +132,7 @@ Rating: ${image.common.rating}`,
                                     }
                                 }
                             }).catch(err => {
-                                handleError(err);
+                                handleError(bot, err);
                             });
                         }
                     })
@@ -155,10 +155,10 @@ Rating: ${image.common.rating}`,
                                     }]
                                 }
                             }).catch(err => {
-                                handleError(err);
+                                handleError(bot, err);
                             });
                         } else {
-                            handleMsgError(msg.channel, err);
+                            handleMsgError(bot, msg.channel, err);
                         }
                     })
             } else {
@@ -174,7 +174,7 @@ Rating: ${image.common.rating}`,
                         description: `Sorry it's against Discord's ToS to search for these tags.`
                     }
                 }).catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
                 booru.search(`${a}`, [`${b}`, `${c}`], {
                         limit: 1,
@@ -196,7 +196,7 @@ Rating: ${image.common.rating}`,
                                     description: `Sorry, it's against Discord's ToS to show you this image.`
                                 }
                             }).catch(err => {
-                                handleError(err);
+                                handleError(bot, err);
                             });
                             var tags = tag.split(',').join(', ');
                             var img = image.common.file_url.toString(" ");
@@ -219,7 +219,7 @@ Rating: ${image.common.rating}`,
                                     }
                                 }
                             }).catch(err => {
-                                handleError(err);
+                                handleError(bot, err);
                             });
                         }
                     })
@@ -242,10 +242,10 @@ Rating: ${image.common.rating}`,
                                     }]
                                 }
                             }).catch(err => {
-                                handleError(err);
+                                handleError(bot, err);
                             });
                         } else {
-                            handleMsgError(msg.channel, err);
+                            handleMsgError(bot, msg.channel, err);
                         }
                     })
             }

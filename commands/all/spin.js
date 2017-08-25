@@ -32,7 +32,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         spinTimesUsed++
         let choice1 = ~~(Math.random() * RESPONSES.length);
@@ -59,7 +59,7 @@ module.exports = {
                                 }
                             })
                             .catch(err => {
-                                handleError(err);
+                                handleError(bot, err);
                             });
                     } else if ((choice1 == choice2) || (choice1 == choice3) || (choice2 == choice3)) {
                         bot.editMessage(sentMsg.channel.id, sentMsg.id, {
@@ -71,7 +71,7 @@ module.exports = {
                                 }
                             })
                             .catch(err => {
-                                handleError(err);
+                                handleError(bot, err);
                             });
                     } else {
                         bot.editMessage(sentMsg.channel.id, sentMsg.id, {
@@ -83,12 +83,12 @@ module.exports = {
                                 }
                             })
                             .catch(err => {
-                                handleError(err);
+                                handleError(bot, err);
                             });
                     }
                 }, delay);
             }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
     }
 }

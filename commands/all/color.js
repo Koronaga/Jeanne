@@ -25,7 +25,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         if (!args) return 'wrong usage';
         colorTimesUsed++
@@ -82,7 +82,7 @@ module.exports = {
                     ]
                 }
             }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         } else if (type.startsWith('#')) {
             const hexRegex = /^#[0-9a-fA-F]{6}$/.test(type);
@@ -122,7 +122,7 @@ module.exports = {
                     ]
                 }
             }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         } else if (type.startsWith('rgb')) {
             const rgbRegex = /^rgb\(\d{1,3}, ?\d{1,3}, ?\d{1,3}\)$/.test(type);
@@ -164,7 +164,7 @@ module.exports = {
                     ]
                 }
             }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         } else {
             return 'wrong usage';

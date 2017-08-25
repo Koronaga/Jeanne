@@ -20,7 +20,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         if (!args) return 'wrong usage';
         args = args.toLowerCase();
@@ -56,13 +56,13 @@ module.exports = {
                         });
                 })
                 .catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
         } else if (args === 'nsfw') {
             const nsfw = settingsManager.getNSFW(msg.channel.guild.id, msg.channel.id);
             if (!nsfw) return bot.createMessage(msg.channel.id, 'You can only use this in **nsfw** channels, use \`j:settings nsfw <allow/deny>\`.\nFor sfw catgirls use \`s.catgirl sfw\`.')
                 .catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
             catgirlNSFWTimesUsed++
             axios.get('http://catgirls.brussell98.tk/api/nsfw/random/')
@@ -88,11 +88,11 @@ module.exports = {
                             }
                         })
                         .catch(err => {
-                            handleError(err);
+                            handleError(bot, err);
                         });
                 })
                 .catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
         } else {
             return 'wrong usage';

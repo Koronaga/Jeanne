@@ -23,7 +23,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         if (!args) return 'wrong usage';
         mangaTimesUsed++
@@ -121,7 +121,7 @@ Japanese: ${manga.title_japanese}`,
                                     }
                                 })
                                 .catch(err => {
-                                    handleError(err);
+                                    handleError(bot, err);
                                 });
                         } else if (index < 0) {
                             var index2 = results.map(title => { return title.title_english; }).indexOf(args);
@@ -213,7 +213,7 @@ Japanese: ${manga.title_japanese}`,
                                         }
                                     })
                                     .catch(err => {
-                                        handleError(err);
+                                        handleError(bot, err);
                                     });
                             } else if (index2 < 0) {
                                 var index3 = 0;
@@ -303,13 +303,13 @@ Japanese: ${manga.title_japanese}`,
                                         }
                                     })
                                     .catch(err => {
-                                        handleError(err);
+                                        handleError(bot, err);
                                     });
                             }
                         }
                     });
             }).catch(err => {
-                handleMsgError(msg.channel, err);
+                handleMsgError(bot, msg.channel, err);
             });
     }
 };

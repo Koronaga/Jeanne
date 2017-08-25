@@ -38,17 +38,17 @@ module.exports = {
             .then(sentMsg => {
                 sentMsg.addReaction('check:314349398811475968') // check:314349398811475968
                     .catch(err => {
-                        handleError(err);
+                        handleError(bot, err);
                     });
                 setTimeout(() => {
                     sentMsg.addReaction('xmark:314349398824058880') // xmark:314349398824058880
                         .catch(err => {
-                            handleError(err);
+                            handleError(bot, err);
                         });
                 }, 1000);
             })
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
     }
 };

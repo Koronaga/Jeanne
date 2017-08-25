@@ -21,12 +21,12 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         if (!args) return 'wrong usage';
         ddgsearchTimesUsed++
         ddg.query(`${args}`, (err, data) => {
-            if (err) return handleMsgError(msg.channel, err);
+            if (err) return handleMsgError(bot, msg.channel, err);
             // Topic 1
             var topic1URL = '';
             var topic1Text = '';
@@ -107,7 +107,7 @@ ${topic4Text}`,
                     ]
                 }
             }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         });
     }

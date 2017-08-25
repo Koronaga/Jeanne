@@ -19,12 +19,12 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         const nsfw = settingsManager.getNSFW(msg.channel.guild.id, msg.channel.id);
         if (!nsfw) return bot.createMessage(msg.channel.id, 'You can only use this command in an **nsfw** channels, use \`j:settings nsfw <allow/deny>\`.')
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         boobsTimesUsed++
         request.get(`http://api.oboobs.ru/boobs/0/1/random`)
@@ -45,11 +45,11 @@ module.exports = {
                         }
                     }
                 }).catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
             })
             .catch(err => {
-                handleMsgError(msg.channel, err);
+                handleMsgError(bot, msg.channel, err);
             });
     }
 };

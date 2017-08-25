@@ -25,7 +25,7 @@ module.exports = {
             process.exit(1)
         })
         .catch(err => {
-            handleError(err);
+            handleError(bot, err);
         });
     }
 };

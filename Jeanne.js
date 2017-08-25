@@ -540,7 +540,7 @@ setTimeout(() => {
                 }
             })
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
     }, 20000);
 }, 5000);
@@ -562,7 +562,7 @@ setInterval(() => {
         .then(() => {
             console.log(`Updated role color to ${hexColor}!`);
         }).catch(err => {
-            handleError(err);
+            handleError(bot, err);
         });
 }, 600000);
 */
@@ -577,11 +577,11 @@ process.on('SIGINT', () => {
 });
 
 process.on("uncaughtException", err => {
-    handleError(err);
+    handleError(bot, err);
 });
 
 process.on("unhandledRejection", err => {
-    handleError(err);
+    handleError(bot, err);
 });
 
 // Voice Connection Events

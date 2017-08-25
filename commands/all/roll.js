@@ -21,7 +21,7 @@ module.exports = {
         let roll = args === null ? [1, 10] : [parseInt(args[1]) || 1, parseInt(args[2])];
         bot.createMessage(msg.channel.id, `${msg.author.username} rolled **${Nf.format(roll[0])}-${Nf.format(roll[1])}** and got **${Nf.format(~~((Math.random() * (roll[1] - roll[0] + 1)) + roll[0]))}**`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
     }
 };

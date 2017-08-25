@@ -20,11 +20,11 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return bot.createMessage(msg.channel.id, `\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         if (banMembers === false) return bot.createMessage(msg.channel.id, `\\❌ I'm missing the \`banMembers\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         if (!args) return 'wrong usage';
         hackbanTimesUsed++
@@ -37,7 +37,7 @@ module.exports = {
         if (idRegex === true) {
             bot.banGuildMember(msg.channel.guild.id, userToBan, deletedays, reason)
                 .catch(err => {
-                    handleMsgError(msg.channel, err);
+                    handleMsgError(bot, msg.channel, err);
                 });
         } else {
             bot.createMessage(msg.channel.id, {
@@ -57,7 +57,7 @@ module.exports = {
                     }]
                 }
             }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         }
     }

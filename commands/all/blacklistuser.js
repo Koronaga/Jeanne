@@ -15,7 +15,7 @@ module.exports = {
         var obj = JSON.parse(fs.readFileSync(`./banned_users.json`, 'utf8'));
         obj['bannedUserIds'].push(suffix);
         fs.writeFile(`./banned_users.json`, JSON.stringify(obj), (err) => {
-            if (err) return handleMsgError(msg.channel, err);
+            if (err) return handleMsgError(bot, msg.channel, err);
             bot.createMessage(msg.channel.id, {
                 content: ``,
                 embed: {
@@ -29,7 +29,7 @@ module.exports = {
                 }
             })
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         })
     }

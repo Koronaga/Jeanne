@@ -20,7 +20,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         ibsearchTimesUsed++
         let key = config.ibsearch_key;
@@ -46,14 +46,14 @@ module.exports = {
             if (err) {
                 bot.createMessage(msg.channel.id, `${err}`)
                     .catch(err => {
-                        handleError(err);
+                        handleError(bot, err);
                     });
             }
             if (!err && res.statusCode == 200) {
                 try {
                     body = JSON.parse(body);
                 } catch (err) {
-                    handleError(err);
+                    handleError(bot, err);
                 }
                 if (typeof(body) !== 'undefined' && body.length > 0) {
                     let random = Math.floor(Math.random() * body.length);
@@ -74,7 +74,7 @@ module.exports = {
                             }
                         })
                         .catch(err => {
-                            handleError(err);
+                            handleError(bot, err);
                         });
                 } else {
                     bot.createMessage(msg.channel.id, {
@@ -90,7 +90,7 @@ module.exports = {
                             }
                         })
                         .catch(err => {
-                            handleError(err);
+                            handleError(bot, err);
                         });
                 }
             }

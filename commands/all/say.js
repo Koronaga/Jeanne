@@ -19,7 +19,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         sayTimesUsed++
         bot.createMessage(msg.channel.id, {
@@ -34,7 +34,7 @@ module.exports = {
                 description: `:speech_balloon: ${args}` || 'echo'
             }
         }).catch(err => {
-            handleError(err);
+            handleError(bot, err);
         });
     }
 };

@@ -23,7 +23,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         if (!args) return 'wrong usage';
         weatherTimesUsed++
@@ -36,7 +36,7 @@ module.exports = {
             state: `${state}`
         }
         wu.conditions(opts, (err, data) => {
-            if (err) return handleMsgError(msg.channel, err);
+            if (err) return handleMsgError(bot, msg.channel, err);
             if (!data) return bot.createMessage(msg.channel.id, {
                 content: ``,
                 embed: {
@@ -54,7 +54,7 @@ module.exports = {
                     }]
                 }
             }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
             const originIcon = data.icon_url;
             let icon = 'https://b.catgirlsare.sexy/Ci0m.png';
@@ -147,7 +147,7 @@ module.exports = {
                     ]
                 }
             }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         });
     }

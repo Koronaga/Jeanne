@@ -18,7 +18,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         supportTimesUsed++
         bot.createMessage(msg.channel.id, {
@@ -33,7 +33,7 @@ module.exports = {
                 description: `https://discord.gg/Vf4ne5b`
             }
         }).catch(err => {
-            handleError(err);
+            handleError(bot, err);
         });
     }
 };

@@ -11,13 +11,13 @@ module.exports = {
 \`\`\`glsl
 ${err}
 \`\`\``).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
             if (stderr) return bot.createMessage(msg.channel.id, `
 \`\`\`glsl
 ${stderr}
 \`\`\``).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
             let str = stdout;
             let senpai = str.replace("● Agent Online | Dashboard Access: https://app.keymetrics.io/#/r/2pd59t8ulpqlkoi | Server name: Jeanne.js", "");
@@ -25,7 +25,7 @@ ${stderr}
 \`\`\`glsl
 ${senpai}
 \`\`\``).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         });
     }

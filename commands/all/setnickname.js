@@ -23,11 +23,11 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         if (manageNicknames === false) return msg.channel.createMessage(`\\❌ I'm missing the \`manageNicknames\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         bot.editGuildMember(msg.channel.guild.id, msg.author.id, { nick: args })
             .then(() => {
@@ -44,7 +44,7 @@ module.exports = {
                         }
                     })
                     .catch(err => {
-                        handleError(err);
+                        handleError(bot, err);
                     });
                 msg.channel.createMessage({
                         content: ``,
@@ -59,11 +59,11 @@ module.exports = {
                         }
                     })
                     .catch(err => {
-                        handleError(err);
+                        handleError(bot, err);
                     });
             })
             .catch(err => {
-                handleMsgError(msg.channel, err);
+                handleMsgError(bot, msg.channel, err);
             });
     }
 };

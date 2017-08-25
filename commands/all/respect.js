@@ -29,7 +29,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         respectTimesUsed++
         let choice = ~~(Math.random() * RESPONSES.length);
@@ -56,7 +56,7 @@ module.exports = {
             }).then(() => {
                 utils.safeSave('db/respect', '.json', JSON.stringify(respect));
             }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         } else {
             let respect = JSON.parse(fs.readFileSync(`./db/respect.json`, 'utf8'));
@@ -81,7 +81,7 @@ module.exports = {
             }).then(() => {
                 utils.safeSave('db/respect', '.json', JSON.stringify(respect));
             }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         }
     }

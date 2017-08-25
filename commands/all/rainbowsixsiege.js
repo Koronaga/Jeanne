@@ -22,7 +22,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         if (!args) return 'wrong usage';
         rainbowsixsiegeTimesUsed++
@@ -93,7 +93,7 @@ module.exports = {
                         ]
                     }
                 }).catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
             }).catch(err => {
                 var title = err.errors.map(t => t.title);
@@ -118,7 +118,7 @@ module.exports = {
                         }]
                     }
                 }).catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
             });
     }

@@ -22,12 +22,15 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         steamTimesUsed++
         superagent.get(`http://api.thegathering.xyz/steamid/?s=${args}&key=${config.steam_key}`)
             .end((err, res) => {
-                if (err) return handleError(err);
+                if (err) {
+                    handleError(bot, err);
+                    return
+                }
                 const data = res.body;
                 if (data.status != 200) return 'wrong usage';
                 const lastlogoff = new Date(data.profile.lastlogoff * 1000).toISOString();
@@ -92,7 +95,7 @@ module.exports = {
                         ]
                     }
                 }).catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
             });
     }

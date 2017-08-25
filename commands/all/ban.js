@@ -22,11 +22,11 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return bot.createMessage(msg.channel.id, `\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         if (banMembers === false) return bot.createMessage(msg.channel.id, `\\❌ I'm missing the \`banMembers\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         if (!args) return 'wrong usage';
         banTimesUsed++
@@ -49,11 +49,11 @@ module.exports = {
             }
         })
         .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         bot.banGuildMember(msg.channel.guild.id, user.id, deletedays, reason)
             .catch(err => {
-                handleMsgError(msg.channel, err);
+                handleMsgError(bot, msg.channel, err);
             });
     }
 }

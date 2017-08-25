@@ -22,7 +22,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         var nsfw = settingsManager.getNSFW(msg.channel.guild.id, msg.channel.id);
         if (!nsfw) return msg.channel.createMessage({
@@ -38,7 +38,7 @@ module.exports = {
                 }
             })
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         if (!args) return 'wrong usage';
         pornTimesUsed++
@@ -59,7 +59,7 @@ module.exports = {
                 }
             })
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         const drivers = ['pornhub', 'sex'];
         const driver = drivers[Math.floor(Math.random() * drivers.length)];
@@ -87,11 +87,11 @@ module.exports = {
                         }
                     })
                     .catch(err => {
-                        handleError(err);
+                        handleError(bot, err);
                     });
             })
             .catch(err => {
-                handleMsgError(msg.channel, err);
+                handleMsgError(bot, msg.channel, err);
             });
     }
 };

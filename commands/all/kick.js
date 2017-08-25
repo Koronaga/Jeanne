@@ -22,11 +22,11 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return bot.createMessage(msg.channel.id, `\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         if (kickMembers === false) return bot.createMessage(msg.channel.id, `\\❌ I'm missing the \`kickMembers\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         if (!args) return 'wrong usage';
         kickTimesUsed++
@@ -47,11 +47,11 @@ module.exports = {
                 description: `That is not a valid guild member. Need to specify a name, ID or mention the user.`
             }
         }).catch(err => {
-            handleError(err);
+            handleError(bot, err);
         });
         bot.kickGuildMember(msg.channel.guild.id, user.id, reason)
             .catch(err => {
-                handleMsgError(msg.channel, err);
+                handleMsgError(bot, msg.channel, err);
             });
     }
 };

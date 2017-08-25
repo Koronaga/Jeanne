@@ -95,12 +95,12 @@ module.exports = (bot, _settingsManager, _config, guild) => {
                 avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`
             })
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         if (!guild.defaultChannel) return;
         guild.defaultChannel.createMessage("Awesome a new server!\nType `j:help` for a commands list.\nYou could also view all my commands on https://cmds.jeannedarc.xyz")
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
     }
 }

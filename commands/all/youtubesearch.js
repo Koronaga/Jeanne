@@ -30,9 +30,9 @@ module.exports = {
                         }
                     })
                     .catch(err => {
-                        handleError(err);
+                        handleError(bot, err);
                     });
-                handleError(err);
+                handleError(bot, err);
                 return;
             }
             const videoInfo = res[Math.floor(Math.random() * res.length)]; // returns 1 result from the first 50 results it can find
@@ -76,7 +76,7 @@ module.exports = {
                     }
                 })
                 .catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
         });
     }

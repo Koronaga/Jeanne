@@ -21,7 +21,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         const user = findMember(msg, args);
         let ded = [
@@ -56,7 +56,7 @@ module.exports = {
                 description: `That is not a valid guild member. Need to specify a name, ID or mention the user.`
             }
         }).catch(err => {
-            handleError(err);
+            handleError(bot, err);
         });
         if (user.id === msg.author.id) return bot.createMessage(msg.channel.id, {
             content: ``,
@@ -70,7 +70,7 @@ module.exports = {
                 description: `Oh boii lets not kill ourselves :heart:`
             }
         }).catch(err => {
-            handleError(err);
+            handleError(bot, err);
         });
         if (user.id === bot.user.id) return bot.createMessage(msg.channel.id, {
             content: ``,
@@ -84,7 +84,7 @@ module.exports = {
                 description: `Please don't kill me ;-;`
             }
         }).catch(err => {
-            handleError(err);
+            handleError(bot, err);
         });
         if (user.id === '93973697643155456') return bot.createMessage(msg.channel.id, {
             content: ``,
@@ -98,7 +98,7 @@ module.exports = {
                 description: `Nuuuu don't kill my masta please ;-;`
             }
         }).catch(err => {
-            handleError(err);
+            handleError(bot, err);
         });
         bot.createMessage(msg.channel.id, {
             content: ``,
@@ -112,7 +112,7 @@ module.exports = {
                 description: `${text}`
             }
         }).catch(err => {
-            handleError(err);
+            handleError(bot, err);
         });
     }
 }

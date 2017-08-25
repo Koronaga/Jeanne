@@ -20,7 +20,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         if (!args) return 'wrong usage';
         const command = args.toLowerCase();
@@ -51,7 +51,7 @@ module.exports = {
                                     vc.play(config.stream);
                                 })
                                 .catch(err => {
-                                    handleError(err);
+                                    handleError(bot, err);
                                 });
                         })
                         .catch(error => {
@@ -69,7 +69,7 @@ module.exports = {
             if (!channelID) {
                 msg.channel.createMessage('You are not in a voice channel.')
                     .catch(err => {
-                        handleError(err);
+                        handleError(bot, err);
                     });
             } else {
                 let vc = bot.voiceConnections.find((vc) => vc.id === msg.channel.guild.id);
@@ -78,7 +78,7 @@ module.exports = {
                     bot.voiceConnections.remove(vc);
                     msg.channel.createMessage('Left <#' + channelID + '>')
                         .catch(err => {
-                            handleError(err);
+                            handleError(bot, err);
                         });
                 }
             }

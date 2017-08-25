@@ -20,7 +20,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         avatarTimesUsed++
         let format = '';
@@ -43,7 +43,7 @@ module.exports = {
                     }
                 })
                 .catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
         } else if ((args.startsWith('--size')) || (args.startsWith('-s'))) {
             // j:avatar -s <size> || j:avatar --size <size>
@@ -67,7 +67,7 @@ module.exports = {
                     }
                 })
                 .catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
         } else {
             // j:avatar <user> | <size>
@@ -92,7 +92,7 @@ module.exports = {
                     }
                 })
                 .catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
             const id = msg.channel.guild.members.get(user.id);
             msg.channel.createMessage({
@@ -111,7 +111,7 @@ module.exports = {
                     }
                 })
                 .catch(err => {
-                    handleError(err);
+                    handleError(bot, err);
                 });
         }
     }

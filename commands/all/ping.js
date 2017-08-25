@@ -29,7 +29,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         pingTimesUsed++
         let choice = ~~(Math.random() * RESPONSES.length);
@@ -55,10 +55,10 @@ module.exports = {
                     description: `Took me ${Nf.format(sentMsg.timestamp - msg.timestamp)}ms`
                 }
             }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         }).catch(err => {
-            handleError(err);
+            handleError(bot, err);
         });
     }
 };

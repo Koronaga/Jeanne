@@ -21,7 +21,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         if (!args) return 'wrong usage';
         leetspeakTimesUsed++
@@ -45,7 +45,7 @@ module.exports = {
                     description: `${simple}`
                 }
             }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         } else if (lower === 'advanced') {
             const LeetAdvanced = new Leetscript();
@@ -62,7 +62,7 @@ module.exports = {
                     description: `${advanced}`
                 }
             }).catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         } else {
             return 'wrong usage';

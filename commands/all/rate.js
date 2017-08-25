@@ -37,19 +37,19 @@ module.exports = {
         let choice = ~~(Math.random() * RATES.length);
         if (lower === 'kurozero') return bot.createMessage(msg.channel.id, ` My master is always an 11/10 :heart:`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         if (!msg.mentions[0]) return bot.createMessage(msg.channel.id, suffix + ` is a ${RATES[choice]} waifu`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         if (msg.mentions[0].id === "93973697643155456") return bot.createMessage(msg.channel.id, ` My master is always an 11/10 :heart:`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
         bot.createMessage(msg.channel.id, suffix + ` is a ${RATES[choice]} waifu`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, err);
             });
     }
 };
