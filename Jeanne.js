@@ -7,6 +7,7 @@ var reload = require('require-reload')(require),
     config = reload('./config.json'),
     formatSeconds = require("./utils/utils.js").formatSeconds,
     handleError = require("./utils/utils.js").handleError,
+    handleErrorNoMsg = require("./utils/utils.js").handleErrorNoMsg,
     version = reload('./package.json').version,
     Nf = new Intl.NumberFormat('en-US'),
     round = require('./utils/utils.js').round,
@@ -442,14 +443,16 @@ if (config.abalBotsKey) { //Send servercount to Abal's bot list
             utils.updateAbalBots(bot.user.id, config.abalBotsKey, bot.guilds.size);
     }, 1800000);
 }
-
+*/
+/*
 if (config.discordbotsorg) { //Send servercount to discordbots.org
     setInterval(() => {
         if (bot.uptime !== 0)
             utils.updateDiscordBots(bot.user.id, config.discordbotsorg, bot.guilds.size, bot.shards.size);
-    }, 1800000);
+    }, 5000);
 }
 */
+// 1800000
 
 setInterval(() => { // Update the bot's status for each shard every 10 minutes
     if (games.length !== 0 && bot.uptime !== 0 && config.cycleGames === true) {
@@ -462,7 +465,7 @@ setInterval(() => { // Update the bot's status for each shard every 10 minutes
     }
 }, 600000);
 
-/** Only meant for the public version
+/** Only meant for the public version */
 setTimeout(() => {
     setInterval(() => {
         let totalCommandUsage = commandsProcessed + cleverbotTimesUsed;
@@ -474,7 +477,7 @@ setTimeout(() => {
                     color: config.defaultColor,
                     type: 'rich',
                     author: {
-                        name: `Jeanne d'Arc Statistics:`,
+                        name: `Jeanne d'Arc Live Statistics:`,
                         url: `https://jeannedarc.xyz/`,
                         icon_url: `${bot.user.avatarURL}`
                     },
@@ -540,11 +543,11 @@ setTimeout(() => {
                 }
             })
             .catch(err => {
-                handleError(bot, __filename, msg.channel, err);
+                handleErrorNoMsg(bot, __filename, err);
             });
     }, 20000);
 }, 5000);
-*/
+/**/
 
 // Hope this isn't api abuse owo
 // Default color 0x020003
@@ -577,11 +580,11 @@ process.on('SIGINT', () => {
 });
 
 process.on("uncaughtException", err => {
-    handleError(bot, __filename, msg.channel, err);
+    handleErrorNoMsg(bot, __filename, err);
 });
 
 process.on("unhandledRejection", err => {
-    handleError(bot, __filename, msg.channel, err);
+    handleError(bot, __filename, err);
 });
 
 // Voice Connection Events

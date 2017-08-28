@@ -34,7 +34,7 @@ module.exports = {
             var count = parseInt(suffix),
                 msgTodelete = count + 1, // yea same here nugget
                 limit = msgTodelete;
-            if (limit > 100) return msg.channel.createMessage({
+            if (count > 100) return msg.channel.createMessage({
                     content: ``,
                     embed: {
                         color: config.errorColor,

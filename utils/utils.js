@@ -374,6 +374,37 @@ exports.handleError = (bot, commandUsed, channel, error) => {
             handleErrorLocal(err);
         });
 }
+/**
+ * Handle an error with a message
+ * @param {object} bot client object
+ * @param {string} commandUsed file path of the command
+ * @param {object|string} error the error that was returned
+ */
+exports.handleErrorNoMsg = (bot, commandUsed, error) => {
+    function handleErrorLocal(error) {
+        if (!error.response) return logger.error(error, 'ERROR');
+        const err = JSON.parse(error.response);
+        if ((!err.code) && (!err.message)) return logger.error(JSON.stringify(err), 'ERROR');
+        logger.error(err.code + '\n' + err.message, 'ERROR');
+    }
+    bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
+            embeds: [{
+                color: config.errorColor,
+                title: `${commandUsed}`,
+                description: `${error}`,
+            }],
+            username: `${bot.user.username}`,
+            avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`,
+
+        })
+        .catch(err => {
+            handleErrorLocal(err);
+        });
+    if (!error.response) return logger.error(error, 'ERROR');
+    const err = JSON.parse(error.response);
+    if ((!err.code) && (!err.message)) return logger.error(JSON.stringify(err), 'ERROR');
+    logger.error(err.code + '\n' + err.message, 'ERROR');
+}
 
 /**
  * Sort object properties (only own properties will be sorted).

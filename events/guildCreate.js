@@ -1,9 +1,12 @@
 var reload = require('require-reload'),
-    config = reload('../config.json'),
+    config = require('../config.json'),
     _Logger = reload('../utils/Logger.js'),
     bannedGuilds = reload('../banned_guilds.json'),
     handleError = require("../utils/utils.js").handleError,
+    handleErrorNoMsg = require("../utils/utils.js").handleErrorNoMsg,
     utils = reload('../utils/utils.js'),
+    updateAbalBots = require('../utils/utils.js').updateAbalBots,
+    updateDiscordBots = require('../utils/utils.js').updateDiscordBots,
     formatTime = reload('../utils/utils.js').formatTime,
     version = reload('../package.json').version,
     Nf = new Intl.NumberFormat('en-US'),
@@ -38,11 +41,11 @@ module.exports = (bot, _settingsManager, _config, guild) => {
     } else {
         if (config.abalBotsKey) { //Send servercount to Abal's bot list
             if (bot.uptime !== 0)
-                utils.updateAbalBots(bot.user.id, config.abalBotsKey, bot.guilds.size);
+                updateAbalBots(bot.user.id, config.abalBotsKey, bot.guilds.size);
         }
         if (config.discordbotsorg) { //Send servercount to discordbots.org
             if (bot.uptime !== 0)
-                utils.updateDiscordBots(bot.user.id, config.discordbotsorg, bot.guilds.size, bot.shards.size);
+                updateDiscordBots(bot.user.id, config.discordbotsorg, bot.guilds.size, bot.shards.size);
         }
         bot.executeWebhook(config.join_leaveWebhookID, config.join_leaveWebhookToken, {
                 embeds: [{
@@ -93,12 +96,12 @@ module.exports = (bot, _settingsManager, _config, guild) => {
                 avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`
             })
             .catch(err => {
-                handleError(bot, __filename, msg.channel, err);
+                handleErrorNoMsg(bot, __filename, err);
             });
         if (!guild.defaultChannel) return;
         guild.defaultChannel.createMessage("Awesome a new server!\nType `j:help` for a commands list.\nYou could also view all my commands on https://cmds.jeannedarc.xyz")
             .catch(err => {
-                handleError(bot, __filename, msg.channel, err);
+                handleErrorNoMsg(bot, __filename, err);
             });
     }
 }

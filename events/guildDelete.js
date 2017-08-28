@@ -1,9 +1,12 @@
 var reload = require('require-reload'),
-    config = reload('../config.json'),
+    config = require('../config.json'),
     _Logger = reload('../utils/Logger.js'),
     bannedGuilds = reload('../banned_guilds.json'),
     utils = reload('../utils/utils.js'),
+    updateAbalBots = require('../utils/utils.js').updateAbalBots,
+    updateDiscordBots = require('../utils/utils.js').updateDiscordBots,
     handleError = require("../utils/utils.js").handleError,
+    handleErrorNoMsg = require("../utils/utils.js").handleErrorNoMsg,
     formatTime = reload('../utils/utils.js').formatTime,
     version = reload('../package.json').version,
     Nf = new Intl.NumberFormat('en-US'),
@@ -23,21 +26,12 @@ module.exports = (bot, _settingsManager, _config, guild, unavailable) => {
     }).catch(err => {
         handleError(bot, __filename, msg.channel, err);
     });
-    const bots = bot.guilds.get(guild.id).members.filter(user => user.user.bot).length,
-        total = bot.guilds.get(guild.id).memberCount,
+    const bots = guild.members.filter(u => u.user.bot).length,
+        total = guild.memberCount,
         humans = total - bots,
         humanper = humans / total * 100,
         botper = bots / total * 100;
     if (botper >= 60) return;
-    // Update server counts
-    if (config.abalBotsKey) { //Send servercount to Abal's bot list
-        if (bot.uptime !== 0)
-            utils.updateAbalBots(bot.user.id, config.abalBotsKey, bot.guilds.size);
-    }
-    if (config.discordbotsorg) { //Send servercount to discordbots.org
-        if (bot.uptime !== 0)
-            utils.updateDiscordBots(bot.user.id, config.discordbotsorg, bot.guilds.size, bot.shards.size);
-    }
     if (logger === undefined) logger = new _Logger(_config.logTimestamp);
     logger.logWithHeader('LEFT GUILD', 'bgRed', 'black', `${guild.name} (${guild.id}) owned by ${guild.members.get(guild.ownerID).user.username}#${guild.members.get(guild.ownerID).user.discriminator}`);
     bot.executeWebhook(config.join_leaveWebhookID, config.join_leaveWebhookToken, {
@@ -73,7 +67,16 @@ module.exports = (bot, _settingsManager, _config, guild, unavailable) => {
             username: `${bot.user.username}`,
             avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`
         })
+        .then(() => {
+            // Update server counts
+            if (config.abalBotsKey) { //Send servercount to Abal's bot list
+                if (bot.uptime !== 0) updateAbalBots(bot.user.id, config.abalBotsKey, bot.guilds.size);
+            }
+            if (config.discordbotsorg) { //Send servercount to discordbots.org
+                if (bot.uptime !== 0) updateDiscordBots(bot.user.id, config.discordbotsorg, bot.guilds.size, bot.shards.size);
+            }
+        })
         .catch(err => {
-            handleError(bot, __filename, msg.channel, err);
+            handleErrorNoMsg(bot, __filename, err);
         });
 };

@@ -12,6 +12,7 @@ var reload = require('require-reload')(require),
     logger = new(reload('../utils/Logger.js'))(config.logTimestamp);
 
 const handleError = require('../utils/utils.js').handleError,
+    handleErrorNoMsg = require("../utils/utils.js").handleErrorNoMsg,
     Vision = require('@google-cloud/vision'),
     jeanneVision = require('../Jeanne-ca41da280a76.json');
 
@@ -55,13 +56,13 @@ module.exports = {
                                         })
                                 }, 2000);
                             })*/
-                            .catch(err => {
-                                handleError(bot, __filename, msg.channel, err);
+                            .catch(error => {
+                                handleErrorNoMsg(bot, __filename, error);
                             });
                     }
                 })
-                .catch(err => {
-                    handleError(bot, __filename, msg.channel, err);
+                .catch(error => {
+                    handleErrorNoMsg(bot, __filename, error);
                 });
         }
 
@@ -95,7 +96,9 @@ module.exports = {
             let message = JSON.parse(fs.readFileSync(`./db/message.json`, 'utf8'));
             if (config.nowelcomemessageGuild.includes(msg.channel.guild.id)) return;
             if ((!message[msg.channel.guild.id]) || (message[msg.channel.guild.id].type.includes("true"))) {
-                bot.createMessage(msg.channel.id, `<@${msg.author.id}> You've leveled up to level **${curLevel}**!`).catch(error => { return; });
+                bot.createMessage(msg.channel.id, `<@${msg.author.id}> You've leveled up to level **${curLevel}**!`).catch(error => {
+                    return;
+                });
             } else if (message[msg.channel.guild.id].type.includes("false")) {
                 return;
             }
