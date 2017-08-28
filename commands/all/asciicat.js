@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError,
     catMe = require('cat-me');
 
 module.exports = {
@@ -20,13 +19,13 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         asciicatTimesUsed++
         let cat = catMe();
         if (!args) return msg.channel.createMessage(`\`\`\`${cat}\`\`\``)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         let lower = args.toLowerCase();
         if (lower === 'list') {
@@ -51,13 +50,13 @@ resting`
                     }
                 })
                 .catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
         } else {
             cat = catMe(`${args}`);
             msg.channel.createMessage(`\`\`\`${cat}\`\`\``)
                 .catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
         }
     }

@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError,
     Hearthstone = require('hearthstone-mashape')(`${config.hs_key}`, 'enUS');
 
 module.exports = {
@@ -21,7 +20,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         if (!args) return 'wrong usage'
         hearthstoneTimesUsed++
@@ -34,7 +33,7 @@ module.exports = {
             collectible: 1
         };
         Hearthstone.card(params, (err, data) => {
-            if (err) return handleMsgError(bot, msg.channel, err);
+            if (err) return handleError(bot, __filename, msg.channel, err);
             if (!data) return msg.channel.createMessage({
                     content: ``,
                     embed: {
@@ -53,7 +52,7 @@ module.exports = {
                     }
                 })
                 .catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
                 if (!option) return msg.channel.createMessage({
                         content: ``,
@@ -77,7 +76,7 @@ ${data[0] === undefined ? `Make sure to use a card name.` : ''}${data[0] !== und
                         }
                     })
                     .catch(err => {
-                        handleError(bot, err);
+                        handleError(bot, __filename, msg.channel, err);
                     });
                 option = option.toLowerCase();
                 if (option === 'gold') return msg.channel.createMessage({
@@ -102,7 +101,7 @@ ${data[0] === undefined ? `Make sure to use a card name.` : ''}${data[0] !== und
                         }
                     })
                     .catch(err => {
-                        handleError(bot, err);
+                        handleError(bot, __filename, msg.channel, err);
                     });
                 if ((option) && (option !== 'gold')) return 'wrong usage';
         });

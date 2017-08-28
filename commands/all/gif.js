@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError,
     giphy = require('giphy-api')();
 
 module.exports = {
@@ -20,7 +19,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         gifTimesUsed++
         giphy.random(`${args}`)
@@ -38,7 +37,7 @@ module.exports = {
                         description: `Coudn't find any image.`
                     }
                 }).catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
                 bot.createMessage(msg.channel.id, {
                     content: ``,
@@ -58,10 +57,10 @@ Height: ${res.data.image_height}`,
                         }
                     }
                 }).catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
             }).catch(err => {
-                handleMsgError(bot, msg.channel, err);
+                handleError(bot, __filename, msg.channel, err);
             });
     }
 };

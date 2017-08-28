@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError,
     { flag, code, name } = require('country-emoji'),
     Wunderground = require('wunderground-api'),
     wu = new Wunderground(`${config.wu_key}`);
@@ -23,7 +22,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         if (!args) return 'wrong usage';
         weatherTimesUsed++
@@ -36,7 +35,7 @@ module.exports = {
             state: `${state}`
         }
         wu.conditions(opts, (err, data) => {
-            if (err) return handleMsgError(bot, msg.channel, err);
+            if (err) return handleError(bot, __filename, msg.channel, err);
             if (!data) return bot.createMessage(msg.channel.id, {
                 content: ``,
                 embed: {
@@ -54,7 +53,7 @@ module.exports = {
                     }]
                 }
             }).catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
             const originIcon = data.icon_url;
             let icon = 'https://b.catgirlsare.sexy/Ci0m.png';
@@ -147,7 +146,7 @@ module.exports = {
                     ]
                 }
             }).catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         });
     }

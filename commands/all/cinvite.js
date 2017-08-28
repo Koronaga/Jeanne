@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
-    handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError;
+    handleError = require('../../utils/utils.js').handleError;
 
 module.exports = {
     desc: "Create an invite with a channel id.",
@@ -20,11 +19,11 @@ module.exports = {
                         }
                     })
                     .catch(err => {
-                        handleError(bot, err);
+                        handleError(bot, __filename, msg.channel, err);                     
                     });
             })
             .catch(err => {
-                handleMsgError(bot, msg.channel, err);
+                handleError(bot, __filename, msg.channel, err);  
             });
     }
 };

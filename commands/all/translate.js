@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError,
     translate = require('google-translate-api');
 
 module.exports = {
@@ -21,7 +20,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         if (!args) return 'wrong usage';
         translateTimesUsed++
@@ -51,11 +50,11 @@ module.exports = {
                         }
                     })
                     .catch(err => {
-                        handleError(bot, err);
+                        handleError(bot, __filename, msg.channel, err);
                     });
             })
             .catch(err => {
-                handleMsgError(bot, msg.channel, err);
+                handleError(bot, __filename, msg.channel, err);
             });
     }
 };

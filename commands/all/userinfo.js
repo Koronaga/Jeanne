@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError,
     moment = require('../../node_modules/moment'),
     findMember = require('../../utils/utils.js').findMember;
 
@@ -22,7 +21,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         userinfoTimesUsed++
         if (!args) {
@@ -90,7 +89,7 @@ module.exports = {
                     ]
                 }
             }).catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         } else {
             const user = findMember(msg, args)
@@ -106,7 +105,7 @@ module.exports = {
                     description: `That is not a valid guild member. Need to specify a name, ID or mention the user.`
                 }
             }).catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
             const id = msg.channel.guild.members.get(user.id);
             const userroles = id.roles.map(r => msg.channel.guild.roles.get(r).name).join(', ');
@@ -172,7 +171,7 @@ module.exports = {
                     ]
                 }
             }).catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         }
     }

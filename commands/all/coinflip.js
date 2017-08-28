@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
-    handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError;
+    handleError = require('../../utils/utils.js').handleError;
 
 module.exports = {
     desc: "Flip a coin.",
@@ -18,7 +17,7 @@ module.exports = {
         coinflipTimesUsed++
         bot.createMessage(msg.channel.id, `${msg.author.username} flipped a coin and it landed on ${Math.random() < .5 ? '**heads**' : '**tails**'}`)
             .catch(err => {
-                handleMsgError(bot, msg.channel, err);
+                handleError(bot, __filename, msg.channel, err);
             });
     }
 };

@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError,
     fs = require('fs');
 
 module.exports = {
@@ -19,7 +18,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         levelTimesUsed++
         if (!args) {
@@ -36,7 +35,7 @@ module.exports = {
                     description: `Couldn't find your data.`
                 }
             }).catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
             let userData = points[msg.author.id];
             if (!userData) return bot.createMessage(msg.channel.id, {
@@ -51,7 +50,7 @@ module.exports = {
                     description: `Oh it looks like you do not have any points yet, better start talking and stop lurking boii.`
                 }
             }).catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
             bot.createMessage(msg.channel.id, {
                 content: ``,
@@ -76,7 +75,7 @@ module.exports = {
                     ]
                 }
             }).catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         } else {
             const user = this.findMember(msg, args)
@@ -92,7 +91,7 @@ module.exports = {
                     description: `That is not a valid guild member. Need to specify a name, ID or mention the user.`
                 }
             }).catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
             // const userID = msg.channel.guild.members.get(user.id);
             let points = JSON.parse(fs.readFileSync(`./db/points.json`, 'utf8'));
@@ -108,7 +107,7 @@ module.exports = {
                     description: `Couldn't find your data.`
                 }
             }).catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
             let userData = points[user.id];
             if (!userData) return bot.createMessage(msg.channel.id, {
@@ -123,7 +122,7 @@ module.exports = {
                     description: `Oh it looks like you do not have any points yet, better start talking and stop lurking boii.`
                 }
             }).catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
             bot.createMessage(msg.channel.id, {
                 content: ``,
@@ -148,7 +147,7 @@ module.exports = {
                     ]
                 }
             }).catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         }
     }

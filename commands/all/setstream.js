@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError,
     games = reload('../../special/games.json');
 
 module.exports = {
@@ -14,14 +13,14 @@ module.exports = {
         if (!args) return bot.createMessage(msg.channel.id, 'No args provided');
         if (args.endsWith('-r')) return bot.editStatus(null, { name: games[~~(Math.random() * games.length)], type: 1, url: args.replace(/ *\-r$/, '') })
             .catch(err => {
-                handleMsgError(bot, msg.channel, err);
+                handleError(bot, __filename, msg.channel, err);
             });
 
         if (args.endsWith('-f')) {
             config.cycleGames = false;
             bot.editStatus(JSON.parse(args.replace(/ *\-f$/, '')))
                 .catch(err => {
-                    handleMsgError(bot, msg.channel, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
         }
     }

@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError,
     setAvatar = require('../../utils/utils.js').setAvatar;
 
 module.exports = {
@@ -14,11 +13,11 @@ module.exports = {
             .then(() => {
                 bot.createMessage(msg.channel.id, 'Avatar updated')
                     .catch(err => {
-                        handleError(bot, err);
+                        handleError(bot, __filename, msg.channel, err);
                     });
             })
             .catch(error => {
-                handleMsgError(msg.channel, error);
+                handleError(bot, __filename, msg.channel, err);
             });
     }
 };

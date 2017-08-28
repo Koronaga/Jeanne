@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError,
     request = require('request');
 
 module.exports = {
@@ -20,7 +19,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         ibsearchTimesUsed++
         let key = config.ibsearch_key;
@@ -46,14 +45,14 @@ module.exports = {
             if (err) {
                 bot.createMessage(msg.channel.id, `${err}`)
                     .catch(err => {
-                        handleError(bot, err);
+                        handleError(bot, __filename, msg.channel, err);
                     });
             }
             if (!err && res.statusCode == 200) {
                 try {
                     body = JSON.parse(body);
                 } catch (err) {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 }
                 if (typeof(body) !== 'undefined' && body.length > 0) {
                     let random = Math.floor(Math.random() * body.length);
@@ -74,7 +73,7 @@ module.exports = {
                             }
                         })
                         .catch(err => {
-                            handleError(bot, err);
+                            handleError(bot, __filename, msg.channel, err);
                         });
                 } else {
                     bot.createMessage(msg.channel.id, {
@@ -90,7 +89,7 @@ module.exports = {
                             }
                         })
                         .catch(err => {
-                            handleError(bot, err);
+                            handleError(bot, __filename, msg.channel, err);
                         });
                 }
             }

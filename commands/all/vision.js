@@ -1,13 +1,14 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError,
     Vision = require('@google-cloud/vision'),
     jeanneVision = require('../../Jeanne-ca41da280a76.json');
 
 const visionClient = new Vision({
     projectId: `${jeanneVision.project_id}`,
-    keyFilename: `D:/JeanneDev/Jeanne-ca41da280a76.json`
+    keyFilename: `/home/kurozero/Desktop/Jeanne/Jeanne-ca41da280a76.json`
+    // /home/kurozero/Desktop/Jeanne/Jeanne-ca41da280a76.json
+    // D:/JeanneDev/Jeanne-ca41da280a76.json
 });
 
 module.exports = {
@@ -38,11 +39,11 @@ module.exports = {
                         }
                     })
                     .catch(err => {
-                        handleError(bot, err);
+                        handleError(bot, __filename, msg.channel, err);
                     });
             })
             .catch(err => {
-                handleMsgError(bot, msg.channel, err);
+                handleError(bot, __filename, msg.channel, err);
             });
     }
 };

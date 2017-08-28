@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError,
     mm = require('mario-maker');
 
 module.exports = {
@@ -20,7 +19,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         mariomakerTimesUsed++
         /**
@@ -34,7 +33,7 @@ module.exports = {
             regex = new RegExp(courseID_check);
         if (!courseID.match(regex)) return bot.createMessage(msg.channel.id, `${msg.author.mention}, That is **not** a valid course id.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         mm.getCourse(courseID, function (error, response, json) {
             if (!error && response.statusCode == 200) {
@@ -129,11 +128,11 @@ module.exports = {
                         }
                     }
                 }).catch(err => {
-                handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
             });
             } else {
                 const errMessage = 'ERROR' + response.statusCode;
-                handleError(errMessage);
+                handleError(bot, __filename, msg.channel, err);
             }
         });
     }

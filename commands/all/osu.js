@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError,
     osu = require('node-osu'),
     osuApi = new osu.Api(config.osuapi, {
         notFoundAsError: true,
@@ -24,7 +23,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         // j:osu info | <username>        || j:osu i | <username>
         // j:osu best | <username>    || j:osu b | <username>
@@ -100,10 +99,10 @@ module.exports = {
                         ]
                     }
                 }).catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
             }).catch(err => {
-                handleMsgError(bot, msg.channel, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         } else if ((type === 'best') || (type === 'b')) {
             osuApi.getUserBest({ u: `${user}` }).then(s => {
@@ -158,15 +157,15 @@ module.exports = {
                         ]
                     }
                 }).catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
             }).catch(err => {
-                handleMsgError(bot, msg.channel, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         } else if ((type === 'recent') || (type === 'r')) {
             bot.createMessage(msg.channel.id, `Function coming soon™, for now you can only use \`info\` and \`best\`.`)
                 .catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
             /*
             osuApi.getUserRecent({ u: `${user}` }).then(s => {

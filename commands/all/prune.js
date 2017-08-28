@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
-    handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError;
+    handleError = require('../../utils/utils.js').handleError;
 
 module.exports = {
     desc: "Prunes the given number of messages. If no number is given it's standard 50.",
@@ -22,11 +21,11 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return bot.createMessage(msg.channel.id, `\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         if (manageMessages === false) return bot.createMessage(msg.channel.id, `\\❌ I'm missing the \`manageMessages\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         pruneTimesUsed++
         if (!suffix) {
@@ -44,7 +43,7 @@ module.exports = {
                     }
                 })
                 .catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
         }
         bot.purgeChannel(msg.channel.id, limit)
@@ -68,14 +67,14 @@ module.exports = {
                     setTimeout(() => {
                         bot.deleteMessage(sentMsg.channel.id, sentMsg.id)
                             .catch(err => {
-                                handleError(bot, err);
+                                handleError(bot, __filename, msg.channel, err);
                             });
                     }, 3000);
                 }).catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
             }).catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
     }
 };

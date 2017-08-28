@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
-    handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError;
+    handleError = require('../../utils/utils.js').handleError;
 
 module.exports = {
     desc: "Sends someone's avatar url. (The file size can be 128, 256, 512, 1024, or 2048. Defaults to 2048.)",
@@ -20,7 +19,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         avatarTimesUsed++
         let format = '';
@@ -43,7 +42,7 @@ module.exports = {
                     }
                 })
                 .catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
         } else if ((args.startsWith('--size')) || (args.startsWith('-s'))) {
             // j:avatar -s <size> || j:avatar --size <size>
@@ -67,7 +66,7 @@ module.exports = {
                     }
                 })
                 .catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
         } else {
             // j:avatar <user> | <size>
@@ -92,7 +91,7 @@ module.exports = {
                     }
                 })
                 .catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
             const id = msg.channel.guild.members.get(user.id);
             msg.channel.createMessage({
@@ -111,7 +110,7 @@ module.exports = {
                     }
                 })
                 .catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
         }
     }

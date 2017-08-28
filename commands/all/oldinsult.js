@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError,
     findMember = require('../../utils/utils.js').findMember;
 
 module.exports = {
@@ -21,7 +20,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         oldinsultTimesUsed++
         const oldinsult = require('shakespeare-insult1.1.0').random();
@@ -39,7 +38,7 @@ module.exports = {
                     description: `${insult}`
                 },
             }).catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         } else {
             const insult = oldinsult;
@@ -56,7 +55,7 @@ module.exports = {
                     description: `That is not a valid guild member. Need to specify a name, ID or mention the user.`
                 }
             }).catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
             bot.createMessage(msg.channel.id, {
                 content: ``,
@@ -70,7 +69,7 @@ module.exports = {
                     description: `${user.username}, ${insult}`
                 },
             }).catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         }
     }

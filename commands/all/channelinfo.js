@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
-    handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError;
+    handleError = require('../../utils/utils.js').handleError;
 moment = require('../../node_modules/moment');
 
 module.exports = {
@@ -20,7 +19,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         channelinfoTimesUsed++
         var afkTimer = msg.channel.guild.afkTimeout / 60;
@@ -65,7 +64,7 @@ module.exports = {
                 ]
             }
         }).catch(err => {
-                handleError(bot, err);
-            });
+            handleError(bot, __filename, msg.channel, err);
+        });
     }
 };

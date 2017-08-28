@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError,
     DestinyApi = require('destiny-api-client'),
     destiny = new DestinyApi(config.destiny_key);
 
@@ -21,7 +20,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         if (!args) return 'wrong usage';
         destinyTimesUsed++
@@ -43,7 +42,7 @@ module.exports = {
                     return sentMsgID = sentMsg.id;
                 })
                 .catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
             destiny.searchPlayer({
                     membershipType: DestinyApi.psn,
@@ -185,7 +184,7 @@ module.exports = {
                                         }
                                     })
                                     .catch(err => {
-                                        handleError(bot, err);
+                                        handleError(bot, __filename, msg.channel, err);
                                     });
                             }
                             /* PS PVP */
@@ -317,24 +316,24 @@ module.exports = {
                                         }
                                     })
                                     .catch(err => {
-                                        handleError(bot, err);
+                                        handleError(bot, __filename, msg.channel, err);
                                     });
                             }
                         })
                         .catch(err => {
                             msg.channel.createMessage('\\❌ Could not find account stats!')
                                 .catch(err => {
-                                    handleError(bot, err);
+                                    handleError(bot, __filename, msg.channel, err);
                                 });
-                            handleError(bot, err);
+                            handleError(bot, __filename, msg.channel, err);
                         });
                 })
                 .catch(err => {
                     msg.channel.createMessage('\\❌ Could not find player!')
                         .catch(err => {
-                            handleError(bot, err);
+                            handleError(bot, __filename, msg.channel, err);
                         });
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
         }
         /* XBOX */
@@ -345,7 +344,7 @@ module.exports = {
                     return sentMsgID = sentMsg.id;
                 })
                 .catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
             destiny.searchPlayer({
                     membershipType: DestinyApi.xbox,
@@ -487,7 +486,7 @@ module.exports = {
                                         }
                                     })
                                     .catch(err => {
-                                        handleError(bot, err);
+                                        handleError(bot, __filename, msg.channel, err);
                                     });
                             }
                             /* XB PVP */
@@ -619,24 +618,24 @@ module.exports = {
                                         }
                                     })
                                     .catch(err => {
-                                        handleError(bot, err);
+                                        handleError(bot, __filename, msg.channel, err);
                                     });
                             }
                         })
                         .catch(err => {
                             msg.channel.createMessage('\\❌ Could not find account stats!')
                                 .catch(err => {
-                                    handleError(bot, err);
+                                    handleError(bot, __filename, msg.channel, err);
                                 });
-                            handleError(bot, err);
+                            handleError(bot, __filename, msg.channel, err);
                         });
                 })
                 .catch(err => {
                     msg.channel.createMessage('\\❌ Could not find player!')
                         .catch(err => {
-                            handleError(bot, err);
+                            handleError(bot, __filename, msg.channel, err);
                         });
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
         }
     }

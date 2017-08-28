@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
-    handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError;
+    handleError = require('../../utils/utils.js').handleError;
 
 const EMOTES = [
         ":trophy:",
@@ -54,7 +53,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         if (!suffix) return 'wrong usage';
         throwTimesUsed++
@@ -76,7 +75,7 @@ module.exports = {
                 description: `That is not a valid guild member. Need to specify a name, ID or mention the user.`
             }
         }).catch(err => {
-            handleError(bot, err);
+            handleError(bot, __filename, msg.channel, err);
         });
         if (msg.author.id === user.id) return bot.createMessage(msg.channel.id, {
             content: ``,
@@ -90,7 +89,7 @@ module.exports = {
                 description: `waaat don't throw stuff at yourself dummy.`
             }
         }).catch(err => {
-            handleError(bot, err);
+            handleError(bot, __filename, msg.channel, err);
         });
         if (user.id === bot.user.id) return bot.createMessage(msg.channel.id, {
             content: ``,
@@ -104,7 +103,7 @@ module.exports = {
                 description: `nonono we're not throwing stuff at me!`
             }
         }).catch(err => {
-            handleError(bot, err);
+            handleError(bot, __filename, msg.channel, err);
         });
         if (user.id === "93973697643155456") return bot.createMessage(msg.channel.id, {
             content: ``,
@@ -118,7 +117,7 @@ module.exports = {
                 description: `NO! Don't hurt my master you meany ;-;`
             }
         }).catch(err => {
-            handleError(bot, err);
+            handleError(bot, __filename, msg.channel, err);
         });
         bot.createMessage(msg.channel.id, {
             content: ``,
@@ -135,7 +134,7 @@ ${user.username}: ${receivedchoice}
 ${msg.author.username}: ${givechoice}`
             }
         }).catch(err => {
-            handleError(bot, err);
+            handleError(bot, __filename, msg.channel, err);
         });
     }
 };

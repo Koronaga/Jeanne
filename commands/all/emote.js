@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
-    handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError;
+    handleError = require('../../utils/utils.js').handleError;
 
 module.exports = {
     desc: "Sends a random emote Jeanne d'Arc has access to.",
@@ -19,7 +18,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         emoteTimesUsed++
         const guilds = bot.guilds.filter(g => g.emojis[0]),
@@ -29,7 +28,7 @@ module.exports = {
         emoji = JSON.parse(emoji);
         msg.channel.createMessage(`<:${emoji.name}:${emoji.id}>`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
     }
 };

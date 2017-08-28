@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError,
     Pornsearch = require('../../custom_modules/pornsearch/index.js'),
     banned = reload('../../banned_search_terms.json'),
     getRandomInt = require('../../utils/utils.js').getRandomInt;
@@ -22,7 +21,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         var nsfw = settingsManager.getNSFW(msg.channel.guild.id, msg.channel.id);
         if (!nsfw) return msg.channel.createMessage({
@@ -38,7 +37,7 @@ module.exports = {
                 }
             })
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         if (!args) return 'wrong usage';
         pornTimesUsed++
@@ -59,7 +58,7 @@ module.exports = {
                 }
             })
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         const drivers = ['pornhub', 'sex'];
         const driver = drivers[Math.floor(Math.random() * drivers.length)];
@@ -87,11 +86,11 @@ module.exports = {
                         }
                     })
                     .catch(err => {
-                        handleError(bot, err);
+                        handleError(bot, __filename, msg.channel, err);
                     });
             })
             .catch(err => {
-                handleMsgError(bot, msg.channel, err);
+                handleError(bot, __filename, msg.channel, err);
             });
     }
 };

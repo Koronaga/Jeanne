@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError,
     utils = reload('../../utils/utils.js'),
     fs = require('fs');
 
@@ -29,7 +28,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         respectTimesUsed++
         let choice = ~~(Math.random() * RESPONSES.length);
@@ -56,7 +55,7 @@ module.exports = {
             }).then(() => {
                 utils.safeSave('db/respect', '.json', JSON.stringify(respect));
             }).catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         } else {
             let respect = JSON.parse(fs.readFileSync(`./db/respect.json`, 'utf8'));
@@ -81,7 +80,7 @@ module.exports = {
             }).then(() => {
                 utils.safeSave('db/respect', '.json', JSON.stringify(respect));
             }).catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         }
     }

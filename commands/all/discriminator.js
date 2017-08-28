@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
-    handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError;
+    handleError = require('../../utils/utils.js').handleError;
 
 module.exports = {
     desc: "Shows the first 5 users with the given discriminator.",
@@ -20,7 +19,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         if (!args) return 'wrong usage';
         discriminatorTimesUsed++
@@ -53,7 +52,7 @@ ${res[3] === undefined ? '' : ''}${res[3] !== undefined ? res[3] : ''}
 ${res[4] === undefined ? '' : ''}${res[4] !== undefined ? res[4] : ''}`
                 }
             }).catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         } else if (option === 'global') {
             let res = JSON.stringify((bot.users.filter(u => u.discriminator == discrim) || [{}]).map(u => u.username + '#' + u.discriminator));
@@ -75,7 +74,7 @@ ${res[3] === undefined ? '' : ''}${res[3] !== undefined ? res[3] : ''}
 ${res[4] === undefined ? '' : ''}${res[4] !== undefined ? res[4] : ''}`
                 }
             }).catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         } else {
             return 'wrong usage';

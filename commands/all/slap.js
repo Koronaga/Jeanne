@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError,
     axios = require('axios'),
     findMember = require('../../utils/utils.js').findMember;
 
@@ -21,7 +20,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         if (!args) return 'wrong usage';
         slapTimesUsed++
@@ -38,14 +37,14 @@ module.exports = {
                 description: `That is not a valid guild member. Need to specify a name, ID or mention the user.`
             }
         }).catch(err => {
-            handleError(bot, err);
+            handleError(bot, __filename, msg.channel, err);
         });
         const base_url = "https://rra.ram.moe",
             type = "slap",
             path = "/i/r?type=" + type;
         axios.get(base_url + path)
             .then(res => {
-                if (res.data.error) return handleMsgError(msg.channel, `ERROR: ${res.data.error}`);
+                if (res.data.error) return handleError(bot, __filename, msg.channel, `ERROR: ${res.data.error}`);
                 bot.createMessage(msg.channel.id, {
                     content: ``,
                     embed: {
@@ -65,11 +64,11 @@ module.exports = {
                         }
                     }
                 }).catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
             })
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
     }
 };

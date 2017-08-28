@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError,
     Pokedex = require('oakdex-pokedex');
 
 module.exports = {
@@ -20,7 +19,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         if (!args) return 'wrong usage';
         pokemonTimesUsed++
@@ -33,7 +32,7 @@ module.exports = {
                 if (err) return handleMsgError(bot, msg.channel, err);
                 if (!res) return bot.createMessage(msg.channel.id, 'Couldn\'t find any data.')
                     .catch(err => {
-                        handleError(bot, err);
+                        handleError(bot, __filename, msg.channel, err);
                     });
                 const types = res.types.toString();
                 const egg_groups = res.egg_groups.toString();
@@ -126,11 +125,11 @@ module.exports = {
                         ]
                     },
                 }).catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
             });
         } catch (error) {
-            handleMsgError(msg.channel, error);
+            handleError(bot, __filename, msg.channel, error);
         }
 
     }

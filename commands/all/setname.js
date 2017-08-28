@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
-    handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError;
+    handleError = require('../../utils/utils.js').handleError;
 
 module.exports = {
     desc: "Set the bot's username.",
@@ -14,11 +13,11 @@ module.exports = {
             .then(() => {
                 bot.createMessage(msg.channel.id, 'Username updated')
                     .catch(err => {
-                        handleError(bot, err);
+                        handleError(bot, __filename, msg.channel, err);
                     })
             })
             .catch(error => {
-                handleMsgError(err);
+                handleError(bot, __filename, msg.channel, err);
             });
     }
 };

@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
-    handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError;
+    handleError = require('../../utils/utils.js').handleError;
 
 module.exports = {
     desc: "Add a reaction to the provided message id. (Custom emotes do NOT work yet.)",
@@ -21,7 +20,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (addReactions === false) return bot.createMessage(msg.channel.id, `\\❌ I'm missing the \`addReactions\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         if (!args) return 'wrong usage';
         const str = args + "";
@@ -35,40 +34,40 @@ module.exports = {
         const idRegex = /^\d{17,18}$/.test(msgid);
         if (idRegex === false) return msg.channel.createMessage('\\❌ Wrong message id.')
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         type = type.toLowerCase();
         if (type === 'normal') {
             const emoteRegex = /^[a-zA-Z0-9_]{2,}:\d{17,18}$/.test(emote)
             if (emoteRegex === true) return msg.channel.createMessage('\\❌ This is a custom emoji please use \`custom\` as first argument.\nType \`j:help reaction\` for more info.')
                 .catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
             bot.addMessageReaction(msg.channel.id, msgid, emote)
                 .then(() => {
                     bot.deleteMessage(msg.channel.id, msg.id)
                         .catch(err => {
-                            handleError(bot, err);
+                            handleError(bot, __filename, msg.channel, err);
                         });
                 })
                 .catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
         } else if (type === 'custom') {
             const emoteRegex = /^[a-zA-Z0-9_]{2,}:\d{17,18}$/.test(emote)
             if (emoteRegex === false) return msg.channel.createMessage('\\❌ This is not a custom emoji. If you\'re trying to react with a normal emoji please use \`normal\` as first argument.\nType \`j:help reaction\` for more info.')
                 .catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
             bot.addMessageReaction(msg.channel.id, msgid, emote)
                 .then(() => {
                     bot.deleteMessage(msg.channel.id, msg.id)
                         .catch(err => {
-                            handleError(bot, err);
+                            handleError(bot, __filename, msg.channel, err);
                         });
                 })
                 .catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
         } else {
             return 'wrong usage';

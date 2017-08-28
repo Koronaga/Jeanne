@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError,
     AniListAPI = require('anilist-api-pt'),
     client_id = config.anilist_clientID,
     client_secret = config.anilist_clientSecret,
@@ -27,7 +26,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         if (!args) return 'wrong usage';
         characterTimesUsed++
@@ -38,7 +37,7 @@ module.exports = {
                         const char = res[0];
                         if (!char) return msg.channel.createMessage('\\❌ No character found.')
                             .catch(err => {
-                                handleError(bot, err);
+                                handleError(bot, __filename, msg.channel, err);
                             });
                         let info = char.info.replace(/&#039;/g, '\'');
                         info = info.slice(0, 500);
@@ -76,15 +75,15 @@ module.exports = {
                                 }
                             })
                             .catch(err => {
-                                handleError(bot, err);
+                                handleError(bot, __filename, msg.channel, err);
                             });
                     })
                     .catch(err => {
-                        handleMsgError(bot, msg.channel, err);
+                        handleError(bot, __filename, msg.channel, err);
                     });
             })
             .catch(err => {
-                handleMsgError(bot, msg.channel, err);
+                handleError(bot, __filename, msg.channel, err);
             });
     }
 };

@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError,
     youtubeVideoId = require('youtube-video-id'),
     fetchVideoInfo = require('youtube-info'),
     formatYTSeconds = require("../../utils/utils.js").formatYTSeconds;
@@ -19,7 +18,7 @@ module.exports = {
             .then(videoInfo => {
                 if (!videoInfo) return msg.channel.createMessage('\\❌ Could not get info on this video.')
                     .catch(err => {
-                        handleError(bot, err);
+                        handleError(bot, __filename, msg.channel, err);
                     });
                 let desc = videoInfo.description;
                 desc = desc.replace(/ ?\<br\> ?/g, '\n');
@@ -79,11 +78,12 @@ module.exports = {
                         }
                     })
                     .catch(err => {
-                        handleError(bot, err);
+                        handleError(bot, __filename, msg.channel, err);
                     });
             })
             .catch(err => {
-                handleErrorLocal(err);
+                handleError(bot, __filename, msg.channel, err);
+                /*
                 msg.channel.createMessage({
                         content: ``,
                         embed: {
@@ -102,8 +102,9 @@ module.exports = {
                         }
                     })
                     .catch(err => {
-                        handleErrorLocal(err);
+                        handleError(bot, __filename, msg.channel, err);
                     });
+                    */
             });
     }
 };

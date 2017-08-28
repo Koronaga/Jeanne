@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError,
     findMember = require('../../utils/utils.js').findMember;
 
 module.exports = {
@@ -21,7 +20,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         if (!args) return 'wrong usage';
         permissionsTimesUsed++
@@ -50,7 +49,7 @@ module.exports = {
                         description: `Guild-wide permissions for **${msg.author.mention}**\n${slice}`
                     }
                 }).catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
             } else {
                 const user = findMember(msg, member);
@@ -66,7 +65,7 @@ module.exports = {
                         description: `That is not a valid guild member. Need to specify a name, ID or mention the user.`
                     }
                 }).catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
                 const mem = msg.channel.guild.members.get(user.id);
                 let perms = mem.permission.json;
@@ -87,7 +86,7 @@ module.exports = {
                         description: `Guild-wide permissions for **${user.mention}**\n${slice}`
                     }
                 }).catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
             }
         } else if (type === 'channel') {
@@ -110,7 +109,7 @@ module.exports = {
                         description: `Channel specific permissions for **${msg.author.mention}**\n${slice}`
                     }
                 }).catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
             } else {
                 const user = findMember(msg, member);
@@ -126,7 +125,7 @@ module.exports = {
                         description: `That is not a valid guild member. Need to specify a name, ID or mention the user.`
                     }
                 }).catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
                 let perms = msg.channel.permissionsOf(user.id).json;
                 perms = JSON.stringify(perms).split(',').join('\n');
@@ -146,7 +145,7 @@ module.exports = {
                         description: `Channel specific permissions for **${user.mention}**\n${slice}`
                     }
                 }).catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
             }
         } else {

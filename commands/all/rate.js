@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
-    handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError;
+    handleError = require('../../utils/utils.js').handleError;
 
 const RATES = [
     "1/10",
@@ -37,19 +36,19 @@ module.exports = {
         let choice = ~~(Math.random() * RATES.length);
         if (lower === 'kurozero') return bot.createMessage(msg.channel.id, ` My master is always an 11/10 :heart:`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         if (!msg.mentions[0]) return bot.createMessage(msg.channel.id, suffix + ` is a ${RATES[choice]} waifu`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         if (msg.mentions[0].id === "93973697643155456") return bot.createMessage(msg.channel.id, ` My master is always an 11/10 :heart:`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         bot.createMessage(msg.channel.id, suffix + ` is a ${RATES[choice]} waifu`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
     }
 };

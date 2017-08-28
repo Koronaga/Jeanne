@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError,
     findMember = require('../../utils/utils.js').findMember;
 
 module.exports = {
@@ -22,11 +21,11 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return bot.createMessage(msg.channel.id, `\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         if (banMembers === false) return bot.createMessage(msg.channel.id, `\\❌ I'm missing the \`banMembers\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         if (!args) return 'wrong usage';
         banTimesUsed++
@@ -37,23 +36,23 @@ module.exports = {
         const user = findMember(msg, userToBan);
         const deletedays = 7;
         if (!user) return bot.createMessage(msg.channel.id, {
-            content: ``,
-            embed: {
-                color: config.errorColor,
-                author: {
-                    name: ``,
-                    url: ``,
-                    icon_url: ``
-                },
-                description: `That is not a valid guild member. Need to specify a name, ID or mention the user.`
-            }
-        })
-        .catch(err => {
-                handleError(bot, err);
+                content: ``,
+                embed: {
+                    color: config.errorColor,
+                    author: {
+                        name: ``,
+                        url: ``,
+                        icon_url: ``
+                    },
+                    description: `That is not a valid guild member. Need to specify a name, ID or mention the user.`
+                }
+            })
+            .catch(err => {
+                handleError(bot, __filename, msg.channel, err);
             });
         bot.banGuildMember(msg.channel.guild.id, user.id, deletedays, reason)
             .catch(err => {
-                handleMsgError(bot, msg.channel, err);
+                handleError(bot, __filename, msg.channel, err);
             });
     }
 }

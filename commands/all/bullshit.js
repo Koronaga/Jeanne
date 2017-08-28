@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
-    handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError;
+    handleError = require('../../utils/utils.js').handleError;
 
 module.exports = {
     desc: "Just bullshit.",
@@ -18,7 +17,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         bullshitTimesUsed++
         bot.createMessage(msg.channel.id, {
@@ -38,10 +37,10 @@ module.exports = {
         }).then(sentMsg => {
             bot.deleteMessage(sentMsg.channel.id, msg.id)
                 .catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
         }).catch(err => {
-            handleError(bot, err);
+            handleError(bot, __filename, msg.channel, err);
         });
     }
 };

@@ -12,13 +12,14 @@ var reload = require('require-reload')(require),
     logger = new(reload('../utils/Logger.js'))(config.logTimestamp);
 
 const handleError = require('../utils/utils.js').handleError,
-    handleMsgError = require('../utils/utils.js').handleMsgError,
     Vision = require('@google-cloud/vision'),
     jeanneVision = require('../Jeanne-ca41da280a76.json');
 
 const visionClient = new Vision({
     projectId: `${jeanneVision.project_id}`,
-    keyFilename: `D:/JeanneDev/Jeanne-ca41da280a76.json`
+    keyFilename: `/home/kurozero/Desktop/Jeanne/Jeanne-ca41da280a76.json`
+    // /home/kurozero/Desktop/Jeanne/Jeanne-ca41da280a76.json
+    // D:/JeanneDev/Jeanne-ca41da280a76.json
 });
 
 const fs = require('fs');
@@ -28,7 +29,7 @@ module.exports = {
         if (msg.author.bot === true) return;
         if (!msg.channel.guild) return bot.createMessage(msg.channel.id, 'Commands do not work in DMs.')
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
 
         if (msg.channel.guild.id === '229007062032580608' && msg.attachments[0] && msg.channel.id !== '311667653771132928' && msg.channel.id !== '311663280588455937') {
@@ -43,33 +44,33 @@ module.exports = {
                     if (data.adult === 'VERY_LIKELY' || data.adult === 'LIKELY') {
                         bot.deleteMessage(msg.channel.id, msg.id, 'NSFW content outside of our NSFW channels')
                             .catch(err => {
-                                handleError(bot, err);
+                                handleError(bot, __filename, msg.channel, err);
                             });
                         msg.channel.createMessage(`${msg.author.mention}, NSFW content goes in <#311667653771132928> or <#311663280588455937>`)
                             /*.then(sentMsg => {
                                 setTimeout(() => {
                                     bot.deleteMessage(sentMsg.channel.id, sentMsg.id, 'setTimeout')
                                         .catch(err => {
-                                            handleError(bot, err);
+                                            handleError(bot, __filename, msg.channel, err);
                                         })
                                 }, 2000);
                             })*/
                             .catch(err => {
-                                handleError(bot, err);
+                                handleError(bot, __filename, msg.channel, err);
                             });
                     }
                 })
                 .catch(err => {
-                    handleMsgError(msg.channel, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
         }
 
         for (let i = 0; i < CommandManagers.length; i++) {
             if ((msg.content.startsWith(CommandManagers[i].prefix)) && (!msg.channel.guild)) return msg.channel.createMessage('Commands can only be used in a server/guild.')
                 .catch(err => {
-                    if (!err.response) return logger.error('\n' + err, 'ERROR')
+                    if (!err.response) return logger.error('\n' + err, 'ERROR');
                     error = JSON.parse(err.response);
-                    if ((!error.code) && (!error.message)) return logger.error('\n' + err, 'ERROR')
+                    if ((!error.code) && (!error.message)) return logger.error('\n' + err, 'ERROR');
                     logger.error(error.code + '\n' + error.message, 'ERROR');
                 });
             if (msg.content.startsWith(CommandManagers[i].prefix))

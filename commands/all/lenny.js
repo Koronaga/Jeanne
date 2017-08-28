@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
-    handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError;
+    handleError = require('../../utils/utils.js').handleError;
 
 module.exports = {
     desc: "Sends a lenny.",
@@ -16,7 +15,7 @@ module.exports = {
         lennyTimesUsed++
         bot.createMessage(msg.channel.id, `( ͡° ͜ʖ ͡°)`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
     }
 }

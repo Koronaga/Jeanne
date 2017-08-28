@@ -4,7 +4,6 @@ var reload = require('require-reload'),
     bannedGuilds = reload('../banned_guilds.json'),
     utils = reload('../utils/utils.js'),
     handleError = require("../utils/utils.js").handleError,
-    handleMsgError = require("../utils/utils.js").handleMsgError,
     formatTime = reload('../utils/utils.js').formatTime,
     version = reload('../package.json').version,
     Nf = new Intl.NumberFormat('en-US'),
@@ -13,14 +12,7 @@ moment = require('../node_modules/moment');
 const round = require('../utils/utils.js').round;
 
 module.exports = (bot, _settingsManager, _config, guild, unavailable) => {
-    if (config.abalBotsKey) { //Send servercount to Abal's bot list
-        if (bot.uptime !== 0)
-            utils.updateAbalBots(bot.user.id, config.abalBotsKey, bot.guilds.size);
-    }
-    if (config.discordbotsorg) { //Send servercount to discordbots.org
-        if (bot.uptime !== 0)
-            utils.updateDiscordBots(bot.user.id, config.discordbotsorg, bot.guilds.size, bot.shards.size);
-    }
+    // Guild unavailable thing
     if (unavailable === true) return bot.createMessage('306837434275201025', {
         content: ``,
         embed: {
@@ -29,8 +21,23 @@ module.exports = (bot, _settingsManager, _config, guild, unavailable) => {
             description: `Just some random guild bruh.`,
         }
     }).catch(err => {
-        handleError(bot, err);
+        handleError(bot, __filename, msg.channel, err);
     });
+    const bots = bot.guilds.get(guild.id).members.filter(user => user.user.bot).length,
+        total = bot.guilds.get(guild.id).memberCount,
+        humans = total - bots,
+        humanper = humans / total * 100,
+        botper = bots / total * 100;
+    if (botper >= 60) return;
+    // Update server counts
+    if (config.abalBotsKey) { //Send servercount to Abal's bot list
+        if (bot.uptime !== 0)
+            utils.updateAbalBots(bot.user.id, config.abalBotsKey, bot.guilds.size);
+    }
+    if (config.discordbotsorg) { //Send servercount to discordbots.org
+        if (bot.uptime !== 0)
+            utils.updateDiscordBots(bot.user.id, config.discordbotsorg, bot.guilds.size, bot.shards.size);
+    }
     if (logger === undefined) logger = new _Logger(_config.logTimestamp);
     logger.logWithHeader('LEFT GUILD', 'bgRed', 'black', `${guild.name} (${guild.id}) owned by ${guild.members.get(guild.ownerID).user.username}#${guild.members.get(guild.ownerID).user.discriminator}`);
     bot.executeWebhook(config.join_leaveWebhookID, config.join_leaveWebhookToken, {
@@ -47,26 +54,26 @@ module.exports = (bot, _settingsManager, _config, guild, unavailable) => {
                         inline: true
                     },
                     {
-                        name: `Members`,
-                        value: guild.memberCount,
-                        inline: true
-                    },
-                    {
-                        name: `Bots`,
-                        value: guild.members.filter(user => user.user.bot).length,
+                        name: `Total members`,
+                        value: `${total}`,
                         inline: true
                     },
                     {
                         name: `Humans`,
-                        value: guild.memberCount - guild.members.filter(user => user.user.bot).length,
+                        value: `${humans}, ${round(humanper, 2)}%`,
                         inline: true
-                    }
+                    },
+                    {
+                        name: `Bots`,
+                        value: `${bots}, ${round(botper, 2)}%`,
+                        inline: true
+                    },
                 ]
             }],
             username: `${bot.user.username}`,
             avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`
         })
         .catch(err => {
-            handleError(bot, err);
+            handleError(bot, __filename, msg.channel, err);
         });
 };

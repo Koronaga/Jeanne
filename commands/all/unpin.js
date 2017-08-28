@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
-    handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError;
+    handleError = require('../../utils/utils.js').handleError;
 
 module.exports = {
     desc: "Unpins the message with the given message id.",
@@ -19,7 +18,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         if (!suffix) return 'wrong usage'
         unpinTimesUsed++
@@ -28,10 +27,10 @@ module.exports = {
         bot.unpinMessage(msg.channel.id, suffix).then(sentMsg => {
             bot.createMessage(msg.channel.id, `:white_check_mark: Successfully unpinned the message`)
                 .catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
         }).catch(err => {
-            handleError(bot, err);
+            handleError(bot, __filename, msg.channel, err);
         });
     }
 };

@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
-    handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError;
+    handleError = require('../../utils/utils.js').handleError;
 
 module.exports = {
     desc: "Shuts down Jeanne d'Arc.",
@@ -25,7 +24,7 @@ module.exports = {
             process.exit(1)
         })
         .catch(err => {
-            handleError(bot, err);
+            handleError(bot, __filename, msg.channel, err);
         });
     }
 };

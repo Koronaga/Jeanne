@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError,
     morse = require('morse-node').create();
 
 module.exports = {
@@ -20,7 +19,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         let str = args.split(/ ?\| ?/),
             type = str[0],
@@ -50,7 +49,7 @@ module.exports = {
                         }]
                     }
                 }).catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
                 bot.createMessage(msg.channel.id, {
                     content: ``,
@@ -64,10 +63,10 @@ module.exports = {
                         description: `${encoded}`
                     }
                 }).catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
             } catch (e) {
-                handleMsgError(bot, msg.channel, err);
+                handleError(bot, __filename, msg.channel, err);
             }
         } else if (lType === "decode") {
             try {
@@ -89,7 +88,7 @@ module.exports = {
                         }]
                     }
                 }).catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
                 bot.createMessage(msg.channel.id, {
                     content: ``,
@@ -103,10 +102,10 @@ module.exports = {
                         description: `${decoded}`
                     }
                 }).catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
             } catch (e) {
-                handleMsgError(bot, msg.channel, err);
+                handleError(bot, __filename, msg.channel, err);
             }
         }
     }

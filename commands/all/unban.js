@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
-    handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError;
+    handleError = require('../../utils/utils.js').handleError;
 
 module.exports = {
     desc: "Unban a member by id.",
@@ -21,11 +20,11 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return bot.createMessage(msg.channel.id, `\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, __filename, msg.channel, err);
             });
         if (banMembers === false) return bot.createMessage(msg.channel.id, `\\❌ I'm missing the \`banMembers\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, __filename, msg.channel, err);
             });
         if (!suffix) return 'wrong usage'
         unbanTimesUsed++
@@ -36,11 +35,11 @@ module.exports = {
         const idRegex = /^\d{17,18}$/.test(userToBan);
         if (idRegex === false) return bot.createMessage(msg.channel.id, `\\❌ Invalid user id.`)
             .catch(err => {
-                handleError(err);
+                handleError(bot, __filename, msg.channel, err);
             });
         bot.unbanGuildMember(msg.channel.guild.id, userToBan, reason)
             .catch(err => {
-                handleMsgError(bot, msg.channel, err);
+                handleError(bot, __filename, msg.channel, err);
             });
     }
 };

@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
-    handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError;
+    handleError = require('../../utils/utils.js').handleError;
 
 module.exports = {
     desc: "Ban a user that is not in the guild.",
@@ -20,11 +19,11 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return bot.createMessage(msg.channel.id, `\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         if (banMembers === false) return bot.createMessage(msg.channel.id, `\\❌ I'm missing the \`banMembers\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         if (!args) return 'wrong usage';
         hackbanTimesUsed++
@@ -37,7 +36,7 @@ module.exports = {
         if (idRegex === true) {
             bot.banGuildMember(msg.channel.guild.id, userToBan, deletedays, reason)
                 .catch(err => {
-                    handleMsgError(bot, msg.channel, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
         } else {
             bot.createMessage(msg.channel.id, {
@@ -57,7 +56,7 @@ module.exports = {
                     }]
                 }
             }).catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         }
     }

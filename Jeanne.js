@@ -462,7 +462,7 @@ setInterval(() => { // Update the bot's status for each shard every 10 minutes
     }
 }, 600000);
 
-/** Only meant for the public version */
+/** Only meant for the public version
 setTimeout(() => {
     setInterval(() => {
         let totalCommandUsage = commandsProcessed + cleverbotTimesUsed;
@@ -540,11 +540,11 @@ setTimeout(() => {
                 }
             })
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
     }, 20000);
 }, 5000);
-/**/
+*/
 
 // Hope this isn't api abuse owo
 // Default color 0x020003
@@ -577,11 +577,11 @@ process.on('SIGINT', () => {
 });
 
 process.on("uncaughtException", err => {
-    handleError(bot, err);
+    handleError(bot, __filename, msg.channel, err);
 });
 
 process.on("unhandledRejection", err => {
-    handleError(bot, err);
+    handleError(bot, __filename, msg.channel, err);
 });
 
 // Voice Connection Events

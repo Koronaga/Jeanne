@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError,
     superagent = require('superagent');
 
 module.exports = {
@@ -20,7 +19,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         if (!args) return 'wrong usage';
         twitchTimesUsed++
@@ -37,7 +36,7 @@ module.exports = {
                 .end((err, res) => {
                     if (err) {
                         const errMessage = `${res.body.status} ${res.body.error}\n${res.body.message}`;
-                        handleMsgError(msg.channel, errMessage);
+                        handleError(bot, __filename, msg.channel, errMessage);
                         return;
                     }
                     const data = res.body;
@@ -64,7 +63,7 @@ module.exports = {
                             }
                         })
                         .catch(err => {
-                            handleError(bot, err);
+                            handleError(bot, __filename, msg.channel, err);
                         });
                 });
         } else if (type === 'channel') {
@@ -73,7 +72,7 @@ module.exports = {
                 .end((err, res) => {
                     if (err) {
                         const errMessage = `${res.body.status} ${res.body.error}\n${res.body.message}`;
-                        handleMsgError(msg.channel, errMessage);
+                        handleError(bot, __filename, msg.channel, errMessage);
                         return;
                     }
                     const data = res.body;
@@ -121,7 +120,7 @@ module.exports = {
                             }
                         })
                         .catch(err => {
-                            handleError(bot, err);
+                            handleError(bot, __filename, msg.channel, err);
                         });
                 });
         } else {

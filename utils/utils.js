@@ -266,7 +266,11 @@ exports.formatSeconds = time => {
     seconds = seconds > 9 ? seconds : seconds
     return `${days} days, ${hours} hours, ${minutes} minutes and ${seconds} seconds`
 }
-
+/**
+ * Another way to convert to human readable form
+ * @arg {Number} time Time to format in milliseconds.
+ * @returns {String} The formatted time.
+ */
 exports.formatYTSeconds = time => {
     let hoursText = 'hours';
     let minutesText = 'minutes';
@@ -300,59 +304,34 @@ exports.checkForUpdates = () => {
             }
         });
 }
-
+/**
+ * @param {number} value number that needs to be rounded
+ * @param {number} precision number thing
+ */
 exports.round = (value, precision) => {
     var multiplier = Math.pow(10, precision || 0);
     return Math.round(value * multiplier) / multiplier;
 }
-
+/**
+ * Get a random int
+ * @param {number} min minimum number
+ * @param {number} max maximum number
+ */
 exports.getRandomInt = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-
-exports.handleError = (error) => {
-    bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
-            embeds: [{
-                color: config.errorColor,
-                description: `${error}`,
-            }],
-            username: `${bot.user.username}`,
-            avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`
-        })
-        .catch(err => {
-            handleErrorLocal(err);
-        });
-
+/**
+ * Handle an error with a message
+ * @param {object} bot client object
+ * @param {string} commandUsed file path of the command
+ * @param {object} channel channel object
+ * @param {object|string} error the error that was returned
+ */
+exports.handleError = (bot, commandUsed, channel, error) => {
     function handleErrorLocal(error) {
         if (!error.response) return logger.error(error, 'ERROR');
         const err = JSON.parse(error.response);
-        if ((!err.code) && (!err.message)) return logger.error(err, 'ERROR');
-        logger.error(err.code + '\n' + err.message, 'ERROR');
-    }
-    if (!error.response) return logger.error(error, 'ERROR');
-    const err = JSON.parse(error.response);
-    if ((!err.code) && (!err.message)) return logger.error(err, 'ERROR');
-    logger.error(err.code + '\n' + err.message, 'ERROR');
-}
-
-exports.handleMsgError = (channel, error) => {
-    bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
-            embeds: [{
-                color: config.errorColor,
-                description: `${error}`,
-            }],
-            username: `${bot.user.username}`,
-            avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`,
-
-        })
-        .catch(err => {
-            handleErrorLocal(err);
-        });
-
-    function handleErrorLocal(error) {
-        if (!error.response) return logger.error(error, 'ERROR');
-        const err = JSON.parse(error.response);
-        if ((!err.code) && (!err.message)) return logger.error(err, 'ERROR');
+        if ((!err.code) && (!err.message)) return logger.error(JSON.stringify(err), 'ERROR');
         logger.error(err.code + '\n' + err.message, 'ERROR');
     }
     channel.createMessage({
@@ -371,6 +350,25 @@ exports.handleMsgError = (channel, error) => {
                     inline: true
                 }]
             }
+        })
+        .then(() => {
+            bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
+                    embeds: [{
+                        color: config.errorColor,
+                        title: `${commandUsed}`,
+                        description: `${error}`,
+                    }],
+                    username: `${bot.user.username}`,
+                    avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`,
+
+                })
+                .catch(err => {
+                    handleErrorLocal(err);
+                });
+            if (!error.response) return logger.error(error, 'ERROR');
+            const err = JSON.parse(error.response);
+            if ((!err.code) && (!err.message)) return logger.error(JSON.stringify(err), 'ERROR');
+            logger.error(err.code + '\n' + err.message, 'ERROR');
         })
         .catch(err => {
             handleErrorLocal(err);
@@ -399,11 +397,11 @@ exports.sortProperties = (obj, sortedBy, isNumericSort, reverse) => {
         }
     }
     if (isNumericSort)
-        sortable.sort(function(a, b) {
+        sortable.sort(function (a, b) {
             return reversed * (a[1][sortedBy] - b[1][sortedBy]);
         });
     else
-        sortable.sort(function(a, b) {
+        sortable.sort(function (a, b) {
             var x = a[1][sortedBy].toLowerCase(),
                 y = b[1][sortedBy].toLowerCase();
             return x < y ? reversed * -1 : x > y ? reversed : 0;

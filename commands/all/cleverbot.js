@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError,
     axios = require("axios");
 let antiSpam = {};
 
@@ -35,7 +34,7 @@ module.exports = {
             msg.channel.sendTyping();
             if (!args) return bot.createMessage(msg.channel.id, `${msg.author.username}, What do you want to talk about?`)
                 .catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);     
                 });
             /* AXIOS */
             axios.get(`http://api.program-o.com/v2/chatbot/?bot_id=6&say=${args}&convo_id=${msg.author.id}&format=json`)
@@ -46,14 +45,14 @@ module.exports = {
                     answer = answer.replace(/Elizabeth/g, `${owner.username}#${owner.discriminator}`);
                     bot.createMessage(msg.channel.id, `${msg.author.username}, ${answer}`)
                         .catch(err => {
-                            handleError(bot, err);
+                            handleError(bot, __filename, msg.channel, err);
                         });
                 })
                 .catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                     bot.createMessage(msg.channel.id, `${msg.author.username}, I don't wanna talk right now :slight_frown:`)
                         .catch(err => {
-                            handleError(bot, err);
+                            handleError(bot, __filename, msg.channel, err);
                         });
                 });
         }

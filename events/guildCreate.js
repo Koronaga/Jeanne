@@ -3,7 +3,6 @@ var reload = require('require-reload'),
     _Logger = reload('../utils/Logger.js'),
     bannedGuilds = reload('../banned_guilds.json'),
     handleError = require("../utils/utils.js").handleError,
-    handleMsgError = require("../utils/utils.js").handleMsgError,
     utils = reload('../utils/utils.js'),
     formatTime = reload('../utils/utils.js').formatTime,
     version = reload('../package.json').version,
@@ -37,7 +36,6 @@ module.exports = (bot, _settingsManager, _config, guild) => {
     } else if (config.nowelcomemessageGuild.includes(guild.id)) {
         logger.logWithHeader('DIDNT SEND WELCOME MESSGAE', 'bgBlue', 'black', guild.name);
     } else {
-
         if (config.abalBotsKey) { //Send servercount to Abal's bot list
             if (bot.uptime !== 0)
                 utils.updateAbalBots(bot.user.id, config.abalBotsKey, bot.guilds.size);
@@ -95,12 +93,12 @@ module.exports = (bot, _settingsManager, _config, guild) => {
                 avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`
             })
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         if (!guild.defaultChannel) return;
         guild.defaultChannel.createMessage("Awesome a new server!\nType `j:help` for a commands list.\nYou could also view all my commands on https://cmds.jeannedarc.xyz")
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
     }
 }

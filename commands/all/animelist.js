@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
-    handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError;
+    handleError = require('../../utils/utils.js').handleError;
 
 module.exports = {
     desc: "Gets info about your anime list using the following tags <watching/completed/onhold>. (note: completed doesn't return all completed.)",
@@ -20,7 +19,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         if (!args) return 'wrong usage';
         args = args.toString();
@@ -35,7 +34,7 @@ module.exports = {
         animelistTimesUsed++
         if (type === 'watching') {
             myAnimeList.getAnimeList(1, (err, resp) => {
-                if (err) return handleMsgError(bot, msg.channel, err);
+                if (err) return handleError(bot, __filename, msg.channel, err);
                 let t = resp.map((title) => {
                     return title.series_title;
                 }).toString();
@@ -72,7 +71,7 @@ module.exports = {
                         }
                     })
                     .catch(err => {
-                        handleError(bot, err);
+                        handleError(bot, __filename, msg.channel, err);
                     });
             });
         } else if (type === 'completed') {
@@ -80,7 +79,7 @@ module.exports = {
                 username: `${username}`
             });
             myAnimeList.getAnimeList(2, (err, resp) => {
-                if (err) return handleMsgError(bot, msg.channel, err);
+                if (err) return handleError(bot, __filename, msg.channel, err);
                 let t = resp.map((title) => {
                     return title.series_title;
                 }).toString();
@@ -117,7 +116,7 @@ module.exports = {
                         }
                     })
                     .catch(err => {
-                        handleError(bot, err);
+                        handleError(bot, __filename, msg.channel, err);
                     });
             });
         } else if (type === 'onhold') {
@@ -125,7 +124,7 @@ module.exports = {
                 username: `${username}`
             });
             myAnimeList.getAnimeList(3, (err, resp) => {
-                if (err) return handleMsgError(bot, msg.channel, err);
+                if (err) return handleError(bot, __filename, msg.channel, err);
                 let t = resp.map((title) => {
                     return title.series_title;
                 }).toString();
@@ -162,7 +161,7 @@ module.exports = {
                         }
                     })
                     .catch(err => {
-                        handleError(bot, err);
+                        handleError(bot, __filename, msg.channel, err);
                     });
             });
         }

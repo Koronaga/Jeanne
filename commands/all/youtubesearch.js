@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError,
     ytSearch = require('youtube-search');
 
 module.exports = {
@@ -30,9 +29,9 @@ module.exports = {
                         }
                     })
                     .catch(err => {
-                        handleError(bot, err);
+                        handleError(bot, __filename, msg.channel, err);
                     });
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
                 return;
             }
             const videoInfo = res[Math.floor(Math.random() * res.length)]; // returns 1 result from the first 50 results it can find
@@ -76,7 +75,7 @@ module.exports = {
                     }
                 })
                 .catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
         });
     }

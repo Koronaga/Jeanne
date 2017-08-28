@@ -1,11 +1,13 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError,
     AniListAPI = require('anilist-api-pt'),
     client_id = `${config.anilist_clientID}`,
     client_secret = `${config.anilist_clientSecret}`,
-    anilistApi = new AniListAPI({ client_id, client_secret });
+    anilistApi = new AniListAPI({
+        client_id,
+        client_secret
+    });
 
 module.exports = {
     desc: "Shows info about an manga.",
@@ -23,7 +25,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         if (!args) return 'wrong usage';
         mangaTimesUsed++
@@ -31,10 +33,14 @@ module.exports = {
             .then(ani => {
                 ani.manga.searchManga(`${args}`)
                     .then(results => {
-                        var index = results.map(function(title) { return title.title_romaji; }).indexOf(args);
+                        var index = results.map(function (title) {
+                            return title.title_romaji;
+                        }).indexOf(args);
                         var manga = '';
                         if (index >= 0) {
-                            index = results.map(function(title) { return title.title_romaji; }).indexOf(args);
+                            index = results.map(function (title) {
+                                return title.title_romaji;
+                            }).indexOf(args);
                             manga = results[index];
                             var genre = manga.genres.toString();
                             var genres = genre.split(/ ?, ?/).join(', ');
@@ -121,12 +127,16 @@ Japanese: ${manga.title_japanese}`,
                                     }
                                 })
                                 .catch(err => {
-                                    handleError(bot, err);
+                                    handleError(bot, __filename, msg.channel, err);
                                 });
                         } else if (index < 0) {
-                            var index2 = results.map(title => { return title.title_english; }).indexOf(args);
+                            var index2 = results.map(title => {
+                                return title.title_english;
+                            }).indexOf(args);
                             if (index2 >= 0) {
-                                var index2 = results.map(title => { return title.title_english; }).indexOf(args);
+                                var index2 = results.map(title => {
+                                    return title.title_english;
+                                }).indexOf(args);
                                 manga = results[index2];
                                 var genre = manga.genres.toString();
                                 var genres = genre.split(/ ?, ?/).join(', ');
@@ -213,7 +223,7 @@ Japanese: ${manga.title_japanese}`,
                                         }
                                     })
                                     .catch(err => {
-                                        handleError(bot, err);
+                                        handleError(bot, __filename, msg.channel, err);
                                     });
                             } else if (index2 < 0) {
                                 var index3 = 0;
@@ -303,13 +313,13 @@ Japanese: ${manga.title_japanese}`,
                                         }
                                     })
                                     .catch(err => {
-                                        handleError(bot, err);
+                                        handleError(bot, __filename, msg.channel, err);
                                     });
                             }
                         }
                     });
             }).catch(err => {
-                handleMsgError(bot, msg.channel, err);
+                handleError(bot, __filename, msg.channel, err);
             });
     }
 };

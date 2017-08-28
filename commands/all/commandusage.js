@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
-    handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError;
+    handleError = require('../../utils/utils.js').handleError;
 
 module.exports = {
     desc: "Get all the stats ",
@@ -20,7 +19,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         if (!args) return 'wrong usage';
         cmdusageTimesUsed++
@@ -51,7 +50,7 @@ j:character     -   ${characterTimesUsed}
 
 page 1/7
 \`\`\``).catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         } else if (args === '2') {
             msg.channel.createMessage(`\`\`\`
@@ -80,7 +79,7 @@ j:guild roles       -   ${guildrolesTimesUsed}
 
 page 2/7
 \`\`\``).catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         } else if (args === '3') {
             msg.channel.createMessage(`\`\`\`
@@ -110,7 +109,7 @@ j:manga         -   ${mangaTimesUsed}
 
 page 3/7
 \`\`\``).catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         } else if (args === '4') {
             msg.channel.createMessage(`\`\`\`
@@ -139,7 +138,7 @@ j:radio join    -   ${radioJoinTimesUsed}
 
 page 4/7
 \`\`\``).catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         } else if (args === '5') {
             msg.channel.createMessage(`\`\`\`
@@ -168,7 +167,7 @@ j:spin          -   ${spinTimesUsed}
 
 page 5/7
 \`\`\``).catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         } else if (args === '6') {
             msg.channel.createMessage(`\`\`\`
@@ -197,7 +196,7 @@ j:weather       -   ${weatherTimesUsed}
 
 page 6/7
 \`\`\``).catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         } else if (args === '7') {
             msg.channel.createMessage(`\`\`\`
@@ -208,7 +207,7 @@ j:youtubesearch -   ${youtubesearchTimesUsed}
             
 page 7/7
 \`\`\``).catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         }
     }

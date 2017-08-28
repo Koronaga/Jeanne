@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError,
     superagent = require('superagent'),
     moment = require('../../node_modules/moment'),
     { flag, code, name } = require('country-emoji');
@@ -22,14 +21,14 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         steamTimesUsed++
         superagent.get(`http://api.thegathering.xyz/steamid/?s=${args}&key=${config.steam_key}`)
             .end((err, res) => {
                 if (err) {
-                    handleError(bot, err);
-                    return
+                    handleError(bot, __filename, msg.channel, err);
+                    return;
                 }
                 const data = res.body;
                 if (data.status != 200) return 'wrong usage';
@@ -95,7 +94,7 @@ module.exports = {
                         ]
                     }
                 }).catch(err => {
-                    handleError(bot, err);
+                    handleError(bot, __filename, msg.channel, err);
                 });
             });
     }

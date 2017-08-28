@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError,
     booru = require('sfwbooru');
 
 module.exports = {
@@ -21,7 +20,7 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         if (!args) return 'wrong usage'
         sfwbooruTimesUsed++
@@ -45,7 +44,7 @@ safebooru.org, aliases: ["sb","safe","safebooru"]
 dollbooru.org, aliases: ["do","doll","dollbooru"]`
                 }
             }).catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         } else {
             if ((b) && (!c)) {
@@ -75,7 +74,7 @@ Rating: ${image.common.rating}`,
                                     }
                                 }
                             }).catch(err => {
-                                handleError(bot, err);
+                                handleError(bot, __filename, msg.channel, err);
                             });
                         }
                     })
@@ -98,10 +97,10 @@ Rating: ${image.common.rating}`,
                                     }]
                                 }
                             }).catch(err => {
-                                handleError(bot, err);
+                                handleError(bot, __filename, msg.channel, err);
                             });
                         } else {
-                            handleMsgError(bot, msg.channel, err);
+                            handleError(bot, __filename, msg.channel, err);
                         }
                     });
             } else if ((!b) && (!c)) {
@@ -130,7 +129,7 @@ Rating: ${image.common.rating}`,
                                     }
                                 }
                             }).catch(err => {
-                                handleError(bot, err);
+                                handleError(bot, __filename, msg.channel, err);
                             });
                         }
                     })
@@ -153,10 +152,10 @@ Rating: ${image.common.rating}`,
                                     }]
                                 }
                             }).catch(err => {
-                                handleError(bot, err);
+                                handleError(bot, __filename, msg.channel, err);
                             });
                         } else {
-                            handleMsgError(bot, msg.channel, err);
+                            handleError(bot, __filename, msg.channel, err);
                         }
                     });
             } else {
@@ -186,7 +185,7 @@ Rating: ${image.common.rating}`,
                                     }
                                 }
                             }).catch(err => {
-                                handleError(bot, err);
+                                handleError(bot, __filename, msg.channel, err);
                             });
                         }
                     })
@@ -209,10 +208,10 @@ Rating: ${image.common.rating}`,
                                     }]
                                 }
                             }).catch(err => {
-                                handleError(bot, err);
+                                handleError(bot, __filename, msg.channel, err);
                             });
                         } else {
-                            handleMsgError(bot, msg.channel, err);
+                            handleError(bot, __filename, msg.channel, err);
                         }
                     });
             }

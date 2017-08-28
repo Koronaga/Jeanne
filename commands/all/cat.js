@@ -1,7 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError,
     request = require('request');
 
 module.exports = {
@@ -20,11 +19,11 @@ module.exports = {
         if (sendMessages === false) return;
         if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
             .catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         catTimesUsed++
         request("http://random.cat/meow", (err, response, body) => {
-            if (err) return handleMsgError(bot, msg.channel, err);
+            if (err) return handleError(bot, __filename, msg.channel, err);
             var cat = JSON.parse(body);
             if (!cat) return bot.createMessage(msg.channel.id, {
                 content: ``,
@@ -43,7 +42,7 @@ module.exports = {
                     }]
                 }
             }).catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
             bot.createMessage(msg.channel.id, {
                 content: ``,
@@ -60,7 +59,7 @@ module.exports = {
                     }
                 },
             }).catch(err => {
-                handleError(bot, err);
+                handleError(bot, __filename, msg.channel, err);
             });
         });
     }
