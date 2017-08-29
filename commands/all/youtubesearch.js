@@ -9,7 +9,7 @@ module.exports = {
     aliases: ['ytsearch', 'ytsrch'],
     cooldown: 5,
     guildOnly: true,
-    async task(bot, msg, args) {
+    async: (bot, msg, args) => {
         youtubesearchTimesUsed++
         const opts = {
             maxResults: 50,
@@ -35,6 +35,17 @@ module.exports = {
                 return;
             }
             const videoInfo = res[Math.floor(Math.random() * res.length)]; // returns 1 result from the first 50 results it can find
+            if (!videoInfo) return msg.channel.createMessage({
+                content: ``,
+                embed: {
+                    color: config.defaultColor,
+                    title: `ERROR`,
+                    description: `No video's were found for **${args}**`
+                }
+            })
+            .catch(err => {
+                handleError(bot, __filename, msg.channel, err);
+            });
             let publishedAt = videoInfo.publishedAt;
             publishedAt = publishedAt.slice(0, 10);
             let infoKind = videoInfo.kind;
