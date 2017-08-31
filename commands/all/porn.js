@@ -70,6 +70,17 @@ module.exports = {
         search.gifs(pageNumber)
             .then(gifs => {
                 const result = gifs[Math.floor(Math.random() * gifs.length)];
+                if (!result) return msg.channel.createMessage({
+                    content: ``,
+                    embed: {
+                        color: config.errorColor,
+                        title: `Error`,
+                        description: `No results were found with **${searchTerms}**`
+                    }
+                })
+                .catch(err => {
+                    handleError(bot, __filename, msg.channel, err);
+                });
                 msg.channel.createMessage({
                         content: ``,
                         embed: {
