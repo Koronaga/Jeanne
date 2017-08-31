@@ -38,15 +38,15 @@ module.exports = {
                         color: color,
                         author: {
                             name: 'Photographer: ' + data.user.name,
-                            url: data.user.links.html,
+                            url: data.user.links.html + '?utm_source=Jeanne%20Discord%20Bot&utm_medium=referral&utm_campaign=api-credit',
                             icon_url: data.user.profile_image.small
                         },
-                        description: `[\`download image\`](${data.links.download})\n` +
+                        description: `[\`download image\`](${data.links.download}?utm_source=Jeanne%20Discord%20Bot&utm_medium=referral&utm_campaign=api-credit)\n` +
                             `\\👍 Likes: ${data.likes}\n` +
                             `\\👀 Views: ${data.views}\n` +
                             `\\🌇 Location: ${data.location === undefined ? `n/a` : ''}${data.location !== undefined ? data.location.title : ''}`,
                         image: {
-                            url: data.urls.regular
+                            url: data.urls.regular + '?utm_source=Jeanne%20Discord%20Bot&utm_medium=referral&utm_campaign=api-credit'
                         },
                         footer: {
                             text: `Image from https://unsplash.com`,

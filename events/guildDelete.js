@@ -31,6 +31,7 @@ module.exports = (bot, _settingsManager, _config, guild, unavailable) => {
         humanper = humans / total * 100,
         botper = bots / total * 100;
     if (botper >= 60) return;
+    if (bannedGuilds.bannedGuildIds.includes(guild.id)) return;
     if (logger === undefined) logger = new _Logger(_config.logTimestamp);
     logger.logWithHeader('LEFT GUILD', 'bgRed', 'black', `${guild.name} (${guild.id}) owned by ${guild.members.get(guild.ownerID).user.username}#${guild.members.get(guild.ownerID).user.discriminator}`);
     bot.executeWebhook(config.join_leaveWebhookID, config.join_leaveWebhookToken, {

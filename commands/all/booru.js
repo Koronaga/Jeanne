@@ -150,7 +150,21 @@ Rating: ${image.common.rating}`,
                             handleError(bot, __filename, msg.channel, err);
                         } else if (err.name === 'booruError') {
                             const error = `${err.name}\n${err.message}`;
-                            handleError(bot, __filename, msg.channel, error);
+                            msg.channel.createMessage({
+                                content: ``,
+                                embed: {
+                                    color: config.errorColor,
+                                    description: `${error}`,
+                                    fields: [{
+                                        name: `For support join:`,
+                                        value: `https://discord.gg/Vf4ne5b`,
+                                        inline: true
+                                    }]
+                                }
+                            })
+                            .catch(err => {
+                                handleError(bot, __filename, msg.channel, err);
+                            });
                         } else {
                             handleError(bot, __filename, msg.channel, err);
                         }
@@ -232,7 +246,21 @@ Rating: ${image.common.rating}`,
                             handleError(bot, __filename, msg.channel, err);
                         } else if (err.name === 'booruError') {
                             const error = `${err.name}\n${err.message}`;
-                            handleError(bot, __filename, msg.channel, error);
+                            msg.channel.createMessage({
+                                content: ``,
+                                embed: {
+                                    color: config.errorColor,
+                                    description: `${error}`,
+                                    fields: [{
+                                        name: `For support join:`,
+                                        value: `https://discord.gg/Vf4ne5b`,
+                                        inline: true
+                                    }]
+                                }
+                            })
+                            .catch(err => {
+                                handleError(bot, __filename, msg.channel, err);
+                            });
                         } else {
                             handleError(bot, __filename, msg.channel, err);
                         }
