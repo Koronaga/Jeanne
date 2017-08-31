@@ -1,7 +1,7 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    owjs = require('overwatch-js');
+    owjs = require('overwatch-js'); // ../../custom_modules/overwatch-js/index.js
 
 module.exports = {
     desc: "Get overwatch data.",

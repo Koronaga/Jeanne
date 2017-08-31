@@ -113,6 +113,17 @@ rule34.paheal.net, aliases: ["pa","paheal"]`
                             var tags = tag.split(',').join(', ');
                             var img = image.common.file_url.toString(" ");
                             var imguri = img.replace(/ /g, "%20");
+                            if (imguri.length >= 3000) return msg.channel.createMessage({
+                                    content: ``,
+                                    embed: {
+                                        color: config.errorColor,
+                                        title: ``,
+                                        description: `⚠ The image url was too long and couldn\'t be send, please try again.`
+                                    }
+                                })
+                                .catch(err => {
+                                    handleError(bot, __filename, msg.channel, err);
+                                });
                             msg.channel.createMessage({
                                 content: ``,
                                 embed: {
@@ -123,7 +134,6 @@ rule34.paheal.net, aliases: ["pa","paheal"]`
                                         icon_url: `${msg.author.avatarURL}`
                                     },
                                     description: `Searched tags: ${b}
-Tags: ${tags}
 Score: ${image.common.score}
 Rating: ${image.common.rating}`,
                                     image: {
@@ -136,26 +146,11 @@ Rating: ${image.common.rating}`,
                         }
                     })
                     .catch(err => {
-                        if (err.name === 'booruError') {
-                            msg.channel.createMessage({
-                                content: ``,
-                                embed: {
-                                    color: config.errorColor,
-                                    author: {
-                                        name: ``,
-                                        url: ``,
-                                        icon_url: ``
-                                    },
-                                    description: `${err.message}`,
-                                    fields: [{
-                                        name: `For support join:`,
-                                        value: `https://discord.gg/Vf4ne5b`,
-                                        inline: true
-                                    }]
-                                }
-                            }).catch(err => {
-                                handleError(bot, __filename, msg.channel, err);
-                            });
+                        if (!err.name) {
+                            handleError(bot, __filename, msg.channel, err);
+                        } else if (err.name === 'booruError') {
+                            const error = `${err.name}\n${err.message}`;
+                            handleError(bot, __filename, msg.channel, error);
                         } else {
                             handleError(bot, __filename, msg.channel, err);
                         }
@@ -200,6 +195,17 @@ Rating: ${image.common.rating}`,
                             var tags = tag.split(',').join(', ');
                             var img = image.common.file_url.toString(" ");
                             var imguri = img.replace(/ /g, "%20");
+                            if (imguri.length >= 3000) return msg.channel.createMessage({
+                                content: ``,
+                                embed: {
+                                    color: config.errorColor,
+                                    title: ``,
+                                    description: `⚠ The image url was too long and couldn\'t be send, please try again.`
+                                }
+                            })
+                            .catch(err => {
+                                handleError(bot, __filename, msg.channel, err);
+                            });
                             msg.channel.createMessage({
                                 content: ``,
                                 embed: {
@@ -210,7 +216,6 @@ Rating: ${image.common.rating}`,
                                         icon_url: `${msg.author.avatarURL}`
                                     },
                                     description: `Searched tags: ${b}, ${c}
-Tags: ${tags}
 Score: ${image.common.score}
 Rating: ${image.common.rating}`,
                                     image: {
@@ -223,30 +228,15 @@ Rating: ${image.common.rating}`,
                         }
                     })
                     .catch(err => {
-                        if (err.name === 'booruError') {
-                            msg.channel.createMessage({
-                                content: ``,
-                                embed: {
-                                    color: config.errorColor,
-                                    author: {
-                                        name: ``,
-                                        url: ``,
-                                        icon_url: ``
-                                    },
-                                    description: `${err.message}`,
-                                    fields: [{
-                                        name: `For support join:`,
-                                        value: `https://discord.gg/Vf4ne5b`,
-                                        inline: true
-                                    }]
-                                }
-                            }).catch(err => {
-                                handleError(bot, __filename, msg.channel, err);
-                            });
+                        if (!err.name) {
+                            handleError(bot, __filename, msg.channel, err);
+                        } else if (err.name === 'booruError') {
+                            const error = `${err.name}\n${err.message}`;
+                            handleError(bot, __filename, msg.channel, error);
                         } else {
                             handleError(bot, __filename, msg.channel, err);
                         }
-                    })
+                    });
             }
         }
     }

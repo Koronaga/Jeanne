@@ -352,7 +352,14 @@ exports.handleError = (bot, commandUsed, channel, error) => {
             }
         })
         .then(() => {
-            bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
+            const errString = error.toString();
+            if (errString.includes('No results for search related to ')) {
+                if (!error.response) return logger.error(error, 'ERROR');
+                const err = JSON.parse(error.response);
+                if ((!err.code) && (!err.message)) return logger.error(JSON.stringify(err), 'ERROR');
+                logger.error(err.code + '\n' + err.message, 'ERROR');
+            } else {
+                bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
                     embeds: [{
                         color: config.errorColor,
                         title: `${commandUsed}`,
@@ -365,10 +372,11 @@ exports.handleError = (bot, commandUsed, channel, error) => {
                 .catch(err => {
                     handleErrorLocal(err);
                 });
-            if (!error.response) return logger.error(error, 'ERROR');
-            const err = JSON.parse(error.response);
-            if ((!err.code) && (!err.message)) return logger.error(JSON.stringify(err), 'ERROR');
-            logger.error(err.code + '\n' + err.message, 'ERROR');
+                if (!error.response) return logger.error(error, 'ERROR');
+                const err = JSON.parse(error.response);
+                if ((!err.code) && (!err.message)) return logger.error(JSON.stringify(err), 'ERROR');
+                logger.error(err.code + '\n' + err.message, 'ERROR');
+            }
         })
         .catch(err => {
             handleErrorLocal(err);
@@ -394,8 +402,7 @@ exports.handleErrorNoMsg = (bot, commandUsed, error) => {
                 description: `${error}`,
             }],
             username: `${bot.user.username}`,
-            avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`,
-
+            avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`
         })
         .catch(err => {
             handleErrorLocal(err);

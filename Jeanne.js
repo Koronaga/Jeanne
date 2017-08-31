@@ -6,7 +6,6 @@ var reload = require('require-reload')(require),
     Eris = require('eris'),
     config = reload('./config.json'),
     formatSeconds = require("./utils/utils.js").formatSeconds,
-    handleError = require("./utils/utils.js").handleError,
     handleErrorNoMsg = require("./utils/utils.js").handleErrorNoMsg,
     version = reload('./package.json').version,
     Nf = new Intl.NumberFormat('en-US'),
@@ -465,7 +464,7 @@ setInterval(() => { // Update the bot's status for each shard every 10 minutes
     }
 }, 600000);
 
-/** Only meant for the public version */
+/** Only meant for the public version 
 setTimeout(() => {
     setInterval(() => {
         let totalCommandUsage = commandsProcessed + cleverbotTimesUsed;
@@ -510,6 +509,11 @@ setTimeout(() => {
                             inline: false
                         },
                         {
+                            name: `Voice Connections:`,
+                            value: `${bot.voiceConnections.size}`,
+                            inline: false
+                        },
+                        {
                             name: `Guilds:`,
                             value: `${Nf.format(bot.guilds.size)}`,
                             inline: true
@@ -547,7 +551,7 @@ setTimeout(() => {
             });
     }, 20000);
 }, 5000);
-/**/
+*/
 
 // Hope this isn't api abuse owo
 // Default color 0x020003
@@ -584,7 +588,7 @@ process.on("uncaughtException", err => {
 });
 
 process.on("unhandledRejection", err => {
-    handleError(bot, __filename, err);
+    handleErrorNoMsg(bot, __filename, err);
 });
 
 // Voice Connection Events

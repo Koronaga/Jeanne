@@ -12,7 +12,8 @@ var reload = require('require-reload')(require),
     logger = new(reload('../utils/Logger.js'))(config.logTimestamp);
 
 const handleError = require('../utils/utils.js').handleError,
-    handleErrorNoMsg = require("../utils/utils.js").handleErrorNoMsg,
+    handleErrorNoMsg = require("../utils/utils.js").handleErrorNoMsg;
+/*
     Vision = require('@google-cloud/vision'),
     jeanneVision = require('../Jeanne-ca41da280a76.json');
 
@@ -22,6 +23,7 @@ const visionClient = new Vision({
     // /home/kurozero/Desktop/Jeanne/Jeanne-ca41da280a76.json
     // D:/JeanneDev/Jeanne-ca41da280a76.json
 });
+*/
 
 const fs = require('fs');
 
@@ -33,6 +35,7 @@ module.exports = {
                 handleError(bot, __filename, msg.channel, err);
             });
 
+        /*
         if (msg.channel.guild.id === '229007062032580608' && msg.attachments[0] && msg.channel.id !== '311667653771132928' && msg.channel.id !== '311663280588455937') {
             const image = {
                 source: {
@@ -48,14 +51,14 @@ module.exports = {
                                 handleError(bot, __filename, msg.channel, err);
                             });
                         msg.channel.createMessage(`${msg.author.mention}, NSFW content goes in <#311667653771132928> or <#311663280588455937>`)
-                            /*.then(sentMsg => {
+                            .then(sentMsg => {
                                 setTimeout(() => {
                                     bot.deleteMessage(sentMsg.channel.id, sentMsg.id, 'setTimeout')
                                         .catch(err => {
-                                            handleError(bot, __filename, msg.channel, err);
-                                        })
-                                }, 2000);
-                            })*/
+                                            handleErrorNoMsg(bot, __filename, err);
+                                        });
+                                }, 3000);
+                            })
                             .catch(error => {
                                 handleErrorNoMsg(bot, __filename, error);
                             });
@@ -65,6 +68,7 @@ module.exports = {
                     handleErrorNoMsg(bot, __filename, error);
                 });
         }
+        */
 
         for (let i = 0; i < CommandManagers.length; i++) {
             if ((msg.content.startsWith(CommandManagers[i].prefix)) && (!msg.channel.guild)) return msg.channel.createMessage('Commands can only be used in a server/guild.')

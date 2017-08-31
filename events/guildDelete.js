@@ -5,7 +5,6 @@ var reload = require('require-reload'),
     utils = reload('../utils/utils.js'),
     updateAbalBots = require('../utils/utils.js').updateAbalBots,
     updateDiscordBots = require('../utils/utils.js').updateDiscordBots,
-    handleError = require("../utils/utils.js").handleError,
     handleErrorNoMsg = require("../utils/utils.js").handleErrorNoMsg,
     formatTime = reload('../utils/utils.js').formatTime,
     version = reload('../package.json').version,
@@ -24,7 +23,7 @@ module.exports = (bot, _settingsManager, _config, guild, unavailable) => {
             description: `Just some random guild bruh.`,
         }
     }).catch(err => {
-        handleError(bot, __filename, msg.channel, err);
+        handleErrorNoMsg(bot, __filename, err);
     });
     const bots = guild.members.filter(u => u.user.bot).length,
         total = guild.memberCount,

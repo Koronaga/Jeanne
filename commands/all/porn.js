@@ -7,7 +7,7 @@ const reload = require('require-reload'),
 
 module.exports = {
     desc: "Search for gifs from pornhub.com and sex.com",
-    usage: "<query>",
+    usage: "<query> | [page_number]",
     cooldown: 5,
     guildOnly: true,
     task(bot, msg, args, config, settingsManager) {
@@ -40,12 +40,16 @@ module.exports = {
                 handleError(bot, __filename, msg.channel, err);
             });
         if (!args) return 'wrong usage';
+        const str = args + "";
+        const array = str.split(/ ?\| ?/),
+            searchTerms = array[0];
+        const pageNumber = array[1];
         pornTimesUsed++
         var bannedWord1 = banned.bannedWords[0];
         var bannedWord2 = banned.bannedWords[1];
         var bannedWord3 = banned.bannedWords[2];
         var bannedWord4 = banned.bannedWords[3];
-        if (args.includes(bannedWord1) || args.includes(bannedWord2) || args.includes(bannedWord3) || args.includes(bannedWord4)) return msg.channel.createMessage({
+        if (searchTerms.includes(bannedWord1) || searchTerms.includes(bannedWord2) || searchTerms.includes(bannedWord3) || searchTerms.includes(bannedWord4)) return msg.channel.createMessage({
                 content: ``,
                 embed: {
                     color: config.defaultColor,
@@ -62,9 +66,8 @@ module.exports = {
             });
         const drivers = ['pornhub', 'sex'];
         const driver = drivers[Math.floor(Math.random() * drivers.length)];
-        const page = getRandomInt(1, 5);
-        const search = new Pornsearch(args, driver);
-        search.gifs(page)
+        const search = new Pornsearch(searchTerms, driver);
+        search.gifs(pageNumber)
             .then(gifs => {
                 const result = gifs[Math.floor(Math.random() * gifs.length)];
                 msg.channel.createMessage({

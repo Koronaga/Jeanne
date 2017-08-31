@@ -8,6 +8,7 @@ module.exports = {
     aliases: ['purge', 'clear'],
     guildOnly: true,
     requiredPermission: 'manageMessages',
+    cooldown: 5,
     task(bot, msg, suffix) {
         /**
          * perm checks
@@ -47,8 +48,8 @@ module.exports = {
                 });
         }
         bot.purgeChannel(msg.channel.id, limit)
-            .then((del, sentMsg) => {
-                const delmsg = del - 1 // Don't count the command message
+            .then(del => {
+                const delmsg = del; // Don't count the command message
                 bot.createMessage(msg.channel.id, {
                     content: ``,
                     embed: {
