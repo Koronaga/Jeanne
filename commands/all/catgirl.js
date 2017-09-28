@@ -21,11 +21,10 @@ module.exports = {
             .catch(err => {
                 handleError(bot, __filename, msg.channel, err);
             });
-        if (!args) return 'wrong usage';
         args = args.toLowerCase();
-        if (args === 'sfw') {
+        if (!args || args === 'sfw') {
             catgirlSFWTimesUsed++
-            axios.get('http://catgirls.brussell98.tk/api/random')
+            axios.get('https://nekos.brussell.me/api/v1/random/image?nsfw=false')
                 .then(res => {
                     const data = res.data;
                     bot.createMessage(msg.channel.id, {
@@ -37,12 +36,12 @@ module.exports = {
                                     url: ``,
                                     icon_url: ``
                                 },
-                                description: `\\😺 [\`Direct image link\`](${data.url})`,
+                                description: `\\😺 [\`Direct image link\`](https://nekos.brussell.me/image/${data.images[0].id})`,
                                 image: {
-                                    url: data.url
+                                    url: `https://nekos.brussell.me/image/${data.images[0].id}`
                                 },
                                 footer: {
-                                    text: `Images from catgirls.brussell98.tk`,
+                                    text: `Images from nekos.brussell.me`,
                                     icon_url: ``
                                 }
                             }
@@ -64,7 +63,7 @@ module.exports = {
                     handleError(bot, __filename, msg.channel, err);
                 });
             catgirlNSFWTimesUsed++
-            axios.get('http://catgirls.brussell98.tk/api/nsfw/random/')
+            axios.get('https://nekos.brussell.me/api/v1/random/image?nsfw=true')
                 .then(res => {
                     const data = res.data;
                     bot.createMessage(msg.channel.id, {
@@ -76,12 +75,12 @@ module.exports = {
                                     url: ``,
                                     icon_url: ``
                                 },
-                                description: `\\😳 [\`Direct image link\`](${data.url})`,
+                                description: `\\😳 [\`Direct image link\`](https://nekos.brussell.me/image/${data.images[0].id})`,
                                 image: {
-                                    url: data.url
+                                    url: `https://nekos.brussell.me/image/${data.images[0].id}`
                                 },
                                 footer: {
-                                    text: `Images from catgirls.brussell98.tk/nsfw`,
+                                    text: `Images from nekos.brussell.me`,
                                     icon_url: ``
                                 }
                             }
