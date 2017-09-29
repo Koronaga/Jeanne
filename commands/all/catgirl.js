@@ -25,43 +25,85 @@ module.exports = {
         args = args.toLowerCase();
         if (!args || args === 'sfw') {
             catgirlSFWTimesUsed++
-            axios.get('https://nekos.brussell.me/api/v1/random/image?nsfw=false', {
-                    headers: {
-                        'User-Agent': `${bot.user.username}/${version} - (https://github.com/KurozeroPB/Jeanne)`
-                    }
-                })
-                .then(res => {
-                    const data = res.data;
-                    console.log(res);
-                    bot.createMessage(msg.channel.id, {
-                            content: ``,
-                            embed: {
-                                color: config.defaultColor,
-                                author: {
-                                    name: ``,
-                                    url: ``,
-                                    icon_url: ``
-                                },
-                                description: `\\😺 [\`Direct image link\`](https://nekos.brussell.me/image/${data.images[0].id})`,
-                                image: {
-                                    url: `https://nekos.brussell.me/image/${data.images[0].id}`
-                                },
-                                footer: {
-                                    text: `Images from nekos.brussell.me`,
-                                    icon_url: ``
+            const sites = ["nekos.brussell", "nekos.life"];
+            const site = sites[Math.floor(Math.random() * sites.length)];
+            if (site === "nekos.brussell") {
+                axios.get('https://nekos.brussell.me/api/v1/random/image?nsfw=false', {
+                        headers: {
+                            'User-Agent': `${bot.user.username}/${version} - (https://github.com/KurozeroPB/Jeanne)`
+                        }
+                    })
+                    .then(res => {
+                        const data = res.data;
+                        bot.createMessage(msg.channel.id, {
+                                content: ``,
+                                embed: {
+                                    color: config.defaultColor,
+                                    author: {
+                                        name: ``,
+                                        url: ``,
+                                        icon_url: ``
+                                    },
+                                    description: `\\😺 [\`Direct image url\`](https://nekos.brussell.me/image/${data.images[0].id})`,
+                                    image: {
+                                        url: `https://nekos.brussell.me/image/${data.images[0].id}`
+                                    },
+                                    footer: {
+                                        text: `Image from nekos.brussell.me`,
+                                        icon_url: ``
+                                    }
                                 }
-                            }
-                        })
-                        .catch(err => {
-                            if (!err.response) return logger.error(err, 'ERROR');
-                            error = JSON.parse(err.response);
-                            if ((!error.code) && (!error.message)) return logger.error(err, 'ERROR');
-                            logger.error(error.code + '\n' + error.message, 'ERROR');
-                        });
-                })
-                .catch(err => {
-                    handleError(bot, __filename, msg.channel, err);
-                });
+                            })
+                            .catch(err => {
+                                if (!err.response) return logger.error(err, 'ERROR');
+                                error = JSON.parse(err.response);
+                                if ((!error.code) && (!error.message)) return logger.error(err, 'ERROR');
+                                logger.error(error.code + '\n' + error.message, 'ERROR');
+                            });
+                    })
+                    .catch(err => {
+                        handleError(bot, __filename, msg.channel, err);
+                    });
+            } else if (site === "nekos.life") {
+                axios.get('https://nekos.life/api/neko', {
+                        headers: {
+                            'User-Agent': `${bot.user.username}/${version} - (https://github.com/KurozeroPB/Jeanne)`
+                        }
+                    })
+                    .then(res => {
+                        const data = res.data;
+                        bot.createMessage(msg.channel.id, {
+                                content: ``,
+                                embed: {
+                                    color: config.defaultColor,
+                                    author: {
+                                        name: ``,
+                                        url: ``,
+                                        icon_url: ``
+                                    },
+                                    description: `\\😺 [\`Direct image url\`](${data.neko})`,
+                                    image: {
+                                        url: data.neko
+                                    },
+                                    footer: {
+                                        text: `Image from nekos.life`,
+                                        icon_url: ``
+                                    }
+                                }
+                            })
+                            .catch(err => {
+                                if (!err.response) return logger.error(err, 'ERROR');
+                                error = JSON.parse(err.response);
+                                if ((!error.code) && (!error.message)) return logger.error(err, 'ERROR');
+                                logger.error(error.code + '\n' + error.message, 'ERROR');
+                            });
+                    })
+                    .catch(err => {
+                        handleError(bot, __filename, msg.channel, err);
+                    });
+            } else {
+                return "wrong usage";
+            }
         } else if (args === 'nsfw') {
             const nsfw = settingsManager.getNSFW(msg.channel.guild.id, msg.channel.id);
             if (!nsfw) return bot.createMessage(msg.channel.id, 'You can only use this in **nsfw** channels, use \`j:settings nsfw <allow/deny>\`.\nFor sfw catgirls use \`s.catgirl sfw\`.')
@@ -69,39 +111,85 @@ module.exports = {
                     handleError(bot, __filename, msg.channel, err);
                 });
             catgirlNSFWTimesUsed++
-            axios.get('https://nekos.brussell.me/api/v1/random/image?nsfw=true', {
-                    headers: {
-                        'User-Agent': `${bot.user.username}/${version} - (https://github.com/KurozeroPB/Jeanne)`
-                    }
-                })
-                .then(res => {
-                    const data = res.data;
-                    bot.createMessage(msg.channel.id, {
-                            content: ``,
-                            embed: {
-                                color: config.defaultColor,
-                                author: {
-                                    name: ``,
-                                    url: ``,
-                                    icon_url: ``
-                                },
-                                description: `\\😳 [\`Direct image link\`](https://nekos.brussell.me/image/${data.images[0].id})`,
-                                image: {
-                                    url: `https://nekos.brussell.me/image/${data.images[0].id}`
-                                },
-                                footer: {
-                                    text: `Images from nekos.brussell.me`,
-                                    icon_url: ``
+            const sites = ["nekos.brussell", "nekos.life"];
+            const site = sites[Math.floor(Math.random() * sites.length)];
+            if (site === "nekos.brussell") {
+                axios.get('https://nekos.brussell.me/api/v1/random/image?nsfw=true', {
+                        headers: {
+                            'User-Agent': `${bot.user.username}/${version} - (https://github.com/KurozeroPB/Jeanne)`
+                        }
+                    })
+                    .then(res => {
+                        const data = res.data;
+                        bot.createMessage(msg.channel.id, {
+                                content: ``,
+                                embed: {
+                                    color: config.defaultColor,
+                                    author: {
+                                        name: ``,
+                                        url: ``,
+                                        icon_url: ``
+                                    },
+                                    description: `\\😳 [\`Direct image url\`](https://nekos.brussell.me/image/${data.images[0].id})`,
+                                    image: {
+                                        url: `https://nekos.brussell.me/image/${data.images[0].id}`
+                                    },
+                                    footer: {
+                                        text: `Image from nekos.brussell.me`,
+                                        icon_url: ``
+                                    }
                                 }
-                            }
-                        })
-                        .catch(err => {
-                            handleError(bot, __filename, msg.channel, err);
-                        });
-                })
-                .catch(err => {
-                    handleError(bot, __filename, msg.channel, err);
-                });
+                            })
+                            .catch(err => {
+                                if (!err.response) return logger.error(err, 'ERROR');
+                                error = JSON.parse(err.response);
+                                if ((!error.code) && (!error.message)) return logger.error(err, 'ERROR');
+                                logger.error(error.code + '\n' + error.message, 'ERROR');
+                            });
+                    })
+                    .catch(err => {
+                        handleError(bot, __filename, msg.channel, err);
+                    });
+            } else if (site === "nekos.life") {
+                axios.get('https://nekos.life/api/lewd/neko', {
+                        headers: {
+                            'User-Agent': `${bot.user.username}/${version} - (https://github.com/KurozeroPB/Jeanne)`
+                        }
+                    })
+                    .then(res => {
+                        const data = res.data;
+                        bot.createMessage(msg.channel.id, {
+                                content: ``,
+                                embed: {
+                                    color: config.defaultColor,
+                                    author: {
+                                        name: ``,
+                                        url: ``,
+                                        icon_url: ``
+                                    },
+                                    description: `\\😳 [\`Direct image url\`](${data.neko})`,
+                                    image: {
+                                        url: data.neko
+                                    },
+                                    footer: {
+                                        text: `Image from nekos.life`,
+                                        icon_url: ``
+                                    }
+                                }
+                            })
+                            .catch(err => {
+                                if (!err.response) return logger.error(err, 'ERROR');
+                                error = JSON.parse(err.response);
+                                if ((!error.code) && (!error.message)) return logger.error(err, 'ERROR');
+                                logger.error(error.code + '\n' + error.message, 'ERROR');
+                            });
+                    })
+                    .catch(err => {
+                        handleError(bot, __filename, msg.channel, err);
+                    });
+            } else {
+                return "wrong usage";
+            }
         } else {
             return 'wrong usage';
         }
