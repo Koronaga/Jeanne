@@ -1,7 +1,7 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    DestinyApi = require('destiny-api-client'),
+    DestinyApi = require('../../custom_modules/destiny-api-client'),
     destiny = new DestinyApi(config.destiny_key);
 
 module.exports = {
