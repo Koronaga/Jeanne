@@ -6,7 +6,9 @@ const reload = require('require-reload'),
     getColors = require('get-image-colors'),
     imageDataURI = require('image-data-uri'),
     format = require('../../utils/utils.js').formatTime,
+    utils = require('../../utils/utils.js'),
     round = require('../../utils/utils.js').round;
+const baseURI = "https://www.bungie.net/Platform";
 
 module.exports = {
     desc: "Get destiny 2 character data.",
@@ -52,7 +54,6 @@ module.exports = {
             .catch(err => {
                 handleError(bot, __filename, msg.channel, err);
             });
-        const baseURI = "https://www.bungie.net/Platform";
         axios.get(baseURI + `/Destiny2/SearchDestinyPlayer/${membershipType}/${displayName}/`, {
                 headers: {
                     'X-API-Key': config.destiny2_key
@@ -89,7 +90,7 @@ module.exports = {
                             'X-API-Key': config.destiny2_key
                         },
                         params: {
-                            components: '200, 202'
+                            components: '200,202'
                         }
                     })
                     .then(res => {
@@ -106,6 +107,7 @@ module.exports = {
                             .catch(err => {
                                 handleError(bot, __filename, msg.channel, err);
                             });
+                        // Get character data
                         let charData = res.data.Response.characters.data;
                         const characters = Object.keys(charData).map(key => {
                             return charData[key];
@@ -120,6 +122,25 @@ module.exports = {
                             .catch(err => {
                                 handleError(bot, __filename, msg.channel, err);
                             });
+                        // Get character progression data
+                        let charData2 = res.data.Response.characterProgressions.data;
+                        const characterProgressions = Object.keys(charData2).map(key => {
+                            return charData2[key];
+                        });
+                        if (!characterProgressions[characterNum]) return msg.channel.createMessage({
+                                content: ``,
+                                embed: {
+                                    color: config.errorColor,
+                                    description: `No character found for **${displayName}**\nCharacter number: ${characterNum}`
+                                }
+                            })
+                            .catch(err => {
+                                handleError(bot, __filename, msg.channel, err);
+                            });
+                        /* factions for a later update
+                        const factions = characterProgressions[characterNum].factions;
+                        */
+
                         // Genders
                         let gender;
                         if (characters[characterNum].genderType === 0) gender = 'Male';
@@ -212,3 +233,60 @@ module.exports = {
             });
     }
 };
+
+
+/* Currently not able to use this :( */
+/**
+ * Get the vendors for a character (endpoint not ready yet!)
+ * @param {string|int} memType A valid non-BungieNet membership type. https://bungie-net.github.io/multi/schema_BungieMembershipType.html#schema_BungieMembershipType
+ * @param {string} destinyMemId Destiny membership ID of another user. You may be denied.
+ * @param {string} charId The Destiny Character ID of the character for whom we're getting vendor info.
+ * @returns {Promise<any>} Result from the GET request.
+ */
+function getVendors(memType, destinyMemId, charId) {
+    return new Promise((resolve, reject) => {
+        axios.get(baseURI + `/Destiny2/${memType}/Profile/${destinyMemId}/Character/${charId}/Vendors`, {
+                headers: {
+                    'X-API-Key': config.destiny2_key
+                },
+                params: {
+                    components: '400,401,402'
+                }
+            })
+            .then(res => {
+                // if (res.data.ErrorCode !== 1) return reject(new Error(`Failed getting vendors\nErrorCode: ${res.data.ErrorCode}\nMessage: ${res.data.Message}`));
+                return resolve(res);
+            })
+            .catch(err => {
+                return reject(err);
+            });
+    });
+}
+
+/**
+ * Get the vendor for a character (endpoint not ready yet!)
+ * @param {string|int} memType A valid non-BungieNet membership type. https://bungie-net.github.io/multi/schema_BungieMembershipType.html#schema_BungieMembershipType
+ * @param {string} destinyMemId Destiny membership ID of another user. You may be denied.
+ * @param {string} charId The Destiny Character ID of the character for whom we're getting vendor info.
+ * @param {string} vendorHash The Hash identifier of the Vendor to be returned.
+ * @returns {Promise<any>} Result from the GET request.
+ */
+function getVendor(memType, destinyMemId, charId, vendorHash) {
+    return new Promise((resolve, reject) => {
+        axios.get(baseURI + `/Destiny2/${memType}/Profile/${destinyMemId}/Character/${charId}/Vendors/${vendorHash}`, {
+                headers: {
+                    'X-API-Key': config.destiny2_key
+                },
+                params: {
+                    components: '400,401,402'
+                }
+            })
+            .then(res => {
+                // if (res.data.ErrorCode !== 1) return reject(new Error(`Failed getting vendors\nErrorCode: ${res.data.ErrorCode}\nMessage: ${res.data.Message}`));
+                return resolve(res);
+            })
+            .catch(err => {
+                return reject(err);
+            });
+    });
+}
