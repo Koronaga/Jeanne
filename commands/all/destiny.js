@@ -49,7 +49,7 @@ module.exports = {
                     displayName: `${username}`
                 })
                 .then(res => {
-                    memID = res[0].membershipId;
+                    const memID = res[0].membershipId;
                     destiny.accountStats({
                             membershipType: DestinyApi.psn,
                             destinyMembershipId: memID
@@ -351,7 +351,7 @@ module.exports = {
                     displayName: `${username}`
                 })
                 .then(res => {
-                    memID = res[0].membershipId;
+                    const memID = res[0].membershipId;
                     destiny.accountStats({
                             membershipType: DestinyApi.xbox,
                             destinyMembershipId: memID
