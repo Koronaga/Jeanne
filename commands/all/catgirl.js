@@ -1,5 +1,6 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
+    version = reload('../../package.json').version,
     handleError = require('../../utils/utils.js').handleError,
     axios = require('axios');
 
@@ -24,9 +25,14 @@ module.exports = {
         args = args.toLowerCase();
         if (!args || args === 'sfw') {
             catgirlSFWTimesUsed++
-            axios.get('https://nekos.brussell.me/api/v1/random/image?nsfw=false')
+            axios.get('https://nekos.brussell.me/api/v1/random/image?nsfw=false', {
+                    headers: {
+                        'User-Agent': `${bot.user.username}/${version} - (https://github.com/KurozeroPB/Jeanne)`
+                    }
+                })
                 .then(res => {
                     const data = res.data;
+                    console.log(res);
                     bot.createMessage(msg.channel.id, {
                             content: ``,
                             embed: {
@@ -63,7 +69,11 @@ module.exports = {
                     handleError(bot, __filename, msg.channel, err);
                 });
             catgirlNSFWTimesUsed++
-            axios.get('https://nekos.brussell.me/api/v1/random/image?nsfw=true')
+            axios.get('https://nekos.brussell.me/api/v1/random/image?nsfw=true', {
+                    headers: {
+                        'User-Agent': `${bot.user.username}/${version} - (https://github.com/KurozeroPB/Jeanne)`
+                    }
+                })
                 .then(res => {
                     const data = res.data;
                     bot.createMessage(msg.channel.id, {
