@@ -239,6 +239,11 @@ exports.setAvatar = (bot, url) => {
  * @returns {String} The formatted time.
  */
 exports.formatTime = milliseconds => {
+    let daysText = 'days';
+    let hoursText = 'hours';
+    let minutesText = 'minutes';
+    let secondsText = 'seconds';
+
     let s = milliseconds / 1000;
     let seconds = (s % 60).toFixed(0);
     s /= 60;
@@ -247,7 +252,13 @@ exports.formatTime = milliseconds => {
     let hours = (s % 24).toFixed(0);
     s /= 24;
     let days = s.toFixed(0);
-    return `${days} days, ${hours} hours, ${minutes} minutes, and ${seconds} seconds`;
+
+    if (days === 1) daysText = 'day';
+    if (hours === 1) hoursText = 'hour';
+    if (minutes === 1) minutesText = 'minute';
+    if (seconds === 1) secondsText = 'second';
+
+    return `${days} ${daysText}, ${hours} ${hoursText}, ${minutes} ${minutesText}, and ${seconds} ${secondsText}`;
 }
 
 /**
@@ -343,27 +354,15 @@ exports.handleError = (bot, commandUsed, channel, error) => {
                     url: ``,
                     icon_url: ``
                 },
-                description: `${error}`,
-                fields: [{
-                    name: `For support join:`,
-                    value: `https://discord.gg/Vf4ne5b`,
-                    inline: true
-                }]
+                description: `${error}\n\nFor support join: https://discord.gg/Vf4ne5b`
             }
         })
         .then(() => {
-            const errString = error.toString();
-            if (errString.includes('No results for search related to ')) {
-                if (!error.response) return logger.error(error, 'ERROR');
-                const err = JSON.parse(error.response);
-                if ((!err.code) && (!err.message)) return logger.error(JSON.stringify(err), 'ERROR');
-                logger.error(err.code + '\n' + err.message, 'ERROR');
-            } else {
-                bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
+            bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
                     embeds: [{
                         color: config.errorColor,
                         title: `${commandUsed}`,
-                        description: `${error}`,
+                        description: `**${new Date().toLocaleString()}**\n\n${error}\n${error.stack}`,
                     }],
                     username: `${bot.user.username}`,
                     avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`,
@@ -372,11 +371,10 @@ exports.handleError = (bot, commandUsed, channel, error) => {
                 .catch(err => {
                     handleErrorLocal(err);
                 });
-                if (!error.response) return logger.error(error, 'ERROR');
-                const err = JSON.parse(error.response);
-                if ((!err.code) && (!err.message)) return logger.error(JSON.stringify(err), 'ERROR');
-                logger.error(err.code + '\n' + err.message, 'ERROR');
-            }
+            if (!error.response) return logger.error(error, 'ERROR');
+            const err = JSON.parse(error.response);
+            if ((!err.code) && (!err.message)) return logger.error(JSON.stringify(err), 'ERROR');
+            logger.error(err.code + '\n' + err.message, 'ERROR');
         })
         .catch(err => {
             handleErrorLocal(err);
@@ -399,7 +397,7 @@ exports.handleErrorNoMsg = (bot, commandUsed, error) => {
             embeds: [{
                 color: config.errorColor,
                 title: `${commandUsed}`,
-                description: `${error}`,
+                description: `**${new Date().toLocaleString()}**\n\n${error}\n${error.stack}`,
             }],
             username: `${bot.user.username}`,
             avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`
