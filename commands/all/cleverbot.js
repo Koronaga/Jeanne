@@ -34,13 +34,19 @@ module.exports = {
             msg.channel.sendTyping();
             if (!args) return bot.createMessage(msg.channel.id, `${msg.author.username}, What do you want to talk about?`)
                 .catch(err => {
-                    handleError(bot, __filename, msg.channel, err);     
+                    handleError(bot, __filename, msg.channel, err);
                 });
             /* AXIOS */
-            axios.get(`http://api.program-o.com/v2/chatbot/?bot_id=6&say=${args}&convo_id=${msg.author.id}&format=json`)
+            // http://api.program-o.com/v2/chatbot/?bot_id=6&say=${args}&convo_id=${msg.author.id}&format=json
+            axios.get(`http://api.program-o.com/v2/chatbot/?bot_id=12&say=${args}&convo_id=${msg.author.id}&format=json`)
                 .then(res => {
                     let answer = res.data.botsay;
-                    answer = answer.replace(/Program-O/g, bot.user.username);
+                    if (!answer) return bot.createMessage(msg.channel.id, `${msg.author.username}, I don't wanna talk right now :slight_frown:`)
+                        .catch(err => {
+                            handleError(bot, __filename, msg.channel, err);
+                        });
+                    // answer = answer.replace(/Program-O/g, bot.user.username);
+                    answer = answer.replace(/Chatmundo/g, bot.user.username);
                     answer = answer.replace(/<br\/> ?/g, "\n");
                     answer = answer.replace(/Elizabeth/g, `${owner.username}#${owner.discriminator}`);
                     bot.createMessage(msg.channel.id, `${msg.author.username}, ${answer}`)

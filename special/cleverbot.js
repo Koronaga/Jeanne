@@ -31,9 +31,15 @@ module.exports = (bot, msg, config, settingsManager) => {
             msg.channel.createMessage(`${msg.author.username}, What do you want to talk about?`);
         else {
             msg.channel.sendTyping();
+            // http://api.program-o.com/v2/chatbot/?bot_id=6&say=${text}&convo_id=${msg.author.id}&format=json
             axios.get(`http://api.program-o.com/v2/chatbot/?bot_id=6&say=${text}&convo_id=${msg.author.id}&format=json`).then(res => {
                 let answer = res.data.botsay;
-                answer = answer.replace("Program-O", bot.user.username);
+                if (!answer) return bot.createMessage(msg.channel.id, `${msg.author.username}, I don't wanna talk right now :slight_frown:`)
+                    .catch(err => {
+                        handleError(bot, __filename, msg.channel, err);
+                    });
+                // answer = answer.replace("Program-O", bot.user.username);
+                answer = answer.replace(/Chatmundo/g, bot.user.username);
                 answer = answer.replace(/<br\/> ?/, "\n");
                 answer = answer.replace(/Elizabeth/g, `${owner.username}#${owner.discriminator}`);
                 bot.createMessage(msg.channel.id, `${msg.author.username}, ${answer}`);
