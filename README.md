@@ -1,5 +1,5 @@
 [![Discord](https://discordapp.com/api/guilds/240059867744698368/embed.png)](https://discord.gg/Vf4ne5b)
-[![dependencies Status](https://img.shields.io/librariesio/github/KurozeroPB/Jeanne.svg?style=flat-square)](https://libraries.io/github/KurozeroPB/Jeanne)
+[![dependencies](https://david-dm.org/KurozeroPB/Jeanne/status.svg?style=flat-square)](https://david-dm.org/KurozeroPB/Jeanne)
 [![devDependencies](https://david-dm.org/KurozeroPB/Jeanne/dev-status.svg?style=flat-square)](https://david-dm.org/KurozeroPB/Jeanne?type=dev)
 
 [![npm](https://img.shields.io/github/release/KurozeroPB/Jeanne.svg?style=flat-square)](https://github.com/KurozeroPB/Jeanne/releases)
