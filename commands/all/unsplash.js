@@ -1,11 +1,7 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    superagent = require('superagent'),
-    auth = {
-        'Authorization': "Client-ID " + config.unsplash_key,
-        'Content-Type': 'application/json'
-    };
+    axios = require('axios');
 
 module.exports = {
     desc: "Get a beautiful picture from https://unsplash.com",
@@ -25,37 +21,42 @@ module.exports = {
                 handleError(bot, __filename, msg.channel, err);
             });
         unsplashTimesUsed++
-        superagent.get('https://api.unsplash.com/photos/random')
-            .set(auth)
-            .end((err, res) => {
-                if (err) return handleError(bot, __filename, msg.channel, err);
-                const data = res.body;
-                let color = data.color.replace('#', '0x');
-                color = parseInt(color);
-                bot.createMessage(msg.channel.id, {
-                    content: ``,
-                    embed: {
-                        color: color,
-                        author: {
-                            name: 'Photographer: ' + data.user.name,
-                            url: data.user.links.html + '?utm_source=Jeanne%20Discord%20Bot&utm_medium=referral&utm_campaign=api-credit',
-                            icon_url: data.user.profile_image.small
-                        },
-                        description: `[\`download image\`](${data.links.download}?utm_source=Jeanne%20Discord%20Bot&utm_medium=referral&utm_campaign=api-credit)\n` +
-                            `\\👍 Likes: ${data.likes}\n` +
-                            `\\👀 Views: ${data.views}\n` +
-                            `\\🌇 Location: ${data.location === undefined ? `n/a` : ''}${data.location !== undefined ? data.location.title : ''}`,
-                        image: {
-                            url: data.urls.regular + '?utm_source=Jeanne%20Discord%20Bot&utm_medium=referral&utm_campaign=api-credit'
-                        },
-                        footer: {
-                            text: `Image from https://unsplash.com`,
-                            icon_url: `https://b.catgirlsare.sexy/7OSH.png`
-                        }
+        axios.get('https://api.unsplash.com/photos/random', {
+            headers: {
+                'Authorization': "Client-ID " + config.unsplash_key,
+                'User-Agent': USERAGENT
+            }
+        }).then(res => {
+            if (res.status !== 200) return handleError(bot, __filename, msg.channel, res.data);
+            const data = res.data;
+            let color = data.color.replace('#', '0x');
+            color = parseInt(color);
+            bot.createMessage(msg.channel.id, {
+                content: ``,
+                embed: {
+                    color: color,
+                    author: {
+                        name: 'Photographer: ' + data.user.name,
+                        url: data.user.links.html + '?utm_source=Jeanne%20Discord%20Bot&utm_medium=referral&utm_campaign=api-credit',
+                        icon_url: data.user.profile_image.small
+                    },
+                    description: `[\`download image\`](${data.links.download}?utm_source=Jeanne%20Discord%20Bot&utm_medium=referral&utm_campaign=api-credit)\n` +
+                        `\\👍 Likes: ${data.likes}\n` +
+                        `\\👀 Views: ${data.views}\n` +
+                        `\\🌇 Location: ${data.location === undefined ? `n/a` : ''}${data.location !== undefined ? data.location.title : ''}`,
+                    image: {
+                        url: data.urls.regular + '?utm_source=Jeanne%20Discord%20Bot&utm_medium=referral&utm_campaign=api-credit'
+                    },
+                    footer: {
+                        text: `Image from https://unsplash.com`,
+                        icon_url: `https://b.catgirlsare.sexy/7OSH.png`
                     }
-                }).catch(err => {
-                    handleError(bot, __filename, msg.channel, err);
-                });
+                }
+            }).catch(err => {
+                handleError(bot, __filename, msg.channel, err);
             });
+        }).catch(err => {
+            handleError(bot, __filename, msg.channel, err.response.data.status + ', ' + err.response.data.message);
+        });
     }
 };

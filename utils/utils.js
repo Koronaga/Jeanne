@@ -1,9 +1,11 @@
 var fs = require('fs'),
     axios = require('axios'),
-    superagent = require('superagent'),
     reload = require('require-reload'),
     logger = new(reload('./Logger.js'))((reload('../config.json')).logTimestamp),
-    config = require('../config.json');
+    sentry = reload('../config.json').raven_dsn,
+    Raven = require('raven');
+Raven.config(sentry).install();
+var config = reload('../config.json');
 
 /**
  * Contains various functions.
@@ -129,44 +131,6 @@ exports.findUserInGuild = (query, guild, exact = false) => {
 }
 
 /**
- * Update the server count on Carbon.
- * @arg {String} key The bot's key.
- * @arg {Number} servercount Server count.
- */
-exports.updateCarbon = (key, servercount) => {
-    if (!key || !servercount) return;
-    superagent.post('https://www.carbonitex.net/discord/data/botdata.php')
-        .type('application/json')
-        .send({
-            key,
-            servercount
-        })
-        .end(error => {
-            logger.debug('Updated Carbon server count to ' + servercount, 'CARBON UPDATE');
-            if (error) logger.error(error.status || error.response, 'CARBON UPDATE ERROR');
-        });
-}
-
-/**
- * Update the server count on Discordlist.
- * @arg {String} token The bot's key.
- * @arg {Number} servers Server count.
- */
-exports.updateDiscordlist = (token, servers) => {
-    if (!token || !servers) return;
-    superagent.post('https://bots.discordlist.net/api.php')
-        .type('application/json')
-        .send({
-            token,
-            servers
-        })
-        .end(error => {
-            logger.debug('Updated discordlist server count to ' + servers, 'DISCORDLIST UPDATE');
-            if (error) logger.error(error.status || error.response, 'DISCORDLIST UPDATE ERROR');
-        });
-}
-
-/**
  * Update the server count on [Abalabahaha's bot list]@{link https://bots.discord.pw/}.
  * @arg {String} id Client id.
  * @arg {String} key Your API key.
@@ -174,16 +138,19 @@ exports.updateDiscordlist = (token, servers) => {
  */
 exports.updateAbalBots = (id, key, server_count) => {
     if (!key || !server_count) return;
-    superagent.post(`https://bots.discord.pw/api/bots/${id}/stats`)
-        .set('Authorization', key)
-        .type('application/json')
-        .send({
-            server_count
-        })
-        .end(error => {
-            logger.debug('Updated bot server count to ' + server_count, 'ABAL BOT LIST UPDATE');
-            if (error) logger.error(error.status || error.response, 'ABAL BOT LIST UPDATE ERROR');
-        });
+    axios.post(`https://bots.discord.pw/api/bots/${id}/stats`, {
+        server_count
+    }, {
+        headers: {
+            'Authorization': key,
+            'User-Agent': USERAGENT
+        }
+    }).then(res => {
+        if (res.status !== 200) return logger.error(res.status || res.data, 'ABAL BOT LIST UPDATE ERROR');
+        logger.debug('Updated bot server count to ' + server_count, 'ABAL BOT LIST UPDATE');
+    }).catch(err => {
+        logger.error(`${err}\n${JSON.stringify(err.response.data)}`, 'ABAL BOT LIST UPDATE ERROR');
+    });
 }
 
 /**
@@ -195,17 +162,20 @@ exports.updateAbalBots = (id, key, server_count) => {
  */
 exports.updateDiscordBots = (id, key, server_count, shard_count) => {
     if (!key || !server_count) return;
-    superagent.post(`https://discordbots.org/api/bots/${id}/stats`)
-        .set('Authorization', key)
-        .type('application/json')
-        .send({
-            server_count,
-            shard_count
-        })
-        .end(error => {
-            logger.debug('Updated bot server count to ' + server_count, 'BOTS .ORG LIST UPDATE');
-            if (error) logger.error(error.status || error.response, 'BOTS .ORG LIST UPDATE ERROR');
-        });
+    axios.post(`https://discordbots.org/api/bots/${id}/stats`, {
+        server_count,
+        shard_count
+    }, {
+        headers: {
+            'Authorization': key,
+            'User-Agent': USERAGENT
+        }
+    }).then(res => {
+        if (res.status !== 200) return logger.error(res.status || res.data, 'BOTS .ORG LIST UPDATE ERROR');
+        logger.debug('Updated bot server count to ' + server_count, 'BOTS .ORG LIST UPDATE');
+    }).catch(err => {
+        logger.error(`${err}\n${JSON.stringify(err.response.data)}`, 'BOTS .ORG LIST UPDATE ERROR');
+    });
 }
 
 /**
@@ -217,19 +187,28 @@ exports.updateDiscordBots = (id, key, server_count, shard_count) => {
 exports.setAvatar = (bot, url) => {
     return new Promise((resolve, reject) => {
         if (bot !== undefined && typeof url === 'string') {
-            superagent.get(url)
-                .end((error, response) => {
-                    if (!error && response.status === 200) {
+            axios.get(url, {
+                    headers: {
+                        'User-Agent': USERAGENT
+                    },
+                    responseType: 'arraybuffer'
+                })
+                .then(res => {
+                    if (res.status === 200) {
                         bot.editSelf({
-                                avatar: `data:${response.header['content-type']};base64,${response.body.toString('base64')}`
+                                avatar: `data:${res.headers['content-type']};base64,${res.data.toString('base64')}`
                             })
                             .then(resolve)
                             .catch(reject);
-                    } else
-                        reject('Got status code ' + error.status || error.response);
+                    } else {
+                        reject('Got status code ' + res.status || res.data);
+                    }
+                }).catch(err => {
+                    reject(err.response.data.status + ', ' + err.response.data.message);
                 });
-        } else
+        } else {
             reject('Invalid parameters');
+        }
     });
 }
 
@@ -303,16 +282,16 @@ exports.formatYTSeconds = time => {
 /** Check for a newer version of Jeanne d'Arc */
 exports.checkForUpdates = () => {
     let version = ~~(require('../package.json').version.split('.').join('')); //This is used to convert it to a number that can be compared
-    superagent.get("https://gitlab.com/KurozeroPB/Jeanne/raw/master/package.json")
-        .set('PRIVATE-TOKEN', config.gitlab_token)
-        .end((error, response) => {
-            if (error)
-                logger.warn('Error checking for updates: ' + (error.status || error.response));
-            else {
-                let latest = ~~(JSON.parse(response.text).version.split('.').join(''));
-                if (latest > version)
-                    logger.warn('A new version of Jeanne d\'Arc is avalible', 'OUT OF DATE');
+    axios.get('https://raw.githubusercontent.com/kurozeroPB/Jeanne/master/package.json')
+        .then(res => {
+            if (res.status !== 200) {
+                logger.warn(`Error checking for updates: ${res.data}`);
+            } else {
+                let latest = ~~(res.data.version.split('.').join(''));
+                if (latest > version) logger.warn('A new version of Shinobu is avalible', 'OUT OF DATE');
             }
+        }).catch(err => {
+            logger.warn(`Error checking for updates:\n${err.response.data.status + ', ' + err.response.data.message}`);
         });
 }
 /**
@@ -339,12 +318,7 @@ exports.getRandomInt = (min, max) => {
  * @param {object|string} error the error that was returned
  */
 exports.handleError = (bot, commandUsed, channel, error) => {
-    function handleErrorLocal(error) {
-        if (!error.response) return logger.error(error, 'ERROR');
-        const err = JSON.parse(error.response);
-        if ((!err.code) && (!err.message)) return logger.error(JSON.stringify(err), 'ERROR');
-        logger.error(err.code + '\n' + err.message, 'ERROR');
-    }
+    Raven.captureException(error);
     channel.createMessage({
             content: ``,
             embed: {
@@ -369,15 +343,12 @@ exports.handleError = (bot, commandUsed, channel, error) => {
 
                 })
                 .catch(err => {
-                    handleErrorLocal(err);
+                    logger.error(err, 'ERROR');
                 });
-            if (!error.response) return logger.error(error, 'ERROR');
-            const err = JSON.parse(error.response);
-            if ((!err.code) && (!err.message)) return logger.error(JSON.stringify(err), 'ERROR');
-            logger.error(err.code + '\n' + err.message, 'ERROR');
+            logger.error(error, 'ERROR');
         })
         .catch(err => {
-            handleErrorLocal(err);
+            logger.error(err, 'ERROR');
         });
 }
 /**
@@ -387,12 +358,7 @@ exports.handleError = (bot, commandUsed, channel, error) => {
  * @param {object|string} error the error that was returned
  */
 exports.handleErrorNoMsg = (bot, commandUsed, error) => {
-    function handleErrorLocal(error) {
-        if (!error.response) return logger.error(error, 'ERROR');
-        const err = JSON.parse(error.response);
-        if ((!err.code) && (!err.message)) return logger.error(JSON.stringify(err), 'ERROR');
-        logger.error(err.code + '\n' + err.message, 'ERROR');
-    }
+    Raven.captureException(error);
     bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
             embeds: [{
                 color: config.errorColor,
@@ -403,12 +369,9 @@ exports.handleErrorNoMsg = (bot, commandUsed, error) => {
             avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`
         })
         .catch(err => {
-            handleErrorLocal(err);
+            logger.error(err, 'ERROR');
         });
-    if (!error.response) return logger.error(error, 'ERROR');
-    const err = JSON.parse(error.response);
-    if ((!err.code) && (!err.message)) return logger.error(JSON.stringify(err), 'ERROR');
-    logger.error(err.code + '\n' + err.message, 'ERROR');
+    logger.error(error, 'ERROR');
 }
 
 /**

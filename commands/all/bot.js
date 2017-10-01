@@ -2,7 +2,7 @@ const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
     findMember = require('../../utils/utils.js').findMember,
-    superagent = require('superagent'),
+    axios = require('axios'),
     discordpw_key = require('../../config.json').abalBotsKey;
 
 module.exports = {
@@ -32,41 +32,46 @@ module.exports = {
                 .catch(err => {
                     handleError(bot, __filename, msg.channel, err);
                 });
-            superagent.get(`https://bots.discord.pw/api/bots/${user.id}`)
-                .set('Authorization', discordpw_key)
-                .end((err, res) => {
-                    const data = res.body;
-                    if (err) return handleError(bot, __filename, msg.channel, err);
-                    const inv = data.invite_url.replace(/ /g, '%20');
-                    msg.channel.createMessage({
-                            content: ``,
-                            embed: {
-                                color: config.defaultColor,
-                                author: {
-                                    name: data.name,
-                                    url: data.website,
-                                    icon_url: ``
-                                },
-                                thumbnail: {
-                                    url: `${user.avatarURL}`
-                                },
-                                description: `**ID:** ${data.client_id}\n` +
-                                    `**Desc:** ${data.description}\n` +
-                                    `**Library:** ${data.library}\n` +
-                                    `**Owners:** ${JSON.stringify(data.owner_ids).replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '')}\n` +
-                                    `**Prefix:** ${data.prefix}\n` +
-                                    `**Invite:** [\`Click here\`](${inv})\n` +
-                                    `**Website:** ${data.website}`,
-                                footer: {
-                                    text: `Data from bots.discord.pw`,
-                                    icon_url: ``
-                                }
+            axios.get(`https://bots.discord.pw/api/bots/${user.id}`, {
+                headers: {
+                    'Authorization': discordpw_key,
+                    'User-Agent': USERAGENT
+                }
+            }).then(res => {
+                const data = res.data;
+                if (res.status !== 200) return handleError(bot, __filename, msg.channel, res.data);
+                const inv = data.invite_url.replace(/ /g, '%20');
+                msg.channel.createMessage({
+                        content: ``,
+                        embed: {
+                            color: config.defaultColor,
+                            author: {
+                                name: data.name,
+                                url: data.website,
+                                icon_url: ``
+                            },
+                            thumbnail: {
+                                url: `${user.avatarURL}`
+                            },
+                            description: `**ID:** ${data.client_id}\n` +
+                                `**Desc:** ${data.description}\n` +
+                                `**Library:** ${data.library}\n` +
+                                `**Owners:** ${JSON.stringify(data.owner_ids).replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '')}\n` +
+                                `**Prefix:** ${data.prefix}\n` +
+                                `**Invite:** [\`Click here\`](${inv})\n` +
+                                `**Website:** ${data.website}`,
+                            footer: {
+                                text: `Data from bots.discord.pw`,
+                                icon_url: ``
                             }
-                        })
-                        .catch(err => {
-                            handleError(bot, __filename, msg.channel, err);
-                        });
-                });
+                        }
+                    })
+                    .catch(err => {
+                        handleError(bot, __filename, msg.channel, err);
+                    });
+            }).catch(err => {
+                handleError(bot, __filename, msg.channel, err.response.data.status + ', ' + err.response.data.message);
+            });
         } else {
             const idRegex = /^\d{17,18}$/.test(args);
             if (idRegex === false) return 'wrong usage';
@@ -79,41 +84,46 @@ module.exports = {
                 .catch(err => {
                     handleError(bot, __filename, msg.channel, err);
                 });
-            superagent.get(`https://bots.discord.pw/api/bots/${user.id}`)
-                .set('Authorization', discordpw_key)
-                .end((err, res) => {
-                    const data = res.body;
-                    if (err) return handleError(bot, __filename, msg.channel, err);
-                    const inv = data.invite_url.replace(/ /g, '%20');
-                    msg.channel.createMessage({
-                            content: ``,
-                            embed: {
-                                color: config.defaultColor,
-                                author: {
-                                    name: data.name,
-                                    url: data.website,
-                                    icon_url: ``
-                                },
-                                thumbnail: {
-                                    url: `${user.avatarURL}`
-                                },
-                                description: `**ID:** ${data.client_id}\n` +
-                                    `**Desc:** ${data.description}\n` +
-                                    `**Library:** ${data.library}\n` +
-                                    `**Owners:** ${JSON.stringify(data.owner_ids).replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '')}\n` +
-                                    `**Prefix:** ${data.prefix}\n` +
-                                    `**Invite:** [\`Click here\`](${inv})\n` +
-                                    `**Website:** ${data.website}`,
-                                footer: {
-                                    text: `Data from bots.discord.pw`,
-                                    icon_url: ``
-                                }
+            axios.get(`https://bots.discord.pw/api/bots/${user.id}`, {
+                headers: {
+                    'Authorization': discordpw_key,
+                    'User-Agent': USERAGENT
+                }
+            }).then(res => {
+                const data = res.data;
+                if (res.status !== 200) return handleError(bot, __filename, msg.channel, res.data);
+                const inv = data.invite_url.replace(/ /g, '%20');
+                msg.channel.createMessage({
+                        content: ``,
+                        embed: {
+                            color: config.defaultColor,
+                            author: {
+                                name: data.name,
+                                url: data.website,
+                                icon_url: ``
+                            },
+                            thumbnail: {
+                                url: `${user.avatarURL}`
+                            },
+                            description: `**ID:** ${data.client_id}\n` +
+                                `**Desc:** ${data.description}\n` +
+                                `**Library:** ${data.library}\n` +
+                                `**Owners:** ${JSON.stringify(data.owner_ids).replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '')}\n` +
+                                `**Prefix:** ${data.prefix}\n` +
+                                `**Invite:** [\`Click here\`](${inv})\n` +
+                                `**Website:** ${data.website}`,
+                            footer: {
+                                text: `Data from bots.discord.pw`,
+                                icon_url: ``
                             }
-                        })
-                        .catch(err => {
-                            handleError(bot, __filename, msg.channel, err);
-                        });
-                });
+                        }
+                    })
+                    .catch(err => {
+                        handleError(bot, __filename, msg.channel, err);
+                    });
+            }).catch(err => {
+                handleError(bot, __filename, msg.channel, err.response.data.status + ', ' + err.response.data.message);
+            });
         }
     }
 };

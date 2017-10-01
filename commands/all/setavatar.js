@@ -9,6 +9,7 @@ module.exports = {
     hidden: true,
     ownerOnly: true,
     task(bot, msg, suffix) {
+        if (!suffix) return;
         setAvatar(bot, suffix)
             .then(() => {
                 bot.createMessage(msg.channel.id, 'Avatar updated')
@@ -16,7 +17,7 @@ module.exports = {
                         handleError(bot, __filename, msg.channel, err);
                     });
             })
-            .catch(error => {
+            .catch(err => {
                 handleError(bot, __filename, msg.channel, err);
             });
     }

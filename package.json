@@ -78,7 +78,6 @@
     "rgb-hex": "^2.1.0",
     "sfwbooru": "0.0.2",
     "shakespeare-insult1.1.0": "^1.2.1",
-    "superagent": "^3.6.0",
     "to-unicode": "^1.0.2",
     "unique-random-array": "^1.0.0",
     "wunderground-api": "^1.1.4",

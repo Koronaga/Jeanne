@@ -28,6 +28,8 @@ var fs = require('fs'),
     bannedUsers = reload('./banned_users.json'),
     config = reload('./config.json');
 
+USERAGENT = '';
+
 commandsProcessed = 0;
 
 gagTimesUsed = 0;
@@ -425,38 +427,6 @@ function evaluate(msg) {
         msg.channel.createMessage(`__**Result:**__ \n${result}`);
     }
 }
-
-if (config.carbonKey) { //Send servercount to Carbon bot list
-    setInterval(() => {
-        if (bot.uptime !== 0)
-            utils.updateCarbon(config.carbonKey, bot.guilds.size);
-    }, 1800000);
-}
-
-if (config.discordlistToken) { //Send servercount to discordlist bot list
-    setInterval(() => {
-        if (bot.uptime !== 0)
-            utils.updateDiscordlist(config.discordlistToken, bot.guilds.size);
-    }, 1800000);
-}
-
-/*
-if (config.abalBotsKey) { //Send servercount to Abal's bot list
-    setInterval(() => {
-        if (bot.uptime !== 0)
-            utils.updateAbalBots(bot.user.id, config.abalBotsKey, bot.guilds.size);
-    }, 1800000);
-}
-*/
-/*
-if (config.discordbotsorg) { //Send servercount to discordbots.org
-    setInterval(() => {
-        if (bot.uptime !== 0)
-            utils.updateDiscordBots(bot.user.id, config.discordbotsorg, bot.guilds.size, bot.shards.size);
-    }, 5000);
-}
-*/
-// 1800000
 
 setInterval(() => { // Update the bot's status for each shard every 10 minutes
     if (games.length !== 0 && bot.uptime !== 0 && config.cycleGames === true) {
