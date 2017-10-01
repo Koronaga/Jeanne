@@ -1,14 +1,16 @@
 if (parseFloat(process.versions.node) < 6)
     throw new Error('Incompatible node version. Install Node 6 or higher.');
 
+let reload = require('require-reload')(require);
+
 const randomColor = require('random-color'),
     converter = require('hex2dec'),
     randomFloat = require('random-floating'),
+    sentry = reload('./config.json').raven_dsn,
     Raven = require('raven');
 Raven.config(sentry).install();
 
-var reload = require('require-reload')(require),
-    fs = require('fs'),
+var fs = require('fs'),
     Eris = require('eris'),
     formatSeconds = require("./utils/utils.js").formatSeconds,
     handleErrorNoMsg = require("./utils/utils.js").handleErrorNoMsg,
@@ -24,7 +26,6 @@ var reload = require('require-reload')(require),
     CommandManagers = [],
     events = {},
     bannedUsers = reload('./banned_users.json'),
-    sentry = reload('./config.json').raven_dsn,
     config = reload('./config.json');
 
 commandsProcessed = 0;
