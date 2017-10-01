@@ -1,6 +1,9 @@
 [![Discord](https://discordapp.com/api/guilds/240059867744698368/embed.png)](https://discord.gg/Vf4ne5b)
-[![dependencies Status](https://david-dm.org/KurozeroPB/Jeanne/status.svg)](https://david-dm.org/KurozeroPB/Jeanne)
-[![devDependencies](https://david-dm.org/KurozeroPB/Jeanne/dev-status.svg)](https://david-dm.org/KurozeroPB/Jeanne?type=dev)
+[![dependencies](https://david-dm.org/KurozeroPB/Jeanne/status.svg?style=flat-square)](https://david-dm.org/KurozeroPB/Jeanne)
+[![devDependencies](https://david-dm.org/KurozeroPB/Jeanne/dev-status.svg?style=flat-square)](https://david-dm.org/KurozeroPB/Jeanne?type=dev)
+
+[![npm](https://img.shields.io/github/release/KurozeroPB/Jeanne.svg?style=flat-square)](https://github.com/KurozeroPB/Jeanne/releases)
+[![license](https://img.shields.io/github/license/KurozeroPB/Jeanne.svg?style=flat-square)](https://choosealicense.com/licenses/gpl-3.0)
 
 # Jeanne
 Jeanne is a bot created for the discord app https://discordapp.com
