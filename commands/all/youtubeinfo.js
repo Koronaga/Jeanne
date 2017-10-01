@@ -21,7 +21,11 @@ module.exports = {
                         handleError(bot, __filename, msg.channel, err);
                     });
                 let desc = videoInfo.description;
-                desc = desc.replace(/ ?\<br\> ?/g, '\n');
+                if (!desc) {
+                    desc = 'n/a';
+                } else {
+                    desc = desc.replace(/ ?<br> ?/g, '\n');
+                }
                 msg.channel.createMessage({
                         content: ``,
                         embed: {
@@ -83,28 +87,6 @@ module.exports = {
             })
             .catch(err => {
                 handleError(bot, __filename, msg.channel, err);
-                /*
-                msg.channel.createMessage({
-                        content: ``,
-                        embed: {
-                            color: config.errorColor,
-                            author: {
-                                name: ``,
-                                url: ``,
-                                icon_url: ``
-                            },
-                            description: `\\❌ Could not get info on this video.\nMake sure you use the correct youtube url/video id!`,
-                            fields: [{
-                                name: `For support join:`,
-                                value: `https://discord.gg/Vf4ne5b`,
-                                inline: true
-                            }]
-                        }
-                    })
-                    .catch(err => {
-                        handleError(bot, __filename, msg.channel, err);
-                    });
-                    */
             });
     }
 };

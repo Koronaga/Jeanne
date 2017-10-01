@@ -33,6 +33,14 @@ module.exports = {
             .then(ani => {
                 ani.manga.searchManga(`${args}`)
                     .then(results => {
+                        if (!results) return msg.channel.createMessage(`\\❌ No results for **${args}**`)
+                            .catch(err => {
+                                handleError(bot, __filename, msg.channel, err);
+                            });
+                        if (results.error) return msg.channel.createMessage(`\\❌ No results for **${args}**`)
+                            .catch(err => {
+                                handleError(bot, __filename, msg.channel, err);
+                            });
                         var index = results.map(function (title) {
                             return title.title_romaji;
                         }).indexOf(args);

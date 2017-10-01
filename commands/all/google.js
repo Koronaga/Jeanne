@@ -26,6 +26,28 @@ module.exports = {
         google(args, (err, res) => {
             if (err) return handleError(bot, __filename, msg.channel, err);
             const data = res.links;
+            if (!data[0]) return msg.channel.createMessage(`\\❌ No results for **${args}**`)
+                .catch(err => {
+                    handleError(bot, __filename, msg.channel, err);
+                });
+            let title2;
+            let desc2;
+            if (!data[1]) {
+                title2 = 'n/a';
+                desc2 = 'n/a';
+            } else {
+                title2 = data[1].title;
+                desc2 = `${data[1].description}\n${data[1].link}`;
+            }
+            let title3;
+            let desc3;
+            if (!data[2]) {
+                title3 = 'n/a';
+                desc3 = 'n/a';
+            } else {
+                title3 = data[2].title;
+                desc3 = `${data[2].description}\n${data[2].link}`;
+            }
             msg.channel.createMessage({
                     content: ``,
                     embed: {
@@ -46,15 +68,13 @@ module.exports = {
                                 inline: false
                             },
                             {
-                                name: `${data[1].title}`,
-                                value: `${data[1].description}\n` +
-                                    `${data[1].link}\n`,
+                                name: `${title2}`,
+                                value: `${desc2}\n`,
                                 inline: false
                             },
                             {
-                                name: `${data[2].title}`,
-                                value: `${data[2].description}\n` +
-                                    `${data[2].link}\n`,
+                                name: `${title3}`,
+                                value: `${desc3}\n`,
                                 inline: false
                             }
                         ]

@@ -1,4 +1,5 @@
 module.exports = (bot, settingsManager, _config, user, oldUser) => {
+    if (!user) return;
     if (user.bot === true) return;
     if (oldUser && user.username !== oldUser.username) {
         bot.guilds.forEach(guild => {

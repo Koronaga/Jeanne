@@ -3,7 +3,8 @@ var Nf = new Intl.NumberFormat('en-US'),
     _Logger = reload('../utils/Logger.js'),
     logger,
     version = reload('../package.json').version,
-    formatSeconds = require("../utils/utils.js").formatSeconds;
+    formatSeconds = require("../utils/utils.js").formatSeconds,
+    handleErrorNoMsg = require("../utils/utils.js").handleErrorNoMsg;
 
 module.exports = (bot, config, games, utils) => {
     if (logger === undefined)
@@ -17,7 +18,7 @@ module.exports = (bot, config, games, utils) => {
     });
     logger.logWithHeader('READY', 'bgGreen', 'black', `S:${Nf.format(bot.guilds.size)} U:${Nf.format(bot.users.size)} AVG:${Nf.format((bot.users.size / bot.guilds.size).toFixed(2))}`);
     USERAGENT = `${bot.user.username}/${version} - (https://github.com/KurozeroPB/Jeanne)`;
-    /* Updates stats message in the support guild once the client is ready */
+    /* Updates stats message in the support guild once the client is ready 
     setInterval(() => {
         logger.logWithHeader('SUCCESS', 'bgGreen', 'black', 'Updated stats message');
         const version = reload('../package.json').version;
@@ -104,5 +105,5 @@ module.exports = (bot, config, games, utils) => {
                 handleErrorNoMsg(bot, __filename, err);
             });
     }, 20000);
-    /**/
+    */
 };
