@@ -1,9 +1,14 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    superagent = require('superagent'),
+    axios = require('axios'),
     moment = require('../../node_modules/moment'),
-    { flag, code, name } = require('country-emoji');
+    {
+        flag,
+        code,
+        name
+    } = require('country-emoji');
+const baseURI = 'https://api.lepeli.fr';
 
 module.exports = {
     desc: "Get info about a steam user.",
@@ -24,14 +29,24 @@ module.exports = {
                 handleError(bot, __filename, msg.channel, err);
             });
         steamTimesUsed++
-        superagent.get(`http://api.thegathering.xyz/steamid/?s=${args}&key=${config.steam_key}`)
-            .end((err, res) => {
-                if (err) {
-                    handleError(bot, __filename, msg.channel, err);
-                    return;
+        axios.get(baseURI + `/steamid/`, {
+                params: {
+                    s: args,
+                    key: config.steam_key
                 }
-                const data = res.body;
-                if (data.status != 200) return 'wrong usage';
+            })
+            .then(res => {
+                const data = res.data;
+                if (data.status != 200) return msg.channel.createMessage({
+                    content: ``,
+                    embed: {
+                        color: config.errorColor,
+                        title: `ERROR`,
+                        description: `Status: ${data.status}\nMessage: ${data.message}\n\nFor support join: https://discord.gg/Vf4ne5b`
+                    }
+                }).catch(err => {
+                    handleError(bot, __filename, msg.channel, err);
+                });
                 const lastlogoff = new Date(data.profile.lastlogoff * 1000).toISOString();
                 const timecreated = new Date(data.profile.timecreated * 1000).toISOString();
                 let location = data.profile.location;
@@ -96,6 +111,8 @@ module.exports = {
                 }).catch(err => {
                     handleError(bot, __filename, msg.channel, err);
                 });
+            }).catch(err => {
+                handleError(bot, __filename, msg.channel, err);
             });
     }
 };

@@ -6,6 +6,7 @@ const reload = require('require-reload'),
     converter = require('hex2dec'),
     randomFloat = require('random-floating'),
     rgbHex = require('rgb-hex');
+const baseURI = 'https://api.lepeli.fr';
 
 module.exports = {
     desc: "Previews a random color or a color you give in the args.",
@@ -50,6 +51,7 @@ module.exports = {
             const hex2 = hex.replace("#", "0x");
             // convert to decimal
             const dec = converter.hexToDec(`${hex2}`);
+            console.log(baseURI + `/color/index.php?color=${hex.replace("#", "")}`);
             bot.createMessage(msg.channel.id, {
                 content: ``,
                 embed: {
@@ -61,7 +63,7 @@ module.exports = {
                     },
                     description: ``,
                     thumbnail: {
-                        url: `http://api.thegathering.xyz/color/index.php?color=${hex.replace("#", "")}`
+                        url: baseURI + `/color/index.php?color=${hex.replace("#", "")}`
                     },
                     fields: [{
                             name: `Hex`,
@@ -101,7 +103,7 @@ module.exports = {
                     },
                     description: ``,
                     thumbnail: {
-                        url: `http://api.thegathering.xyz/color/index.php?color=${hex.replace("#", "")}`
+                        url: baseURI + `/color/index.php?color=${hex.replace("#", "")}`
                     },
                     fields: [{
                             name: `Hex`,
@@ -143,7 +145,7 @@ module.exports = {
                     },
                     description: ``,
                     thumbnail: {
-                        url: `http://api.thegathering.xyz/color/index.php?color=${hexcode}`
+                        url: baseURI + `/color/index.php?color=${hexcode}`
                     },
                     fields: [{
                             name: `Hex`,
