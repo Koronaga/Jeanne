@@ -2,6 +2,8 @@
 [![dependencies Status](https://david-dm.org/KurozeroPB/Jeanne/status.svg)](https://david-dm.org/KurozeroPB/Jeanne)
 [![devDependencies](https://david-dm.org/KurozeroPB/Jeanne/dev-status.svg)](https://david-dm.org/KurozeroPB/Jeanne?type=dev)
 
+[![npm](https://img.shields.io/github/release/KurozeroPB/Jeanne.svg)](https://github.com/KurozeroPB/Jeanne/releases)
+
 # Jeanne
 Jeanne is a bot created for the discord app https://discordapp.com
 
