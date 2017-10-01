@@ -1,7 +1,7 @@
 const reload = require('require-reload'),
     config = reload('../../config.json'),
     handleError = require('../../utils/utils.js').handleError,
-    booru = require('booru'),
+    booru = require('../../custom_modules/booru'),
     banned = reload('../../banned_search_terms.json');
 
 module.exports = {
@@ -113,31 +113,72 @@ rule34.paheal.net, aliases: ["pa","paheal"]`
                             var tags = tag.split(',').join(', ');
                             var img = image.common.file_url.toString(" ");
                             var imguri = img.replace(/ /g, "%20");
-                            if (imguri.length >= 3000) return msg.channel.createMessage({
-                                    content: ``,
-                                    embed: {
-                                        color: config.errorColor,
-                                        title: ``,
-                                        description: `⚠ The image url was too long and couldn\'t be send, please try again.`
-                                    }
-                                })
-                                .catch(err => {
-                                    handleError(bot, __filename, msg.channel, err);
-                                });
+                            const embedName = `Click here for the direct image url`;
+                            // Check for description length
+                            const embedDesc = `Searched tags: ${b}, ${c}\n` +
+                            `Score: ${image.common.score}\n` +
+                            `Rating: ${image.common.rating}`;
+                        if (embedDesc.length > 2048) return msg.channel.createMessage({
+                                content: ``,
+                                embed: {
+                                    color: config.errorColor,
+                                    title: ``,
+                                    description: `⚠ The embed description has too many characters and couldn\'t be send, please try again.`
+                                }
+                            })
+                            .catch(err => {
+                                handleError(bot, __filename, msg.channel, err);
+                            });
+                        //Check image url length
+                        const embedUrl = `${imguri}`;
+                        if (embedUrl.length > 1024) return msg.channel.createMessage({
+                                content: ``,
+                                embed: {
+                                    color: config.errorColor,
+                                    title: ``,
+                                    description: `⚠ The image url has too many characters and couldn\'t be send, please try again.`
+                                }
+                            })
+                            .catch(err => {
+                                handleError(bot, __filename, msg.channel, err);
+                            });
+                        // Check for title length
+                        const embedTitle = `${embedName}${embedUrl}`;
+                        if (embedTitle.length > 1280) return msg.channel.createMessage({
+                                content: ``,
+                                embed: {
+                                    color: config.errorColor,
+                                    title: ``,
+                                    description: `⚠ The embed title has too many characters and couldn\'t be send, please try again.`
+                                }
+                            })
+                            .catch(err => {
+                                handleError(bot, __filename, msg.channel, err);
+                            });
+                        // Check for total embed characters
+                        const total = `${embedTitle}${embedDesc}${embedUrl}`;
+                        if (total.length > 6000) return msg.channel.createMessage({
+                                content: ``,
+                                embed: {
+                                    color: config.errorColor,
+                                    title: ``,
+                                    description: `⚠ The embed has too many characters and couldn\'t be send, please try again.`
+                                }
+                            })
+                            .catch(err => {
+                                handleError(bot, __filename, msg.channel, err);
+                            });
                             msg.channel.createMessage({
                                 content: ``,
                                 embed: {
                                     color: config.defaultColor,
                                     author: {
-                                        name: `Click here for the direct image url`,
-                                        url: `${imguri}`,
-                                        icon_url: `${msg.author.avatarURL}`
+                                        name: embedName,
+                                        url: embedUrl
                                     },
-                                    description: `Searched tags: ${b}
-Score: ${image.common.score}
-Rating: ${image.common.rating}`,
+                                    description: embedDesc,
                                     image: {
-                                        url: `${imguri}`
+                                        url: embedUrl
                                     }
                                 }
                             }).catch(err => {
@@ -151,20 +192,20 @@ Rating: ${image.common.rating}`,
                         } else if (err.name === 'booruError') {
                             const error = `${err.name}\n${err.message}`;
                             msg.channel.createMessage({
-                                content: ``,
-                                embed: {
-                                    color: config.errorColor,
-                                    description: `${error}`,
-                                    fields: [{
-                                        name: `For support join:`,
-                                        value: `https://discord.gg/Vf4ne5b`,
-                                        inline: true
-                                    }]
-                                }
-                            })
-                            .catch(err => {
-                                handleError(bot, __filename, msg.channel, err);
-                            });
+                                    content: ``,
+                                    embed: {
+                                        color: config.errorColor,
+                                        description: `${error}`,
+                                        fields: [{
+                                            name: `For support join:`,
+                                            value: `https://discord.gg/Vf4ne5b`,
+                                            inline: true
+                                        }]
+                                    }
+                                })
+                                .catch(err => {
+                                    handleError(bot, __filename, msg.channel, err);
+                                });
                         } else {
                             handleError(bot, __filename, msg.channel, err);
                         }
@@ -209,31 +250,72 @@ Rating: ${image.common.rating}`,
                             var tags = tag.split(',').join(', ');
                             var img = image.common.file_url.toString(" ");
                             var imguri = img.replace(/ /g, "%20");
-                            if (imguri.length >= 3000) return msg.channel.createMessage({
-                                content: ``,
-                                embed: {
-                                    color: config.errorColor,
-                                    title: ``,
-                                    description: `⚠ The image url was too long and couldn\'t be send, please try again.`
-                                }
-                            })
-                            .catch(err => {
-                                handleError(bot, __filename, msg.channel, err);
-                            });
+                            const embedName = `Click here for the direct image url`;
+                            // Check for description length
+                            const embedDesc = `Searched tags: ${b}, ${c}\n` +
+                                `Score: ${image.common.score}\n` +
+                                `Rating: ${image.common.rating}`;
+                            if (embedDesc.length > 2048) return msg.channel.createMessage({
+                                    content: ``,
+                                    embed: {
+                                        color: config.errorColor,
+                                        title: ``,
+                                        description: `⚠ The embed description has too many characters and couldn\'t be send, please try again.`
+                                    }
+                                })
+                                .catch(err => {
+                                    handleError(bot, __filename, msg.channel, err);
+                                });
+                            //Check image url length
+                            const embedUrl = `${imguri}`;
+                            if (embedUrl.length > 1024) return msg.channel.createMessage({
+                                    content: ``,
+                                    embed: {
+                                        color: config.errorColor,
+                                        title: ``,
+                                        description: `⚠ The image url has too many characters and couldn\'t be send, please try again.`
+                                    }
+                                })
+                                .catch(err => {
+                                    handleError(bot, __filename, msg.channel, err);
+                                });
+                            // Check for title length
+                            const embedTitle = `${embedName}${embedUrl}`;
+                            if (embedTitle.length > 1280) return msg.channel.createMessage({
+                                    content: ``,
+                                    embed: {
+                                        color: config.errorColor,
+                                        title: ``,
+                                        description: `⚠ The embed title has too many characters and couldn\'t be send, please try again.`
+                                    }
+                                })
+                                .catch(err => {
+                                    handleError(bot, __filename, msg.channel, err);
+                                });
+                            // Check for total embed characters
+                            const total = `${embedTitle}${embedDesc}${embedUrl}`;
+                            if (total.length > 6000) return msg.channel.createMessage({
+                                    content: ``,
+                                    embed: {
+                                        color: config.errorColor,
+                                        title: ``,
+                                        description: `⚠ The embed has too many characters and couldn\'t be send, please try again.`
+                                    }
+                                })
+                                .catch(err => {
+                                    handleError(bot, __filename, msg.channel, err);
+                                });
                             msg.channel.createMessage({
                                 content: ``,
                                 embed: {
                                     color: config.defaultColor,
                                     author: {
-                                        name: `Click here for the direct image url`,
-                                        url: `${imguri}`,
-                                        icon_url: `${msg.author.avatarURL}`
+                                        name: embedName,
+                                        url: embedUrl
                                     },
-                                    description: `Searched tags: ${b}, ${c}
-Score: ${image.common.score}
-Rating: ${image.common.rating}`,
+                                    description: embedDesc,
                                     image: {
-                                        url: `${imguri}`
+                                        url: embedUrl
                                     }
                                 }
                             }).catch(err => {
@@ -247,20 +329,20 @@ Rating: ${image.common.rating}`,
                         } else if (err.name === 'booruError') {
                             const error = `${err.name}\n${err.message}`;
                             msg.channel.createMessage({
-                                content: ``,
-                                embed: {
-                                    color: config.errorColor,
-                                    description: `${error}`,
-                                    fields: [{
-                                        name: `For support join:`,
-                                        value: `https://discord.gg/Vf4ne5b`,
-                                        inline: true
-                                    }]
-                                }
-                            })
-                            .catch(err => {
-                                handleError(bot, __filename, msg.channel, err);
-                            });
+                                    content: ``,
+                                    embed: {
+                                        color: config.errorColor,
+                                        description: `${error}`,
+                                        fields: [{
+                                            name: `For support join:`,
+                                            value: `https://discord.gg/Vf4ne5b`,
+                                            inline: true
+                                        }]
+                                    }
+                                })
+                                .catch(err => {
+                                    handleError(bot, __filename, msg.channel, err);
+                                });
                         } else {
                             handleError(bot, __filename, msg.channel, err);
                         }

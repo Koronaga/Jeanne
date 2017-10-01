@@ -37,9 +37,10 @@ module.exports = {
         /* PLAYSTATION */
         if (system === 'psn') {
             let sentMsgID = "";
-            bot.createMessage(msg.channel.id, '\\✅ Getting account stats please wait a few seconds.')
+            bot.createMessage(msg.channel.id, '\\🔶 Getting account stats please wait a few seconds.')
                 .then(sentMsg => {
-                    return sentMsgID = sentMsg.id;
+                    sentMsgID = sentMsg.id;
+                    return sentMsgID;
                 })
                 .catch(err => {
                     handleError(bot, __filename, msg.channel, err);
@@ -49,6 +50,10 @@ module.exports = {
                     displayName: `${username}`
                 })
                 .then(res => {
+                    if (!res[0]) return msg.channel.editMessage(sentMsgID, '\\❌ Could not find player!')
+                        .catch(err => {
+                            handleError(bot, __filename, msg.channel, err);
+                        });
                     const memID = res[0].membershipId;
                     destiny.accountStats({
                             membershipType: DestinyApi.psn,
@@ -321,7 +326,7 @@ module.exports = {
                             }
                         })
                         .catch(err => {
-                            msg.channel.createMessage('\\❌ Could not find account stats!')
+                            msg.channel.editMessage(sentMsgID, '\\❌ Could not find account stats!')
                                 .catch(err => {
                                     handleError(bot, __filename, msg.channel, err);
                                 });
@@ -329,7 +334,7 @@ module.exports = {
                         });
                 })
                 .catch(err => {
-                    msg.channel.createMessage('\\❌ Could not find player!')
+                    msg.channel.editMessage(sentMsgID, '\\❌ Could not find player!')
                         .catch(err => {
                             handleError(bot, __filename, msg.channel, err);
                         });
@@ -339,9 +344,10 @@ module.exports = {
         /* XBOX */
         else if (system === 'xbox') {
             let sentMsgID = "";
-            bot.createMessage(msg.channel.id, '\\✅ Getting account stats please wait a few seconds.')
+            bot.createMessage(msg.channel.id, '\\🔶 Getting account stats please wait a few seconds.')
                 .then(sentMsg => {
-                    return sentMsgID = sentMsg.id;
+                    sentMsgID = sentMsg.id;
+                    return sentMsgID;
                 })
                 .catch(err => {
                     handleError(bot, __filename, msg.channel, err);
@@ -351,6 +357,10 @@ module.exports = {
                     displayName: `${username}`
                 })
                 .then(res => {
+                    if (!res[0]) return msg.channel.editMessage(sentMsgID, '\\❌ Could not find player!')
+                        .catch(err => {
+                            handleError(bot, __filename, msg.channel, err);
+                        });
                     const memID = res[0].membershipId;
                     destiny.accountStats({
                             membershipType: DestinyApi.xbox,
@@ -623,7 +633,7 @@ module.exports = {
                             }
                         })
                         .catch(err => {
-                            msg.channel.createMessage('\\❌ Could not find account stats!')
+                            msg.channel.editMessage(sentMsgID, '\\❌ Could not find account stats!')
                                 .catch(err => {
                                     handleError(bot, __filename, msg.channel, err);
                                 });
@@ -631,7 +641,7 @@ module.exports = {
                         });
                 })
                 .catch(err => {
-                    msg.channel.createMessage('\\❌ Could not find player!')
+                    msg.channel.editMessage(sentMsgID, '\\❌ Could not find player!')
                         .catch(err => {
                             handleError(bot, __filename, msg.channel, err);
                         });
