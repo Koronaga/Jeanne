@@ -1,9 +1,9 @@
 var fs = require('fs'),
-    axios = require('axios'),
-    reload = require('require-reload'),
-    logger = new(reload('./Logger.js'))((reload('../config.json')).logTimestamp),
-    sentry = reload('../config.json').raven_dsn,
-    Raven = require('raven');
+  axios = require('axios'),
+  reload = require('require-reload'),
+  logger = new(reload('./Logger.js'))((reload('../config.json')).logTimestamp),
+  sentry = reload('../config.json').raven_dsn,
+  Raven = require('raven');
 Raven.config(sentry).install();
 var config = reload('../config.json');
 
@@ -23,39 +23,39 @@ var config = reload('../config.json');
  */
 
 exports.safeSave = (file, ext, data, minSize = 5, log = true) => {
-    return new Promise((resolve, reject) => {
-        if (!file || !ext || !data)
-            return reject(new Error('Invalid arguments'));
-        if (file.startsWith('/')) file = file.substr(1);
-        if (!ext.startsWith('.')) ext = '.' + ext;
+  return new Promise((resolve, reject) => {
+    if (!file || !ext || !data)
+      return reject(new Error('Invalid arguments'));
+    if (file.startsWith('/')) file = file.substr(1);
+    if (!ext.startsWith('.')) ext = '.' + ext;
 
-        fs.writeFile(`${__dirname}/../${file}-temp${ext}`, data, error => {
-            if (error) {
-                logger.error(error, 'SAFE SAVE WRITE');
-                reject(error);
-            } else {
-                fs.stat(`${__dirname}/../${file}-temp${ext}`, (err, stats) => {
-                    if (err) {
-                        logger.error(err, 'SAFE SAVE STAT');
-                        reject(err);
-                    } else if (stats["size"] < minSize) {
-                        logger.debug('Prevented file from being overwritten', 'SAFE SAVE');
-                        resolve(false);
-                    } else {
-                        fs.rename(`${__dirname}/../${file}-temp${ext}`, `${__dirname}/../${file}${ext}`, e => {
-                            if (e) {
-                                logger.error(e, 'SAFE SAVE RENAME');
-                                reject(e);
-                            } else
-                                resolve(true);
-                        });
-                        if (log === true)
-                            logger.debug(`Updated ${file}${ext}`, 'SAFE SAVE');
-                    }
-                });
-            }
+    fs.writeFile(`${__dirname}/../${file}-temp${ext}`, data, error => {
+      if (error) {
+        logger.error(error, 'SAFE SAVE WRITE');
+        reject(error);
+      } else {
+        fs.stat(`${__dirname}/../${file}-temp${ext}`, (err, stats) => {
+          if (err) {
+            logger.error(err, 'SAFE SAVE STAT');
+            reject(err);
+          } else if (stats["size"] < minSize) {
+            logger.debug('Prevented file from being overwritten', 'SAFE SAVE');
+            resolve(false);
+          } else {
+            fs.rename(`${__dirname}/../${file}-temp${ext}`, `${__dirname}/../${file}${ext}`, e => {
+              if (e) {
+                logger.error(e, 'SAFE SAVE RENAME');
+                reject(e);
+              } else
+                resolve(true);
+            });
+            if (log === true)
+              logger.debug(`Updated ${file}${ext}`, 'SAFE SAVE');
+          }
         });
+      }
     });
+  });
 }
 
 /**
@@ -81,20 +81,20 @@ exports.findMember = (query, guild, exact = false) => {
 }
 */
 exports.findMember = (msg, str) => {
-    if (!str || str === '') return false
-    const guild = msg.channel.guild
-    if (!guild) return msg.mentions[0] ? msg.mentions[0] : false
-    if (/^\d{17,18}/.test(str) || /^<@!?\d{17,18}>/.test(str)) {
-        const member = guild.members.get(/^<@!?\d{17,18}>/.test(str) ? str.replace(/<@!?/, '').replace('>', '') : str)
-        return member ? member.user : false
-    } else if (str.length <= 33) {
-        const isMemberName = (name, str) => name === str || name.startsWith(str) || name.includes(str)
-        const member = guild.members.find(m => {
-            if (m.nick && isMemberName(m.nick.toLowerCase(), str.toLowerCase())) return true
-            return isMemberName(m.user.username.toLowerCase(), str.toLowerCase())
-        })
-        return member ? member.user : false
-    } else return false
+  if (!str || str === '') return false
+  const guild = msg.channel.guild
+  if (!guild) return msg.mentions[0] ? msg.mentions[0] : false
+  if (/^\d{17,18}/.test(str) || /^<@!?\d{17,18}>/.test(str)) {
+    const member = guild.members.get(/^<@!?\d{17,18}>/.test(str) ? str.replace(/<@!?/, '').replace('>', '') : str)
+    return member ? member.user : false
+  } else if (str.length <= 33) {
+    const isMemberName = (name, str) => name === str || name.startsWith(str) || name.includes(str)
+    const member = guild.members.find(m => {
+      if (m.nick && isMemberName(m.nick.toLowerCase(), str.toLowerCase())) return true
+      return isMemberName(m.user.username.toLowerCase(), str.toLowerCase())
+    })
+    return member ? member.user : false
+  } else return false
 }
 
 /**
@@ -105,29 +105,29 @@ exports.findMember = (msg, str) => {
  * @returns {?Eris.User} The found User.
  */
 exports.findUserInGuild = (query, guild, exact = false) => {
-    let found = null;
-    if (query === undefined || guild === undefined)
-        return found;
-    query = query.toLowerCase();
-    guild.members.forEach(m => {
-        if (m.user.username.toLowerCase() === query) found = m;
-    });
-    if (!found) guild.members.forEach(m => {
-        if (m.nick !== null && m.nick.toLowerCase() === query) found = m;
-    });
-    if (!found && exact === false) guild.members.forEach(m => {
-        if (m.user.username.toLowerCase().indexOf(query) === 0) found = m;
-    });
-    if (!found && exact === false) guild.members.forEach(m => {
-        if (m.nick !== null && m.nick.toLowerCase().indexOf(query) === 0) found = m;
-    });
-    if (!found && exact === false) guild.members.forEach(m => {
-        if (m.user.username.toLowerCase().includes(query)) found = m;
-    });
-    if (!found && exact === false) guild.members.forEach(m => {
-        if (m.nick !== null && m.nick.toLowerCase().includes(query)) found = m;
-    });
-    return found === null ? found : found.user;
+  let found = null;
+  if (query === undefined || guild === undefined)
+    return found;
+  query = query.toLowerCase();
+  guild.members.forEach(m => {
+    if (m.user.username.toLowerCase() === query) found = m;
+  });
+  if (!found) guild.members.forEach(m => {
+    if (m.nick !== null && m.nick.toLowerCase() === query) found = m;
+  });
+  if (!found && exact === false) guild.members.forEach(m => {
+    if (m.user.username.toLowerCase().indexOf(query) === 0) found = m;
+  });
+  if (!found && exact === false) guild.members.forEach(m => {
+    if (m.nick !== null && m.nick.toLowerCase().indexOf(query) === 0) found = m;
+  });
+  if (!found && exact === false) guild.members.forEach(m => {
+    if (m.user.username.toLowerCase().includes(query)) found = m;
+  });
+  if (!found && exact === false) guild.members.forEach(m => {
+    if (m.nick !== null && m.nick.toLowerCase().includes(query)) found = m;
+  });
+  return found === null ? found : found.user;
 }
 
 /**
@@ -137,20 +137,20 @@ exports.findUserInGuild = (query, guild, exact = false) => {
  * @arg {Number} server_count Server count.
  */
 exports.updateAbalBots = (id, key, server_count) => {
-    if (!key || !server_count) return;
-    axios.post(`https://bots.discord.pw/api/bots/${id}/stats`, {
-        server_count
-    }, {
-        headers: {
-            'Authorization': key,
-            'User-Agent': USERAGENT
-        }
-    }).then(res => {
-        if (res.status !== 200) return logger.error(res.status || res.data, 'ABAL BOT LIST UPDATE ERROR');
-        logger.debug('Updated bot server count to ' + server_count, 'ABAL BOT LIST UPDATE');
-    }).catch(err => {
-        logger.error(`${err}\n${JSON.stringify(err.response.data)}`, 'ABAL BOT LIST UPDATE ERROR');
-    });
+  if (!key || !server_count) return;
+  axios.post(`https://bots.discord.pw/api/bots/${id}/stats`, {
+    server_count
+  }, {
+    headers: {
+      'Authorization': key,
+      'User-Agent': USERAGENT
+    }
+  }).then(res => {
+    if (res.status !== 200) return logger.error(res.status || res.data, 'ABAL BOT LIST UPDATE ERROR');
+    logger.debug('Updated bot server count to ' + server_count, 'ABAL BOT LIST UPDATE');
+  }).catch(err => {
+    logger.error(`${err}\n${JSON.stringify(err.response.data)}`, 'ABAL BOT LIST UPDATE ERROR');
+  });
 }
 
 /**
@@ -161,21 +161,21 @@ exports.updateAbalBots = (id, key, server_count) => {
  * @arg {Number} shard_count Shard count.
  */
 exports.updateDiscordBots = (id, key, server_count, shard_count) => {
-    if (!key || !server_count) return;
-    axios.post(`https://discordbots.org/api/bots/${id}/stats`, {
-        server_count,
-        shard_count
-    }, {
-        headers: {
-            'Authorization': key,
-            'User-Agent': USERAGENT
-        }
-    }).then(res => {
-        if (res.status !== 200) return logger.error(res.status || res.data, 'BOTS .ORG LIST UPDATE ERROR');
-        logger.debug('Updated bot server count to ' + server_count, 'BOTS .ORG LIST UPDATE');
-    }).catch(err => {
-        logger.error(`${err}\n${JSON.stringify(err.response.data)}`, 'BOTS .ORG LIST UPDATE ERROR');
-    });
+  if (!key || !server_count) return;
+  axios.post(`https://discordbots.org/api/bots/${id}/stats`, {
+    server_count,
+    shard_count
+  }, {
+    headers: {
+      'Authorization': key,
+      'User-Agent': USERAGENT
+    }
+  }).then(res => {
+    if (res.status !== 200) return logger.error(res.status || res.data, 'BOTS .ORG LIST UPDATE ERROR');
+    logger.debug('Updated bot server count to ' + server_count, 'BOTS .ORG LIST UPDATE');
+  }).catch(err => {
+    logger.error(`${err}\n${JSON.stringify(err.response.data)}`, 'BOTS .ORG LIST UPDATE ERROR');
+  });
 }
 
 /**
@@ -185,31 +185,31 @@ exports.updateDiscordBots = (id, key, server_count, shard_count) => {
  * @returns {Promise}
  */
 exports.setAvatar = (bot, url) => {
-    return new Promise((resolve, reject) => {
-        if (bot !== undefined && typeof url === 'string') {
-            axios.get(url, {
-                    headers: {
-                        'User-Agent': USERAGENT
-                    },
-                    responseType: 'arraybuffer'
-                })
-                .then(res => {
-                    if (res.status === 200) {
-                        bot.editSelf({
-                                avatar: `data:${res.headers['content-type']};base64,${res.data.toString('base64')}`
-                            })
-                            .then(resolve)
-                            .catch(reject);
-                    } else {
-                        reject('Got status code ' + res.status || res.data);
-                    }
-                }).catch(err => {
-                    reject(err.response.data.status + ', ' + err.response.data.message);
-                });
-        } else {
-            reject('Invalid parameters');
-        }
-    });
+  return new Promise((resolve, reject) => {
+    if (bot !== undefined && typeof url === 'string') {
+      axios.get(url, {
+          headers: {
+            'User-Agent': USERAGENT
+          },
+          responseType: 'arraybuffer'
+        })
+        .then(res => {
+          if (res.status === 200) {
+            bot.editSelf({
+                avatar: `data:${res.headers['content-type']};base64,${res.data.toString('base64')}`
+              })
+              .then(resolve)
+              .catch(reject);
+          } else {
+            reject('Got status code ' + res.status || res.data);
+          }
+        }).catch(err => {
+          reject(err.response.data.status + ', ' + err.response.data.message);
+        });
+    } else {
+      reject('Invalid parameters');
+    }
+  });
 }
 
 /**
@@ -218,26 +218,26 @@ exports.setAvatar = (bot, url) => {
  * @returns {String} The formatted time.
  */
 exports.formatTime = milliseconds => {
-    let daysText = 'days';
-    let hoursText = 'hours';
-    let minutesText = 'minutes';
-    let secondsText = 'seconds';
+  let daysText = 'days';
+  let hoursText = 'hours';
+  let minutesText = 'minutes';
+  let secondsText = 'seconds';
 
-    let s = milliseconds / 1000;
-    let seconds = (s % 60).toFixed(0);
-    s /= 60;
-    let minutes = (s % 60).toFixed(0);
-    s /= 60;
-    let hours = (s % 24).toFixed(0);
-    s /= 24;
-    let days = s.toFixed(0);
+  let s = milliseconds / 1000;
+  let seconds = (s % 60).toFixed(0);
+  s /= 60;
+  let minutes = (s % 60).toFixed(0);
+  s /= 60;
+  let hours = (s % 24).toFixed(0);
+  s /= 24;
+  let days = s.toFixed(0);
 
-    if (days === 1) daysText = 'day';
-    if (hours === 1) hoursText = 'hour';
-    if (minutes === 1) minutesText = 'minute';
-    if (seconds === 1) secondsText = 'second';
+  if (days === 1) daysText = 'day';
+  if (hours === 1) hoursText = 'hour';
+  if (minutes === 1) minutesText = 'minute';
+  if (seconds === 1) secondsText = 'second';
 
-    return `${days} ${daysText}, ${hours} ${hoursText}, ${minutes} ${minutesText}, and ${seconds} ${secondsText}`;
+  return `${days} ${daysText}, ${hours} ${hoursText}, ${minutes} ${minutesText}, and ${seconds} ${secondsText}`;
 }
 
 /**
@@ -246,15 +246,15 @@ exports.formatTime = milliseconds => {
  * @returns {String} The formatted time.
  */
 exports.formatSeconds = time => {
-    let days = Math.floor((time % 31536000) / 86400);
-    let hours = Math.floor(((time % 31536000) % 86400) / 3600);
-    let minutes = Math.floor((((time % 31536000) % 86400) % 3600) / 60);
-    let seconds = Math.round((((time % 31536000) % 86400) % 3600) % 60);
-    days = days > 9 ? days : days
-    hours = hours > 9 ? hours : hours
-    minutes = minutes > 9 ? minutes : minutes
-    seconds = seconds > 9 ? seconds : seconds
-    return `${days} days, ${hours} hours, ${minutes} minutes and ${seconds} seconds`
+  let days = Math.floor((time % 31536000) / 86400);
+  let hours = Math.floor(((time % 31536000) % 86400) / 3600);
+  let minutes = Math.floor((((time % 31536000) % 86400) % 3600) / 60);
+  let seconds = Math.round((((time % 31536000) % 86400) % 3600) % 60);
+  days = days > 9 ? days : days
+  hours = hours > 9 ? hours : hours
+  minutes = minutes > 9 ? minutes : minutes
+  seconds = seconds > 9 ? seconds : seconds
+  return `${days} days, ${hours} hours, ${minutes} minutes and ${seconds} seconds`
 }
 /**
  * Another way to convert to human readable form
@@ -262,45 +262,45 @@ exports.formatSeconds = time => {
  * @returns {String} The formatted time.
  */
 exports.formatYTSeconds = time => {
-    let hoursText = 'hours';
-    let minutesText = 'minutes';
-    let secondsText = 'seconds';
+  let hoursText = 'hours';
+  let minutesText = 'minutes';
+  let secondsText = 'seconds';
 
-    let hours = Math.floor(((time % 31536000) % 86400) / 3600);
-    let minutes = Math.floor((((time % 31536000) % 86400) % 3600) / 60);
-    let seconds = Math.round((((time % 31536000) % 86400) % 3600) % 60);
-    hours = hours > 9 ? hours : hours
-    minutes = minutes > 9 ? minutes : minutes
-    seconds = seconds > 9 ? seconds : seconds
-    if (hours === 1) hoursText = 'hour';
-    if (minutes === 1) minutesText = 'minute';
-    if (seconds === 1) secondsText = 'second';
+  let hours = Math.floor(((time % 31536000) % 86400) / 3600);
+  let minutes = Math.floor((((time % 31536000) % 86400) % 3600) / 60);
+  let seconds = Math.round((((time % 31536000) % 86400) % 3600) % 60);
+  hours = hours > 9 ? hours : hours
+  minutes = minutes > 9 ? minutes : minutes
+  seconds = seconds > 9 ? seconds : seconds
+  if (hours === 1) hoursText = 'hour';
+  if (minutes === 1) minutesText = 'minute';
+  if (seconds === 1) secondsText = 'second';
 
-    return `${hours} ${hoursText}, ${minutes} ${minutesText} and ${seconds} ${secondsText}`
+  return `${hours} ${hoursText}, ${minutes} ${minutesText} and ${seconds} ${secondsText}`
 }
 
 /** Check for a newer version of Jeanne d'Arc */
 exports.checkForUpdates = () => {
-    let version = ~~(require('../package.json').version.split('.').join('')); //This is used to convert it to a number that can be compared
-    axios.get('https://raw.githubusercontent.com/kurozeroPB/Jeanne/master/package.json')
-        .then(res => {
-            if (res.status !== 200) {
-                logger.warn(`Error checking for updates: ${res.data}`);
-            } else {
-                let latest = ~~(res.data.version.split('.').join(''));
-                if (latest > version) logger.warn('A new version of Shinobu is avalible', 'OUT OF DATE');
-            }
-        }).catch(err => {
-            logger.warn(`Error checking for updates:\n${err.response.data.status + ', ' + err.response.data.message}`);
-        });
+  let version = ~~(require('../package.json').version.split('.').join('')); //This is used to convert it to a number that can be compared
+  axios.get('https://raw.githubusercontent.com/kurozeroPB/Jeanne/master/package.json')
+    .then(res => {
+      if (res.status !== 200) {
+        logger.warn(`Error checking for updates: ${res.data}`);
+      } else {
+        let latest = ~~(res.data.version.split('.').join(''));
+        if (latest > version) logger.warn('A new version of Shinobu is avalible', 'OUT OF DATE');
+      }
+    }).catch(err => {
+      logger.warn(`Error checking for updates:\n${err.response.data.status + ', ' + err.response.data.message}`);
+    });
 }
 /**
  * @param {number} value number that needs to be rounded
  * @param {number} precision number thing
  */
 exports.round = (value, precision) => {
-    var multiplier = Math.pow(10, precision || 0);
-    return Math.round(value * multiplier) / multiplier;
+  var multiplier = Math.pow(10, precision || 0);
+  return Math.round(value * multiplier) / multiplier;
 }
 /**
  * Get a random int
@@ -308,7 +308,7 @@ exports.round = (value, precision) => {
  * @param {number} max maximum number
  */
 exports.getRandomInt = (min, max) => {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 /**
  * Handle an error with a message
@@ -318,38 +318,38 @@ exports.getRandomInt = (min, max) => {
  * @param {object|string} error the error that was returned
  */
 exports.handleError = (bot, commandUsed, channel, error) => {
-    Raven.captureException(error);
-    channel.createMessage({
-            content: ``,
-            embed: {
-                color: config.errorColor,
-                author: {
-                    name: ``,
-                    url: ``,
-                    icon_url: ``
-                },
-                description: `${error}\n\nFor support join: https://discord.gg/Vf4ne5b`
-            }
-        })
-        .then(() => {
-            bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
-                    embeds: [{
-                        color: config.errorColor,
-                        title: `${commandUsed}`,
-                        description: `**${new Date().toLocaleString()}**\n\n${error}\n${error.stack}`,
-                    }],
-                    username: `${bot.user.username}`,
-                    avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`,
+  Raven.captureException(error);
+  channel.createMessage({
+      content: ``,
+      embed: {
+        color: config.errorColor,
+        author: {
+          name: ``,
+          url: ``,
+          icon_url: ``
+        },
+        description: `${error}\n\nFor support join: https://discord.gg/Vf4ne5b`
+      }
+    })
+    .then(() => {
+      bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
+          embeds: [{
+            color: config.errorColor,
+            title: `${commandUsed}`,
+            description: `**${new Date().toLocaleString()}**\n\n${error}\n${error.stack}`,
+          }],
+          username: `${bot.user.username}`,
+          avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`,
 
-                })
-                .catch(err => {
-                    logger.error(err, 'ERROR');
-                });
-            logger.error(error, 'ERROR');
         })
         .catch(err => {
-            logger.error(err, 'ERROR');
+          logger.error(err, 'ERROR');
         });
+      logger.error(error, 'ERROR');
+    })
+    .catch(err => {
+      logger.error(err, 'ERROR');
+    });
 }
 /**
  * Handle an error with a message
@@ -358,20 +358,20 @@ exports.handleError = (bot, commandUsed, channel, error) => {
  * @param {object|string} error the error that was returned
  */
 exports.handleErrorNoMsg = (bot, commandUsed, error) => {
-    Raven.captureException(error);
-    bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
-            embeds: [{
-                color: config.errorColor,
-                title: `${commandUsed}`,
-                description: `**${new Date().toLocaleString()}**\n\n${error}\n${error.stack}`,
-            }],
-            username: `${bot.user.username}`,
-            avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`
-        })
-        .catch(err => {
-            logger.error(err, 'ERROR');
-        });
-    logger.error(error, 'ERROR');
+  Raven.captureException(error);
+  bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
+      embeds: [{
+        color: config.errorColor,
+        title: `${commandUsed}`,
+        description: `**${new Date().toLocaleString()}**\n\n${error}\n${error.stack}`,
+      }],
+      username: `${bot.user.username}`,
+      avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`
+    })
+    .catch(err => {
+      logger.error(err, 'ERROR');
+    });
+  logger.error(error, 'ERROR');
 }
 
 /**
@@ -383,27 +383,27 @@ exports.handleErrorNoMsg = (bot, commandUsed, error) => {
  * @returns {Array} array of items in [[key,value],[key,value],...] format.
  */
 exports.sortProperties = (obj, sortedBy, isNumericSort, reverse) => {
-    sortedBy = sortedBy || 1; // by default first key
-    isNumericSort = isNumericSort || false; // by default text sort
-    reverse = reverse || false; // by default no reverse
+  sortedBy = sortedBy || 1; // by default first key
+  isNumericSort = isNumericSort || false; // by default text sort
+  reverse = reverse || false; // by default no reverse
 
-    var reversed = (reverse) ? -1 : 1;
+  var reversed = (reverse) ? -1 : 1;
 
-    var sortable = [];
-    for (var key in obj) {
-        if (obj.hasOwnProperty(key)) {
-            sortable.push([key, obj[key]]);
-        }
+  var sortable = [];
+  for (var key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      sortable.push([key, obj[key]]);
     }
-    if (isNumericSort)
-        sortable.sort(function (a, b) {
-            return reversed * (a[1][sortedBy] - b[1][sortedBy]);
-        });
-    else
-        sortable.sort(function (a, b) {
-            var x = a[1][sortedBy].toLowerCase(),
-                y = b[1][sortedBy].toLowerCase();
-            return x < y ? reversed * -1 : x > y ? reversed : 0;
-        });
-    return sortable; // array in format [ [ key1, val1 ], [ key2, val2 ], ... ]
+  }
+  if (isNumericSort)
+    sortable.sort(function (a, b) {
+      return reversed * (a[1][sortedBy] - b[1][sortedBy]);
+    });
+  else
+    sortable.sort(function (a, b) {
+      var x = a[1][sortedBy].toLowerCase(),
+        y = b[1][sortedBy].toLowerCase();
+      return x < y ? reversed * -1 : x > y ? reversed : 0;
+    });
+  return sortable; // array in format [ [ key1, val1 ], [ key2, val2 ], ... ]
 }

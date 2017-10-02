@@ -1,30 +1,30 @@
 const reload = require('require-reload'),
-    config = reload('../../config.json'),
-    handleError = require('../../utils/utils.js').handleError;
+  config = reload('../../config.json'),
+  handleError = require('../../utils/utils.js').handleError;
 
 module.exports = {
-    desc: "Get all the stats ",
-    usage: "<page_number> \` (total of 6 pages in alphabetical order)",
-    aliases: ['cmdusage'],
-    cooldown: 5,
-    guildOnly: true,
-    task(bot, msg, args) {
-        /**
-         * perm checks
-         * @param {boolean} sendMessages - Checks if the bots permissions has sendMessages
-         * @param {boolean} embedLinks - Checks if the bots permissions has embedLinks
-         */
-        const sendMessages = msg.channel.permissionsOf(bot.user.id).has('sendMessages');
-        const embedLinks = msg.channel.permissionsOf(bot.user.id).has('embedLinks');
-        if (sendMessages === false) return;
-        if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
-            .catch(err => {
-                handleError(bot, __filename, msg.channel, err);
-            });
-        if (!args) return 'wrong usage';
-        cmdusageTimesUsed++
-        if (args === '1') {
-            msg.channel.createMessage(`\`\`\`
+  desc: "Get all the stats ",
+  usage: "<page_number> \` (total of 6 pages in alphabetical order)",
+  aliases: ['cmdusage'],
+  cooldown: 5,
+  guildOnly: true,
+  task(bot, msg, args) {
+    /**
+     * perm checks
+     * @param {boolean} sendMessages - Checks if the bots permissions has sendMessages
+     * @param {boolean} embedLinks - Checks if the bots permissions has embedLinks
+     */
+    const sendMessages = msg.channel.permissionsOf(bot.user.id).has('sendMessages');
+    const embedLinks = msg.channel.permissionsOf(bot.user.id).has('embedLinks');
+    if (sendMessages === false) return;
+    if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
+      .catch(err => {
+        handleError(bot, __filename, msg.channel, err);
+      });
+    if (!args) return 'wrong usage';
+    cmdusageTimesUsed++
+    if (args === '1') {
+      msg.channel.createMessage(`\`\`\`
 Total           -   ${commandsProcessed}
 
 j:9gag          -   ${gagTimesUsed}
@@ -50,10 +50,10 @@ j:character     -   ${characterTimesUsed}
 
 page 1/7
 \`\`\``).catch(err => {
-                handleError(bot, __filename, msg.channel, err);
-            });
-        } else if (args === '2') {
-            msg.channel.createMessage(`\`\`\`
+        handleError(bot, __filename, msg.channel, err);
+      });
+    } else if (args === '2') {
+      msg.channel.createMessage(`\`\`\`
 Total               -   ${commandsProcessed}
 
 j:choose            -   ${chooseTimesUsed}
@@ -79,10 +79,10 @@ j:guild roles       -   ${guildrolesTimesUsed}
 
 page 2/7
 \`\`\``).catch(err => {
-                handleError(bot, __filename, msg.channel, err);
-            });
-        } else if (args === '3') {
-            msg.channel.createMessage(`\`\`\`
+        handleError(bot, __filename, msg.channel, err);
+      });
+    } else if (args === '3') {
+      msg.channel.createMessage(`\`\`\`
 Total           -   ${commandsProcessed}
 
 j:hackban       -   ${hackbanTimesUsed}
@@ -109,10 +109,10 @@ j:manga         -   ${mangaTimesUsed}
 
 page 3/7
 \`\`\``).catch(err => {
-                handleError(bot, __filename, msg.channel, err);
-            });
-        } else if (args === '4') {
-            msg.channel.createMessage(`\`\`\`
+        handleError(bot, __filename, msg.channel, err);
+      });
+    } else if (args === '4') {
+      msg.channel.createMessage(`\`\`\`
 Total           -   ${commandsProcessed}
 
 j:mariomaker    -   ${mariomakerTimesUsed}
@@ -138,10 +138,10 @@ j:radio join    -   ${radioJoinTimesUsed}
 
 page 4/7
 \`\`\``).catch(err => {
-                handleError(bot, __filename, msg.channel, err);
-            });
-        } else if (args === '5') {
-            msg.channel.createMessage(`\`\`\`
+        handleError(bot, __filename, msg.channel, err);
+      });
+    } else if (args === '5') {
+      msg.channel.createMessage(`\`\`\`
 Total           -   ${commandsProcessed}
 
 j:radio leave   -   ${radioLeaveTimesUsed}
@@ -167,10 +167,10 @@ j:spin          -   ${spinTimesUsed}
 
 page 5/7
 \`\`\``).catch(err => {
-                handleError(bot, __filename, msg.channel, err);
-            });
-        } else if (args === '6') {
-            msg.channel.createMessage(`\`\`\`
+        handleError(bot, __filename, msg.channel, err);
+      });
+    } else if (args === '6') {
+      msg.channel.createMessage(`\`\`\`
 Total           -   ${commandsProcessed}
 
 j:stare         -   ${stareTimesUsed}
@@ -196,10 +196,10 @@ j:weather       -   ${weatherTimesUsed}
 
 page 6/7
 \`\`\``).catch(err => {
-                handleError(bot, __filename, msg.channel, err);
-            });
-        } else if (args === '7') {
-            msg.channel.createMessage(`\`\`\`
+        handleError(bot, __filename, msg.channel, err);
+      });
+    } else if (args === '7') {
+      msg.channel.createMessage(`\`\`\`
 Total           -   ${commandsProcessed}
             
 j:youtubeinfo   -   ${youtubeinfoTimesUsed}
@@ -207,8 +207,8 @@ j:youtubesearch -   ${youtubesearchTimesUsed}
             
 page 7/7
 \`\`\``).catch(err => {
-                handleError(bot, __filename, msg.channel, err);
-            });
-        }
+        handleError(bot, __filename, msg.channel, err);
+      });
     }
+  }
 };
