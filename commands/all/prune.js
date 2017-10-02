@@ -29,12 +29,12 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     pruneTimesUsed++
+    var limit;
     if (!suffix) {
-      var limit = 50 + 1; // +1 for the command message kek
+      limit = 50 + 1;
     } else if (suffix) {
-      var count = parseInt(suffix),
-        msgTodelete = count + 1, // yea same here nugget
-        limit = msgTodelete;
+      var count = parseInt(suffix);
+      limit = count + 1;
       if (count > 100) return msg.channel.createMessage({
           content: ``,
           embed: {
@@ -48,33 +48,7 @@ module.exports = {
         });
     }
     bot.purgeChannel(msg.channel.id, limit)
-      .then(del => {
-        const delmsg = del; // Don't count the command message
-        bot.createMessage(msg.channel.id, {
-          content: ``,
-          embed: {
-            color: config.defaultColor,
-            author: {
-              name: ``,
-              url: ``,
-              icon_url: ``
-            },
-            description: `Deleted: ${delmsg} messages`,
-            footer: {
-              text: `This message will auto delete in 3 seconds`
-            }
-          }
-        }).then(sentMsg => {
-          setTimeout(() => {
-            bot.deleteMessage(sentMsg.channel.id, sentMsg.id)
-              .catch(err => {
-                handleError(bot, __filename, msg.channel, err);
-              });
-          }, 3000);
-        }).catch(err => {
-          handleError(bot, __filename, msg.channel, err);
-        });
-      }).catch(err => {
+      .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
   }
