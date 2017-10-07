@@ -22,7 +22,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    aboutTimesUsed++
     const prefix = Object.keys(config.commandSets);
     msg.channel.createMessage({
         content: ``,

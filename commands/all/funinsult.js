@@ -22,7 +22,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    funinsultTimesUsed++
     if (!args) {
       const insult = adorasult();
       bot.createMessage(msg.channel.id, {

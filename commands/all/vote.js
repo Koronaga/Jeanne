@@ -9,13 +9,11 @@ module.exports = {
   guildOnly: true,
   task(bot, msg, args) {
     /* Check for author's nickname */
-    let voteAuthor;
+    let voteAuthor = msg.author.username;
     if (msg.author.nickname) voteAuthor = msg.author.nickname;
-    if (!msg.author.nickname) voteAuthor = msg.author.username;
     /* Check for author's avatarURL */
-    let voteAuthorAvatar;
+    let voteAuthorAvatar = msg.author.defaultAvatarURL;
     if (msg.author.avatarURL) voteAuthorAvatar = msg.author.avatarURL;
-    if (!msg.author.avatarURL) voteAuthorAvatar = msg.author.defaultAvatarURL;
     const voteTexts = [
       "owo what's this? A vote has started:",
       "Oh!" + voteAuthor + "has started a vote:",

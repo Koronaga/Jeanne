@@ -28,7 +28,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    pruneTimesUsed++
     var limit;
     if (!suffix) {
       limit = 50 + 1;

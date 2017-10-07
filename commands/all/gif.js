@@ -21,7 +21,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    gifTimesUsed++
     giphy.random(`${args}`)
       .then((res) => {
         const imgURL = res.data.image_url;

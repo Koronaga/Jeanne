@@ -29,7 +29,6 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     if (!args) return 'wrong usage';
-    weatherTimesUsed++
     let str = args.toString();
     let array = str.split(/ ?\| ?/),
       city = array[0],
@@ -37,7 +36,7 @@ module.exports = {
     let opts = {
       city: `${city}`,
       state: `${state}`
-    }
+    };
     wu.conditions(opts, (err, data) => {
       if (err) return handleError(bot, __filename, msg.channel, err);
       if (!data) return bot.createMessage(msg.channel.id, {

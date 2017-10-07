@@ -26,8 +26,7 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    if (!suffix) return 'wrong usage'
-    unbanTimesUsed++
+    if (!suffix) return 'wrong usage';
     const str = suffix + "";
     const array = str.split(/ ?\| ?/),
       userToBan = array[0],

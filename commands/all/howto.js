@@ -21,7 +21,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    howtoTimesUsed++
     wikihow.howTo(args)
       .then(succ => {
         bot.createMessage(msg.channel.id, {

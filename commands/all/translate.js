@@ -23,7 +23,6 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     if (!args) return 'wrong usage';
-    translateTimesUsed++
     const str = args + "";
     const array = str.split(/ ?\| ?/);
     let text = array[0],

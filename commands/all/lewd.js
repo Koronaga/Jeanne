@@ -20,7 +20,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    lewdTimesUsed++
     const base_url = "https://rra.ram.moe",
       type = "lewd",
       path = "/i/r?type=" + type;

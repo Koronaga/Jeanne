@@ -23,7 +23,6 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     if (!args) return 'wrong usage';
-    destinyTimesUsed++
     const str = args + "";
     let array = str.split(/ ?\| ?/),
       system = array[0],

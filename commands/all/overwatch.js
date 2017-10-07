@@ -22,7 +22,6 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     if (!args) return 'wrong usage';
-    overwatchTimesUsed++
     const str = args + "";
     const array = str.split(/ ?\| ?/),
       type = array[0], // profile, comp, quick

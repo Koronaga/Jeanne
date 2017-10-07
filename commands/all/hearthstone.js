@@ -22,8 +22,7 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    if (!args) return 'wrong usage'
-    hearthstoneTimesUsed++
+    if (!args) return 'wrong usage';
     let str = args.toString();
     let array = str.split(/ ?\| ?/),
       card = array[0],

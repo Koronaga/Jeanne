@@ -23,7 +23,6 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     if (!args) return 'wrong usage';
-    aestheticTimesUsed++
     const conv = aesthetics(args);
     msg.channel.createMessage(conv)
       .catch(err => {

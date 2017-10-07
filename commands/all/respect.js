@@ -30,7 +30,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    respectTimesUsed++
     let choice = ~~(Math.random() * RESPONSES.length);
     if (!suffix) {
       let respect = JSON.parse(fs.readFileSync(`./db/respect.json`, 'utf8'));

@@ -10,7 +10,6 @@ module.exports = {
   cooldown: 5,
   guildOnly: true,
   task(bot, msg, args) {
-    youtubesearchTimesUsed++
     const opts = {
       maxResults: 50,
       key: config.ytsearch_key

@@ -25,7 +25,6 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     if (!args) return 'wrong usage';
-    botTimesUsed++
     if (msg.mentions[0]) {
       const user = msg.mentions[0];
       if (user.bot === false) return msg.channel.createMessage('\\❌ This is not a bot.')

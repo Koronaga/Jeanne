@@ -20,7 +20,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    unsplashTimesUsed++
     axios.get('https://api.unsplash.com/photos/random', {
       headers: {
         'Authorization': "Client-ID " + config.unsplash_key,

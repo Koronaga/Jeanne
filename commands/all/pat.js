@@ -24,7 +24,6 @@ module.exports = {
       });
     if (!args) return 'wrong usage';
     const user = findMember(msg, args);
-    patTimesUsed++
     if (!user) return bot.createMessage(msg.channel.id, {
       content: ``,
       embed: {

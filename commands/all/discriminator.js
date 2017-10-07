@@ -22,7 +22,6 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     if (!args) return 'wrong usage';
-    discriminatorTimesUsed++
     const str = args + "";
     let array = str.split(/ ?\| ?/),
       option = array[0],

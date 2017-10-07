@@ -1,17 +1,13 @@
 const reload = require('require-reload'),
   config = reload('../../config.json'),
   handleError = require('../../utils/utils.js').handleError,
-  AniListAPI = require('anilist-api-pt'),
-  client_id = `${config.anilist_clientID}`,
-  client_secret = `${config.anilist_clientSecret}`,
-  anilistApi = new AniListAPI({
-    client_id,
-    client_secret
-  });
+  Kitsu = require('kitsu.js');
+
+const kitsu = new Kitsu();
 
 module.exports = {
   desc: "Shows info about an manga.",
-  usage: "<Manga Name>",
+  usage: "<manga_name>",
   cooldown: 10,
   guildOnly: true,
   task(bot, msg, args) {
@@ -27,305 +23,98 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    if (!args) return 'wrong usage';
-    mangaTimesUsed++
-    anilistApi.auth()
-      .then(ani => {
-        ani.manga.searchManga(`${args}`)
-          .then(results => {
-            if (!results) return msg.channel.createMessage(`\\❌ No results for **${args}**`)
-              .catch(err => {
-                handleError(bot, __filename, msg.channel, err);
-              });
-            if (results.error) return msg.channel.createMessage(`\\❌ No results for **${args}**`)
-              .catch(err => {
-                handleError(bot, __filename, msg.channel, err);
-              });
-            var index = results.map(function (title) {
-              return title.title_romaji;
-            }).indexOf(args);
-            var manga = '';
-            if (index >= 0) {
-              index = results.map(function (title) {
-                return title.title_romaji;
-              }).indexOf(args);
-              manga = results[index];
-              var genre = manga.genres.toString();
-              var genres = genre.split(/ ?, ?/).join(', ');
-              msg.channel.createMessage({
-                  content: ``,
-                  embed: {
-                    color: config.defaultColor,
-                    type: `rich`,
-                    author: {
-                      name: `${manga.title_romaji}`,
-                      icon_url: ``
-                    },
-                    description: `${manga.description}`,
-                    url: `${manga.image_url_lge}`,
-                    image: {
-                      url: `${manga.image_url_lge}`
-                    },
-                    fields: [{
-                        name: `Type`,
-                        value: `${manga.type}`,
-                        inline: true
-                      },
-                      {
-                        name: `Total Chapters`,
-                        value: `${manga.total_chapters}`,
-                        inline: true
-                      },
-                      {
-                        name: `Total Volumes`,
-                        value: `${manga.total_volumes}`,
-                        inline: true
-                      },
-                      {
-                        name: `Status`,
-                        value: `${manga.publishing_status}`,
-                        inline: true
-                      },
-                      {
-                        name: `Id`,
-                        value: `${manga.id}`,
-                        inline: true
-                      },
-                      {
-                        name: `18+`,
-                        value: `${manga.adult}`,
-                        inline: true
-                      },
-                      {
-                        name: `Average Score`,
-                        value: `${manga.average_score}`,
-                        inline: true
-                      },
-                      {
-                        name: `Popularity`,
-                        value: `${manga.popularity}`,
-                        inline: true
-                      },
-                      {
-                        name: `List Status`,
-                        value: `Completed: ${manga.list_stats.completed}
-On Hold: ${manga.list_stats.on_hold}
-Dropped: ${manga.list_stats.dropped}
-Plan To Read: ${manga.list_stats.plan_to_read}
-Reading: ${manga.list_stats.reading}`,
-                        inline: true
-                      },
-                      {
-                        name: `Alternative Titles`,
-                        value: `Romaji: ${manga.title_romaji}
-English: ${manga.title_english}
-Japanese: ${manga.title_japanese}`,
-                        inline: false
-                      },
-                      {
-                        name: `Genres`,
-                        value: `${genres}`,
-                        inline: false
-                      }
-                    ],
-                    footer: {
-                      icon_url: `https://b.catgirlsare.sexy/wj6g.png`,
-                      text: `All information is provided by AniList`
-                    }
-                  }
-                })
-                .catch(err => {
-                  handleError(bot, __filename, msg.channel, err);
-                });
-            } else if (index < 0) {
-              var index2 = results.map(title => {
-                return title.title_english;
-              }).indexOf(args);
-              if (index2 >= 0) {
-                var index2 = results.map(title => {
-                  return title.title_english;
-                }).indexOf(args);
-                manga = results[index2];
-                var genre = manga.genres.toString();
-                var genres = genre.split(/ ?, ?/).join(', ');
-                msg.channel.createMessage({
-                    content: ``,
-                    embed: {
-                      color: config.defaultColor,
-                      type: `rich`,
-                      author: {
-                        name: `${manga.title_romaji}`,
-                        icon_url: ``
-                      },
-                      description: `${manga.description}`,
-                      url: `${manga.image_url_lge}`,
-                      image: {
-                        url: `${manga.image_url_lge}`
-                      },
-                      fields: [{
-                          name: `Type`,
-                          value: `${manga.type}`,
-                          inline: true
-                        },
-                        {
-                          name: `Total Chapters`,
-                          value: `${manga.total_chapters}`,
-                          inline: true
-                        },
-                        {
-                          name: `Total Volumes`,
-                          value: `${manga.total_volumes}`,
-                          inline: true
-                        },
-                        {
-                          name: `Status`,
-                          value: `${manga.publishing_status}`,
-                          inline: true
-                        },
-                        {
-                          name: `Id`,
-                          value: `${manga.id}`,
-                          inline: true
-                        },
-                        {
-                          name: `18+`,
-                          value: `${manga.adult}`,
-                          inline: true
-                        },
-                        {
-                          name: `Average Score`,
-                          value: `${manga.average_score}`,
-                          inline: true
-                        },
-                        {
-                          name: `Popularity`,
-                          value: `${manga.popularity}`,
-                          inline: true
-                        },
-                        {
-                          name: `List Status`,
-                          value: `Completed: ${manga.list_stats.completed}
-On Hold: ${manga.list_stats.on_hold}
-Dropped: ${manga.list_stats.dropped}
-Plan To Read: ${manga.list_stats.plan_to_read}
-Reading: ${manga.list_stats.reading}`,
-                          inline: true
-                        },
-                        {
-                          name: `Alternative Titles`,
-                          value: `Romaji: ${manga.title_romaji}
-English: ${manga.title_english}
-Japanese: ${manga.title_japanese}`,
-                          inline: false
-                        },
-                        {
-                          name: `Genres`,
-                          value: `${genres}`,
-                          inline: false
-                        }
-                      ],
-                      footer: {
-                        icon_url: `https://b.catgirlsare.sexy/wj6g.png`,
-                        text: `All information is provided by AniList`
-                      }
-                    }
-                  })
-                  .catch(err => {
-                    handleError(bot, __filename, msg.channel, err);
-                  });
-              } else if (index2 < 0) {
-                var index3 = 0;
-                manga = results[index3];
-                var genre = manga.genres.toString();
-                var genres = genre.split(/ ?, ?/).join(', ');
-                msg.channel.createMessage({
-                    content: ``,
-                    embed: {
-                      color: config.defaultColor,
-                      type: `rich`,
-                      author: {
-                        name: `${manga.title_romaji}`,
-                        icon_url: ``
-                      },
-                      description: `${manga.description}`,
-                      url: `${manga.image_url_lge}`,
-                      image: {
-                        url: `${manga.image_url_lge}`
-                      },
-                      fields: [{
-                          name: `Type`,
-                          value: `${manga.type}`,
-                          inline: true
-                        },
-                        {
-                          name: `Total Chapters`,
-                          value: `${manga.total_chapters}`,
-                          inline: true
-                        },
-                        {
-                          name: `Total Volumes`,
-                          value: `${manga.total_volumes}`,
-                          inline: true
-                        },
-                        {
-                          name: `Status`,
-                          value: `${manga.publishing_status}`,
-                          inline: true
-                        },
-                        {
-                          name: `Id`,
-                          value: `${manga.id}`,
-                          inline: true
-                        },
-                        {
-                          name: `18+`,
-                          value: `${manga.adult}`,
-                          inline: true
-                        },
-                        {
-                          name: `Average Score`,
-                          value: `${manga.average_score}`,
-                          inline: true
-                        },
-                        {
-                          name: `Popularity`,
-                          value: `${manga.popularity}`,
-                          inline: true
-                        },
-                        {
-                          name: `List Status`,
-                          value: `Completed: ${manga.list_stats.completed}
-On Hold: ${manga.list_stats.on_hold}
-Dropped: ${manga.list_stats.dropped}
-Plan To Read: ${manga.list_stats.plan_to_read}
-Reading: ${manga.list_stats.reading}`,
-                          inline: true
-                        },
-                        {
-                          name: `Alternative Titles`,
-                          value: `Romaji: ${manga.title_romaji}
-English: ${manga.title_english}
-Japanese: ${manga.title_japanese}`,
-                          inline: false
-                        },
-                        {
-                          name: `Genres`,
-                          value: `${genres}`,
-                          inline: false
-                        }
-                      ],
-                      footer: {
-                        icon_url: `https://b.catgirlsare.sexy/wj6g.png`,
-                        text: `All information is provided by AniList`
-                      }
-                    }
-                  })
-                  .catch(err => {
-                    handleError(bot, __filename, msg.channel, err);
-                  });
-              }
-            }
+    kitsu.searchManga(args)
+      .then(manga => {
+        if (!manga[0]) return msg.channel.createMessage(`\\❌ No results found for **${args}**`)
+          .catch(err => {
+            handleError(bot, __filename, msg.channel, err);
           });
+        let endDate = '?';
+        if (manga[0].endDate) endDate = manga[0].endDate;
+        let ageRating = 'n/a';
+        if (manga[0].ageRating) ageRating = manga[0].ageRating;
+        let ageRatingGuide = 'n/a';
+        if (manga[0].ageRatingGuide) ageRatingGuide = manga[0].ageRatingGuide;
+        let chapterCount = 'n/a';
+        if (manga[0].chapterCount) chapterCount = manga[0].chapterCount;
+        msg.channel.createMessage({
+          content: ``,
+          embed: {
+            color: config.defaultColor,
+            title: `${manga[0].titles.english}`,
+            description: `https://kitsu.io/manga/${manga[0].slug}\n\n${manga[0].synopsis}`,
+            thumbnail: {
+              url: `${manga[0].posterImage.original}`
+            },
+            fields: [{
+                name: `Type`,
+                value: `${manga[0].mangaType}`,
+                inline: true
+              },
+              {
+                name: `Rank`,
+                value: `${manga[0].ratingRank}`,
+                inline: true
+              },
+              {
+                name: `Chapters`,
+                value: `${chapterCount}`,
+                inline: true
+              },
+              {
+                name: `Volumes`,
+                value: `${manga[0].volumeCount}`,
+                inline: true
+              },
+              {
+                name: `Readers`,
+                value: `${manga[0].userCount}`,
+                inline: true
+              },
+              {
+                name: `Avg Rating`,
+                value: `${manga[0].averageRating}%`,
+                inline: true
+              },
+              {
+                name: `Favorites`,
+                value: `${manga[0].favoritesCount}`,
+                inline: true
+              },
+              {
+                name: `Popularity Rank`,
+                value: `${manga[0].popularityRank}`,
+                inline: true
+              },
+              {
+                name: `Age Rating`,
+                value: `${ageRating}`,
+                inline: true
+              },
+              {
+                name: `Age Rating Guide`,
+                value: `${ageRatingGuide}`,
+                inline: true
+              },
+              {
+                name: `Alternative titles`,
+                value: `Romaji: ${manga[0].titles.romaji}\nJapanese: ${manga[0].titles.japanese}`,
+                inline: true
+              },
+              {
+                name: `Start/end date`,
+                value: `${manga[0].startDate} to ${endDate}`,
+                inline: true
+              }
+            ],
+            footer: {
+              text: `All information is provided by kitsu.io`,
+              icon_url: `https://b.catgirlsare.sexy/RNne.png`
+            }
+          }
+        }).catch(err => {
+          handleError(bot, __filename, msg.channel, err);
+        });
       }).catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });

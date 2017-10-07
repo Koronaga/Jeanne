@@ -25,7 +25,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    assTimesUsed++
     request.get(`http://api.obutts.ru/butts/0/1/random`)
       .then(JSON.parse)
       .then(res => {

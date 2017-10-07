@@ -21,7 +21,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    asciicatTimesUsed++
     let cat = catMe();
     if (!args) return msg.channel.createMessage(`\`\`\`${cat}\`\`\``)
       .catch(err => {

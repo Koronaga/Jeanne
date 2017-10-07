@@ -20,7 +20,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    owoTimesUsed++
     const base_url = "https://rra.ram.moe",
       type = "owo",
       path = "/i/r?type=" + type;

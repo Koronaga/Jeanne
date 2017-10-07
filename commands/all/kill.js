@@ -42,7 +42,6 @@ module.exports = {
     ];
     const text = randomItem(ded);
     if (!args) return 'wrong usage';
-    killTimesUsed++
     if (!user) return bot.createMessage(msg.channel.id, {
       content: ``,
       embed: {
@@ -114,4 +113,4 @@ module.exports = {
       handleError(bot, __filename, msg.channel, err);
     });
   }
-}
+};

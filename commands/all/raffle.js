@@ -20,7 +20,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    raffleTimesUsed++
     const allMembers = msg.channel.guild.members;
     const onlyUsers = allMembers.filter(m => m.bot === false);
     const randomMember = onlyUsers[Math.floor(Math.random() * onlyUsers.length)];

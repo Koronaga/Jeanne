@@ -19,7 +19,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    changelogTimesUsed++
     let c_ = bot.getChannel('344944294487916544');
     c_.getMessages(0)
       .then((value) => {

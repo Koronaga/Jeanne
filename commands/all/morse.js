@@ -27,7 +27,6 @@ module.exports = {
     if (!args) return 'wrong usage';
     if (!type) return 'wrong usage';
     if (!value) return 'wrong usage';
-    morseTimesUsed++
     let lType = type.toLowerCase();
     if (lType === "encode") {
       try {

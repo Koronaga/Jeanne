@@ -1,11 +1,14 @@
 const reload = require('require-reload'),
   config = reload('../../config.json'),
-  handleError = require('../../utils/utils.js').handleError;
+  handleError = require('../../utils/utils.js').handleError,
+  handleErrorNoMsg = require('../../utils/utils.js').handleErrorNoMsg,
+  utils = require('../../utils/utils.js');
 let connections = [];
 
 module.exports = {
   desc: "Stream listen.moe to a voice channel.",
-  usage: "<join/leave>",
+  usage: "<join/leave/nowplaying>",
+  aliases: ['listen', 'listenmoe'],
   cooldown: 5,
   guildOnly: true,
   task(bot, msg, args, config, settingsManager) {
@@ -25,7 +28,6 @@ module.exports = {
     const command = args.toLowerCase();
     if ((command === 'join') || (command === 'play')) {
       /* JOIN COMMAND */
-      radioJoinTimesUsed++
       let member = msg.member;
       let channelID = member.voiceState ? member.voiceState.channelID : null;
       let channel = msg.channel.guild.channels.get(channelID);
@@ -60,7 +62,6 @@ module.exports = {
       }
     } else if ((command === 'leave') || (command === 'stop')) {
       /* LEAVE COMMAND */
-      radioLeaveTimesUsed++
       let member = msg.member;
       let channelID = member.voiceState ? member.voiceState.channelID : null;
       let channel = msg.channel.guild.channels.get(channelID);
@@ -81,6 +82,49 @@ module.exports = {
             });
         }
       }
+    } else if ((command === /now ?playing/) || (command === 'np')) {
+      utils.startMoeWS()
+        .then(res => {
+          let listen_moe;
+          try {
+            listen_moe = JSON.parse(res);
+          } catch (error) {
+            handleErrorNoMsg(bot, __filename, error);
+          }
+          let requestedBy = 'n/a';
+          if (listen_moe.requested_by) requestedBy = listen_moe.requested_by;
+          // Get all the current voice users
+          let vcUsers = [];
+          bot.voiceConnections.forEach(vc => {
+            const members = bot.getChannel(vc.channelID).voiceMembers;
+            members.forEach(m => {
+              vcUsers.push(m.id);
+            });
+          });
+          // Remove the bot herself from the array
+          for (let i = vcUsers.length - 1; i >= 0; i--) {
+            if (vcUsers[i] === bot.user.id) {
+              vcUsers.splice(i, 1);
+            }
+          }
+          msg.channel.createMessage({
+            content: ``,
+            embed: {
+              color: config.defaultColor,
+              description: `Playing **${listen_moe.song_name}** by **${listen_moe.artist_name}**\n` +
+                `For **${listen_moe.listeners}** listeners + **${vcUsers.length}** Discord users in **${bot.voiceConnections.size}** channels\n` +
+                `Requested by **${requestedBy}**`,
+              footer: {
+                text: `Info from listen.moe`,
+                icon_url: `https://b.catgirlsare.sexy/Z9xM.png`
+              }
+            }
+          }).catch(err => {
+            handleError(bot, __filename, msg.channel, err);
+          });
+        }).catch(err => {
+          handleErrorNoMsg(bot, __filename, err);
+        });
     } else {
       return 'wrong usage';
     }

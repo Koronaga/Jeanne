@@ -26,7 +26,6 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     if (!args) return 'wrong usage';
-    hackbanTimesUsed++
     const str = args + "";
     const array = str.split(/ ?\| ?/),
       userToBan = array[0],

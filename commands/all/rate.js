@@ -30,7 +30,6 @@ module.exports = {
     const sendMessages = msg.channel.permissionsOf(bot.user.id).has('sendMessages');
     if (sendMessages === false) return;
     if (!suffix) return 'wrong usage';
-    rateTimesUsed++
     const str = suffix.toString(),
       lower = str.toLowerCase();
     let choice = ~~(Math.random() * RATES.length);

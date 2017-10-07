@@ -29,7 +29,6 @@ module.exports = {
     // j:osu best | <username>    || j:osu b | <username>
     // j:osu recent | <username>  || j:osu r | <username>
     if (!args) return 'wrong usage';
-    osuTimesUsed++
     const lower = args.toLowerCase();
     const array = lower.split(/ ?\| ?/),
       type = array[0],

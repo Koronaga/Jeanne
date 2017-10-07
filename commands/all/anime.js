@@ -22,7 +22,6 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     if (!args) return 'wrong usage';
-    animeTimesUsed++
     Anime.fromName(args)
       .then(anime => {
         var genre = anime.genres.toString();

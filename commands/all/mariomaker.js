@@ -21,7 +21,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    mariomakerTimesUsed++
     /**
      * courseID check
      * @param {string} courseID - The course id

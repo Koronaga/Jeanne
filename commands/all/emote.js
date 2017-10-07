@@ -20,7 +20,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    emoteTimesUsed++
     const guilds = bot.guilds.filter(g => g.emojis[0]),
       emojis = guilds[Math.floor(Math.random() * guilds.length)].emojis;
     let emoji = emojis[Math.floor(Math.random() * emojis.length)];

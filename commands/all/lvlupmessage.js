@@ -1,6 +1,7 @@
 const reload = require('require-reload'),
   config = reload('../../config.json'),
   handleError = require('../../utils/utils.js').handleError,
+  handleErrorNoMsg = require('../../utils/utils.js').handleErrorNoMsg,
   fs = require('fs');
 
 module.exports = {
@@ -24,7 +25,6 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     if (!suffix) return 'wrong usage';
-    lvlupmessageTimesUsed++
     const lower = suffix.toLowerCase();
     let message = JSON.parse(fs.readFileSync(`./db/message.json`, 'utf8'));
     if (suffix === 'enable') {
@@ -32,7 +32,7 @@ module.exports = {
         type: "true"
       };
       fs.writeFile(`./db/message.json`, JSON.stringify(message), (err) => {
-        if (err) console.error(err)
+        if (err) handleErrorNoMsg(bot, __filename, err);
       });
       bot.createMessage(msg.channel.id, {
         content: ``,
@@ -53,7 +53,7 @@ module.exports = {
         type: "false"
       };
       fs.writeFile(`./db/message.json`, JSON.stringify(message), (err) => {
-        if (err) console.error(err)
+        if (err) handleErrorNoMsg(bot, __filename, err);
       });
       bot.createMessage(msg.channel.id, {
         content: ``,

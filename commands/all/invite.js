@@ -14,7 +14,6 @@ module.exports = {
      */
     const sendMessages = msg.channel.permissionsOf(bot.user.id).has('sendMessages');
     if (sendMessages === false) return;
-    inviteTimesUsed++
     if (config.inviteLink) {
       bot.createMessage(msg.channel.id, `Use this to add me to a server: ${config.inviteLink}\nMake sure you are logged in`)
         .catch(err => {

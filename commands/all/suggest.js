@@ -24,7 +24,6 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     if (!args) return 'wrong usage';
-    suggestTimesUsed++
     bot.getDMChannel(OwnerId)
       .then(dmchannel => {
         const time = Date.now();

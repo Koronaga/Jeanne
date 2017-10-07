@@ -22,8 +22,7 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    if (!args) return 'wrong usage'
-    sfwbooruTimesUsed++
+    if (!args) return 'wrong usage';
     var str = args + "";
     var array = str.split(' '),
       a = array[0],

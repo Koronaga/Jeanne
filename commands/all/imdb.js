@@ -23,7 +23,6 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     if (!args) return 'wrong usage';
-    imdbTimesUsed++
     const movie = args.toString();
     imdb.get(movie, {
         apiKey: config.imdb_key

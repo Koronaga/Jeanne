@@ -23,7 +23,6 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     if (!args) return 'wrong usage';
-    permissionsTimesUsed++
     const str = args + "";
     const array = str.split(/ ?\| ?/);
     let type = array[0];

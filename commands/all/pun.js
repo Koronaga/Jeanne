@@ -20,7 +20,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    punTimesUsed++
     rpun.getRandomPun()
       .then(pun => {
         bot.createMessage(msg.channel.id, {

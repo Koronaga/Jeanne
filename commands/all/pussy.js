@@ -25,7 +25,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    pussyTimesUsed++
     pussy()
       .then(url => {
         bot.createMessage(msg.channel.id, {
@@ -50,4 +49,4 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
   }
-}
+};

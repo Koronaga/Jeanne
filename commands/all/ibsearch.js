@@ -21,7 +21,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    ibsearchTimesUsed++
     let key = config.ibsearch_key;
     let str = args + "";
     let msgSplit = str.split(' ');

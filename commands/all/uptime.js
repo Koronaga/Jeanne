@@ -20,7 +20,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    uptimeTimesUsed++
     bot.createMessage(msg.channel.id, {
       content: ``,
       embed: {

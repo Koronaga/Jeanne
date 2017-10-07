@@ -12,7 +12,6 @@ module.exports = {
   cooldown: 5,
   guildOnly: true,
   task(bot, msg, args) {
-    youtubeinfoTimesUsed++
     const youtubeID = youtubeVideoId(args);
     fetchVideoInfo(youtubeID)
       .then(videoInfo => {

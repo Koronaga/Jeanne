@@ -22,7 +22,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    googleTimesUsed++
     google(args, (err, res) => {
       if (err) return handleError(bot, __filename, msg.channel, err);
       const data = res.links;

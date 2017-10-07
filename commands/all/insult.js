@@ -22,7 +22,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    insultTimesUsed++
     if (!args) {
       const insult = blasphemer.blaspheme();
       bot.createMessage(msg.channel.id, {

@@ -21,7 +21,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    channelinfoTimesUsed++
     var afkTimer = msg.channel.guild.afkTimeout / 60;
     var owner = msg.channel.guild.members.get(msg.channel.guild.ownerID);
     bot.createMessage(msg.channel.id, {

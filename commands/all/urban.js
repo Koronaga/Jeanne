@@ -21,7 +21,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    urbanTimesUsed++
     if (!args) return urban.random()
       .then(def => {
         let example = def.example;

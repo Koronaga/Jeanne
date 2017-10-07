@@ -30,7 +30,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    pingTimesUsed++
     let choice = ~~(Math.random() * RESPONSES.length);
     bot.createMessage(msg.channel.id, {
       content: ``,

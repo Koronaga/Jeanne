@@ -23,7 +23,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    userinfoTimesUsed++
     if (!args) {
       const user = msg.author;
       const userroles = msg.member.roles.map(r => msg.channel.guild.roles.get(r).name).join(', ');

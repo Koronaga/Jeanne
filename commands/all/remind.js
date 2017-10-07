@@ -31,24 +31,21 @@ module.exports = {
     const person = args[0];
     const reminder = args[1];
     const time = args[2];
-    remindTimesUsed++
-
     const newDate = date(time);
     if (newDate <= new Date()) {
-      return bot.createMessage(msg.channel.id, 'that date doesn\'t seem to be valid.')
+      return bot.createMessage(msg.channel.id, '\\❌ That date doesn\'t seem to be valid.')
         .catch(err => {
           handleError(bot, __filename, msg.channel, err);
         });
     }
-
     schedule.scheduleJob(newDate, () => {
-      if (person == 'me') {
+      if (person === 'me') {
         bot.createMessage(msg.channel.id, `${msg.author.mention}, I'm reminding you to **${reminder}**`)
           .catch(err => {
             handleError(bot, __filename, msg.channel, err);
           });
       } else {
-        const user = this.findMember(msg, person)
+        const user = this.findMember(msg, person);
         if (!user) return bot.createMessage(msg.channel.id, {
           content: ``,
           embed: {
@@ -58,7 +55,7 @@ module.exports = {
               url: ``,
               icon_url: ``
             },
-            description: `That is not a valid guild member. Need to specify a name, ID or mention the user.`
+            description: `\\❌ That is not a valid guild member. Need to specify a name, ID or mention the user.`
           }
         }).catch(err => {
           handleError(bot, __filename, msg.channel, err);

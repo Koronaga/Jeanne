@@ -69,10 +69,10 @@ function updateNSFWSetting(bot, msg, suffix, settingsManager) {
   } else {
     settingsManager.setNSFW(msg.channel.guild.id, msg.channel.id, suffix)
       .then(m => {
-        bot.createMessage(msg.channel.id, m)
+        bot.createMessage(msg.channel.id, m);
       })
       .catch(e => {
-        bot.createMessage(msg.channel.id, e)
+        bot.createMessage(msg.channel.id, e);
       });
   }
 }
@@ -237,7 +237,6 @@ module.exports = {
   guildOnly: true,
   task(bot, msg, suffix, config, settingsManager) {
     if (suffix) {
-      settingsTimesUsed++
       if (suffix.startsWith('welcome'))
         updateWelcome(bot, msg, suffix.substr(7).trim(), settingsManager);
       else if (suffix.startsWith('events'))

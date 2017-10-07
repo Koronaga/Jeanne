@@ -31,7 +31,6 @@ module.exports = {
     });
     if (type === undefined) return 'wrong usage';
     type = type.toLowerCase();
-    animelistTimesUsed++
     if (type === 'watching') {
       myAnimeList.getAnimeList(1, (err, resp) => {
         if (err) return handleError(bot, __filename, msg.channel, err);

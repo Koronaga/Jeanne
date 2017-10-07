@@ -27,7 +27,6 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     if (!args) return 'wrong usage';
-    rpsTimesUsed++
     let choice = ~~(Math.random() * RPS.length),
       chosen = RPS[choice];
     let user = args.toLowerCase();

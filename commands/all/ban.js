@@ -28,7 +28,6 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     if (!args) return 'wrong usage';
-    banTimesUsed++
     const str = args + "";
     const array = str.split(/ ?\| ?/),
       userToBan = array[0],
@@ -55,4 +54,4 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
   }
-}
+};

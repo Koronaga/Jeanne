@@ -20,8 +20,7 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    if (!suffix) return 'wrong usage'
-    unpinTimesUsed++
+    if (!suffix) return 'wrong usage';
     const idRegex = /^\d{17,18}$/.test(suffix);
     if (idRegex === false) return bot.createMessage(msg.channel.id, `\\❌ Invalid message id.`)
     bot.unpinMessage(msg.channel.id, suffix).then(sentMsg => {

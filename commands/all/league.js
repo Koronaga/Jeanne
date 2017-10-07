@@ -22,7 +22,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    leagueTimesUsed++
     if (!args) return 'wrong usage';
     const str = args + "";
     const array = str.split(/ ?\| ?/),

@@ -24,7 +24,6 @@ module.exports = {
       });
     const user = findMember(msg, args);
     if (!args) return 'wrong usage';
-    lickTimesUsed++
     if (!user) return bot.createMessage(msg.channel.id, {
       content: ``,
       embed: {

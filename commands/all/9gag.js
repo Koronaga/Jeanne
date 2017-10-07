@@ -20,7 +20,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    gagTimesUsed++
     const gag = new gagScraper();
     gag.getRandom((err, data) => {
       if (err) return handleError(bot, __filename, msg.channel, err);

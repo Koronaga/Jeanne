@@ -19,7 +19,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    notkawaiiTimesUsed++
     bot.createMessage(msg.channel.id, {
       content: ``,
       embed: {

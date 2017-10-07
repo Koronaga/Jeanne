@@ -23,7 +23,6 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     if (!args) return 'wrong usage';
-    unicodeTimesUsed++
     const str = args + "";
     const array = str.split(/ ?\| ?/),
       text = array[0],
@@ -63,11 +62,13 @@ reversed: Adↄ-`
     }).catch(err => {
       handleError(bot, __filename, msg.channel, err);
     });
+    let ransom_note;
+    let scrambled;
     if (!font) {
-      var ransom_note = text;
-      var scrambled = ransom_note.split("").map(function (letter) {
-        return toUnicode(letter)
-      }).join("")
+      ransom_note = text;
+      scrambled = ransom_note.split("").map(function (letter) {
+        return toUnicode(letter);
+      }).join("");
       bot.createMessage(msg.channel.id, {
         content: ``,
         embed: {
@@ -83,10 +84,10 @@ reversed: Adↄ-`
         handleError(bot, __filename, msg.channel, err);
       });
     } else {
-      var ransom_note = text;
-      var scrambled = ransom_note.split("").map(function (letter) {
-        return toUnicode(letter, font)
-      }).join("")
+      ransom_note = text;
+      scrambled = ransom_note.split("").map(function (letter) {
+        return toUnicode(letter, font);
+      }).join("");
       bot.createMessage(msg.channel.id, {
         content: ``,
         embed: {

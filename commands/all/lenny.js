@@ -12,7 +12,6 @@ module.exports = {
      */
     const sendMessages = msg.channel.permissionsOf(bot.user.id).has('sendMessages');
     if (sendMessages === false) return;
-    lennyTimesUsed++
     bot.createMessage(msg.channel.id, `( ͡° ͜ʖ ͡°)`)
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);

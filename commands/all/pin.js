@@ -20,7 +20,6 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     if (!suffix) return 'wrong usage';
-    pinTimesUsed++
     const idRegex = /^\d{17,18}$/.test(suffix);
     if (idRegex === false) return bot.createMessage(msg.channel.id, `\\❌ Invalid message id.`)
       .catch(err => {

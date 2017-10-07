@@ -8,7 +8,6 @@ module.exports = {
   cooldown: 5,
   guildOnly: true,
   task(bot, msg) {
-    votecheckTimesUsed++
     axios.get('https://discordbots.org/api/bots/237578660708745216/votes', {
       headers: {
         'Authorization': config.discordbotsorg,

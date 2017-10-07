@@ -24,8 +24,7 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     if (!args) return 'wrong usage';
-    rainbowsixsiegeTimesUsed++
-    var args = args.toString();
+    args = args.toString();
     var data = args.split(/ ?\| ?/),
       uname = data[0],
       pform = data[1];

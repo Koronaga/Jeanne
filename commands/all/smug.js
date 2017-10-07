@@ -20,7 +20,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    smugTimesUsed++
     const base_url = "https://rra.ram.moe",
       type = "smug",
       path = "/i/r?type=" + type;

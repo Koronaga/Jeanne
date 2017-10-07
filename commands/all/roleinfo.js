@@ -22,7 +22,6 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     if (!suffix) return 'wrong usage';
-    roleinfoTimesUsed++
     const role = msg.channel.guild.roles.find(o => o.name === `${suffix}`);
     if (!role) return bot.createMessage(msg.channel.id, {
       content: ``,

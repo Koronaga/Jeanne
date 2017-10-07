@@ -30,7 +30,6 @@ module.exports = {
       toCurrency = array[2];
     if (!fromCurrency) return 'wrong usage';
     if (!toCurrency) return 'wrong usage';
-    currencyTimesUsed++
     currency.convert(value, fromCurrency, toCurrency, (err, conv) => {
       if (err) return handleError(bot, __filename, msg.channel, err);
       bot.createMessage(msg.channel.id, {

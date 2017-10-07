@@ -33,7 +33,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    spinTimesUsed++
     let choice1 = ~~(Math.random() * RESPONSES.length);
     let choice2 = ~~(Math.random() * RESPONSES.length);
     let choice3 = ~~(Math.random() * RESPONSES.length);
@@ -90,4 +89,4 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
   }
-}
+};

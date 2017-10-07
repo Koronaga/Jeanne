@@ -30,6 +30,6 @@ module.exports = {
         .catch(err => {
           handleError(bot, __filename, msg.channel, err);
         });
-    })
+    });
   }
 };

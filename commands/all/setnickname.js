@@ -7,7 +7,7 @@ module.exports = {
   aliases: ['setnick', 'nick', 'changenick'],
   cooldown: 5,
   guildOnly: true,
-  requiredPermission: 'manageNicknames',
+  requiredPermission: 'changeNickname',
   usage: "[nickname]",
   task(bot, msg, args) {
     /**

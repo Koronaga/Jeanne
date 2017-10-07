@@ -56,7 +56,6 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     if (!suffix) return 'wrong usage';
-    throwTimesUsed++
     let choice = ~~(Math.random() * EMOTES.length);
     var emotechoice = EMOTES[choice];
     let choice2 = ~~(Math.random() * RECEIVED.length);

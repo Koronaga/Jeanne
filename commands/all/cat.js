@@ -21,7 +21,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    catTimesUsed++
     request("http://random.cat/meow", (err, response, body) => {
       if (err) return handleError(bot, __filename, msg.channel, err);
       var cat = JSON.parse(body);

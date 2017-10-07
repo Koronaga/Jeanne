@@ -21,7 +21,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    findinviteTimesUsed++
     bot.getInvite(`${args}`, true)
       .then(res => {
         let invUsername;

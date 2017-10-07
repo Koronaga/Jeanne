@@ -22,7 +22,6 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     if (!args) return 'wrong usage';
-    pokemonTimesUsed++
     const lower = args.toString().toLowerCase();
     const uppercaseFirstLetter = lower.charAt(0).toUpperCase();
     const stringWithoutFirstLetter = lower.slice(1);

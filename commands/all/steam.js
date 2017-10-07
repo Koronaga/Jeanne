@@ -28,7 +28,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    steamTimesUsed++
     axios.get(baseURI + `/steamid/`, {
         params: {
           s: args,

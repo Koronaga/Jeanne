@@ -22,7 +22,6 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     if (!args) return 'wrong usage';
-    reverseTimesUsed++
     const art = args;
     const text = reverse(art);
     if (!text) return handleError(bot, __filename, msg.channel, `ERROR: ${res.data.error}`);

@@ -28,7 +28,6 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     if (!args) return 'wrong usage';
-    colorTimesUsed++
     const type = args.toLowerCase();
     if (type === 'random') {
       // generate random number
@@ -51,7 +50,6 @@ module.exports = {
       const hex2 = hex.replace("#", "0x");
       // convert to decimal
       const dec = converter.hexToDec(`${hex2}`);
-      console.log(baseURI + `/color/index.php?color=${hex.replace("#", "")}`);
       bot.createMessage(msg.channel.id, {
         content: ``,
         embed: {

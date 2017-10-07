@@ -57,7 +57,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    randomtextTimesUsed++
     let choice = ~~(Math.random() * RESPONSES.length);
     let choose = ~~(Math.random() * COLORSDECIAML.length);
     var color = COLORSDECIAML[choose];

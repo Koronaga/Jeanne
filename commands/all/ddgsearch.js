@@ -23,7 +23,6 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     if (!args) return 'wrong usage';
-    ddgsearchTimesUsed++
     ddg.query(`${args}`, (err, data) => {
       if (err) return handleError(bot, __filename, msg.channel, err);
       // Topic 1

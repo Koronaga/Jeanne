@@ -28,7 +28,6 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     if (!suffix) return 'wrong usage';
-    chooseTimesUsed++
     let choices = suffix.split(/ ?\| ?/);
     if (choices.length < 2 && suffix.includes(','))
       choices = suffix.split(/, ?/);
@@ -39,7 +38,8 @@ module.exports = {
     let pick = ~~(Math.random() * choices.length);
     choices.forEach((c, i) => {
       if ((c.includes('homework') || c.includes('sleep') || c.includes('study') || c.includes('productiv')) && Math.random() < .3)
-        return pick = i; //Higher chance to pick choices containing key words
+        pick = i;
+      return pick; //Higher chance to pick choices containing key words
     });
     bot.createMessage(msg.channel.id, RESPONSES[~~(Math.random() * RESPONSES.length)](choices[pick]))
       .catch(err => {

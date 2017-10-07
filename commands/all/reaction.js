@@ -30,7 +30,6 @@ module.exports = {
       emote = array[2];
     if (!msgid) return 'wrong usage';
     if (!emote) return 'wrong usage';
-    reactionTimesUsed++
     const idRegex = /^\d{17,18}$/.test(msgid);
     if (idRegex === false) return msg.channel.createMessage('\\❌ Wrong message id.')
       .catch(err => {
@@ -54,7 +53,7 @@ module.exports = {
           handleError(bot, __filename, msg.channel, err);
         });
     } else if (type === 'custom') {
-      const emoteRegex = /^[a-zA-Z0-9_]{2,}:\d{17,18}$/.test(emote)
+      const emoteRegex = /^[a-zA-Z0-9_]{2,}:\d{17,18}$/.test(emote);
       if (emoteRegex === false) return msg.channel.createMessage('\\❌ This is not a custom emoji. If you\'re trying to react with a normal emoji please use \`normal\` as first argument.\nType \`j:help reaction\` for more info.')
         .catch(err => {
           handleError(bot, __filename, msg.channel, err);

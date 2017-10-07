@@ -20,7 +20,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    triggeredTimesUsed++
     const base_url = "https://rra.ram.moe",
       type = "triggered",
       path = "/i/r?type=" + type;

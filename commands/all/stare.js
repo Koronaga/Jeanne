@@ -20,7 +20,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    stareTimesUsed++
     const base_url = "https://rra.ram.moe",
       type = "stare",
       path = "/i/r?type=" + type;

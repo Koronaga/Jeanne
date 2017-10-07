@@ -21,7 +21,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    nyanTimesUsed++
     const base_url = "https://rra.ram.moe",
       type = "nyan",
       path = "/i/r?type=" + type;

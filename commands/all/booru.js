@@ -28,8 +28,7 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    if (!args) return 'wrong usage'
-    booruTimesUsed++
+    if (!args) return 'wrong usage';
     var str = args + "";
     var array = str.split(' '),
       a = array[0],
@@ -74,20 +73,25 @@ rule34.paheal.net, aliases: ["pa","paheal"]`
       });
     } else {
       if (!c) {
-        if (lower.includes(bannedWord1) || lower.includes(bannedWord2) || lower.includes(bannedWord3) || lower.includes(bannedWord4)) return msg.channel.createMessage({
-          content: ``,
-          embed: {
-            color: config.defaultColor,
-            author: {
-              name: ``,
-              url: ``,
-              icon_url: ``
-            },
-            description: `Sorry it's against Discord's ToS to search for these tags.`
-          }
-        }).catch(err => {
-          handleError(bot, __filename, msg.channel, err);
+        let bannedWordBool = false;
+        banned.bannedWords.forEach(w => {
+          if (lower.includes(w)) bannedWordBool = true;
         });
+        if (bannedWordBool === true) return msg.channel.createMessage({
+            content: ``,
+            embed: {
+              color: config.defaultColor,
+              author: {
+                name: ``,
+                url: ``,
+                icon_url: ``
+              },
+              description: `Sorry it's against Discord's ToS to search for these tags.`
+            }
+          })
+          .catch(err => {
+            handleError(bot, __filename, msg.channel, err);
+          });
         booru.search(`${a}`, [`${b}`], {
             limit: 1,
             random: true
@@ -95,24 +99,29 @@ rule34.paheal.net, aliases: ["pa","paheal"]`
           .then(booru.commonfy)
           .then(images => {
             for (let image of images) {
-              var tag = image.common.tags + "";
-              if (tag.includes(banned.bannedWords[0]) || tag.includes(banned.bannedWords[1]) || tag.includes(banned.bannedWords[2]) || tag.includes(banned.bannedWords[3]) || tag.includes(banned.bannedWords[4]) || tag.includes(banned.bannedWords[5])) return msg.channel.createMessage({
-                content: ``,
-                embed: {
-                  color: config.defaultColor,
-                  author: {
-                    name: ``,
-                    url: ``,
-                    icon_url: ``
-                  },
-                  description: `Sorry, it's against Discord's ToS to show you this images.`
-                }
-              }).catch(err => {
-                handleError(bot, __filename, msg.channel, err);
+              const tag = image.common.tags + "";
+              let bannedWordBool = false;
+              banned.bannedWords.forEach(w => {
+                if (tag.includes(w)) bannedWordBool = true;
               });
-              var tags = tag.split(',').join(', ');
-              var img = image.common.file_url.toString(" ");
-              var imguri = img.replace(/ /g, "%20");
+              if (bannedWordBool === true) return msg.channel.createMessage({
+                  content: ``,
+                  embed: {
+                    color: config.defaultColor,
+                    author: {
+                      name: ``,
+                      url: ``,
+                      icon_url: ``
+                    },
+                    description: `Sorry it's against Discord's ToS to search for these tags.`
+                  }
+                })
+                .catch(err => {
+                  handleError(bot, __filename, msg.channel, err);
+                });
+              const tags = tag.split(',').join(', ');
+              const img = image.common.file_url.toString(" ");
+              const imguri = img.replace(/ /g, "%20");
               const embedName = `Click here for the direct image url`;
               // Check for description length
               const embedDesc = `Searched tags: ${b}, ${c}\n` +
@@ -211,20 +220,25 @@ rule34.paheal.net, aliases: ["pa","paheal"]`
             }
           });
       } else {
-        if (lower2.includes(bannedWord1) || lower2.includes(bannedWord2) || lower2.includes(bannedWord3) || lower2.includes(bannedWord4)) return msg.channel.createMessage({
-          content: ``,
-          embed: {
-            color: config.defaultColor,
-            author: {
-              name: ``,
-              url: ``,
-              icon_url: ``
-            },
-            description: `Sorry it's against Discord's ToS to search for these tags.`
-          }
-        }).catch(err => {
-          handleError(bot, __filename, msg.channel, err);
+        let bannedWordBool = false;
+        banned.bannedWords.forEach(w => {
+          if (lower2.includes(w)) bannedWordBool = true;
         });
+        if (bannedWordBool === true) return msg.channel.createMessage({
+            content: ``,
+            embed: {
+              color: config.defaultColor,
+              author: {
+                name: ``,
+                url: ``,
+                icon_url: ``
+              },
+              description: `Sorry it's against Discord's ToS to search for these tags.`
+            }
+          })
+          .catch(err => {
+            handleError(bot, __filename, msg.channel, err);
+          });
         booru.search(`${a}`, [`${b}`, `${c}`], {
             limit: 1,
             random: true
@@ -232,24 +246,29 @@ rule34.paheal.net, aliases: ["pa","paheal"]`
           .then(booru.commonfy)
           .then(images => {
             for (let image of images) {
-              var tag = image.common.tags + "";
-              if (tag.includes(banned.bannedWords[0]) || tag.includes(banned.bannedWords[1]) || tag.includes(banned.bannedWords[2]) || tag.includes(banned.bannedWords[3]) || tag.includes(banned.bannedWords[4]) || tag.includes(banned.bannedWords[5])) return msg.channel.createMessage({
-                content: ``,
-                embed: {
-                  color: config.defaultColor,
-                  author: {
-                    name: ``,
-                    url: ``,
-                    icon_url: ``
-                  },
-                  description: `Sorry, it's against Discord's ToS to show you this image.`
-                }
-              }).catch(err => {
-                handleError(bot, __filename, msg.channel, err);
+              const tag = image.common.tags + "";
+              let bannedWordBool = false;
+              banned.bannedWords.forEach(w => {
+                if (tag.includes(w)) bannedWordBool = true;
               });
-              var tags = tag.split(',').join(', ');
-              var img = image.common.file_url.toString(" ");
-              var imguri = img.replace(/ /g, "%20");
+              if (bannedWordBool === true) return msg.channel.createMessage({
+                  content: ``,
+                  embed: {
+                    color: config.defaultColor,
+                    author: {
+                      name: ``,
+                      url: ``,
+                      icon_url: ``
+                    },
+                    description: `Sorry it's against Discord's ToS to search for these tags.`
+                  }
+                })
+                .catch(err => {
+                  handleError(bot, __filename, msg.channel, err);
+                });
+              const tags = tag.split(',').join(', ');
+              const img = image.common.file_url.toString(" ");
+              const imguri = img.replace(/ /g, "%20");
               const embedName = `Click here for the direct image url`;
               // Check for description length
               const embedDesc = `Searched tags: ${b}, ${c}\n` +

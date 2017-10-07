@@ -21,7 +21,7 @@ module.exports = {
         }
       })
       .then(() => {
-        process.exit(1)
+        process.exit(1);
       })
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);

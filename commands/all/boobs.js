@@ -25,7 +25,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    boobsTimesUsed++
     request.get(`http://api.oboobs.ru/boobs/0/1/random`)
       .then(JSON.parse)
       .then(res => {

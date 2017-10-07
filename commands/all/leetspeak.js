@@ -23,7 +23,6 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     if (!args) return 'wrong usage';
-    leetspeakTimesUsed++
     const str = args + "";
     const array = str.split(/ ?\| ?/),
       option = array[0],
@@ -48,7 +47,7 @@ module.exports = {
       });
     } else if (lower === 'advanced') {
       const LeetAdvanced = new Leetscript();
-      const advanced = LeetAdvanced.encode(`${text}`)
+      const advanced = LeetAdvanced.encode(`${text}`);
       bot.createMessage(msg.channel.id, {
         content: ``,
         embed: {

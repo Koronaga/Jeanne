@@ -14,7 +14,6 @@ module.exports = {
      */
     const sendMessages = msg.channel.permissionsOf(bot.user.id).has('sendMessages');
     if (sendMessages === false) return;
-    coinflipTimesUsed++
     bot.createMessage(msg.channel.id, `${msg.author.username} flipped a coin and it landed on ${Math.random() < .5 ? '**heads**' : '**tails**'}`)
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);

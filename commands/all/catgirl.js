@@ -24,7 +24,6 @@ module.exports = {
       });
     args = args.toLowerCase();
     if (!args || args === 'sfw') {
-      catgirlSFWTimesUsed++
       const sites = ["nekos.brussell", "nekos.life"];
       const site = sites[Math.floor(Math.random() * sites.length)];
       if (site === "nekos.brussell") {
@@ -110,7 +109,6 @@ module.exports = {
         .catch(err => {
           handleError(bot, __filename, msg.channel, err);
         });
-      catgirlNSFWTimesUsed++
       const sites = ["nekos.brussell", "nekos.life"];
       const site = sites[Math.floor(Math.random() * sites.length)];
       if (site === "nekos.brussell") {

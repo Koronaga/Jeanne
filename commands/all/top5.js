@@ -20,7 +20,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    top5TimesUsed++
     let points = JSON.parse(fs.readFileSync(`./db/points.json`, 'utf8'));
     if (!points) {
       const err = 'points.json is empty!';

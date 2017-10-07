@@ -23,7 +23,6 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     if (!args) return 'wrong usage';
-    hugTimesUsed++
     const user = findMember(msg, args);
     if (!user) return bot.createMessage(msg.channel.id, {
       content: ``,

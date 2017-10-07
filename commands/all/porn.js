@@ -23,7 +23,7 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    var nsfw = settingsManager.getNSFW(msg.channel.guild.id, msg.channel.id);
+    const nsfw = settingsManager.getNSFW(msg.channel.guild.id, msg.channel.id);
     if (!nsfw) return msg.channel.createMessage({
         content: ``,
         embed: {
@@ -42,14 +42,13 @@ module.exports = {
     if (!args) return 'wrong usage';
     const str = args + "";
     const array = str.split(/ ?\| ?/),
-      searchTerms = array[0];
-    const pageNumber = array[1];
-    pornTimesUsed++
-    var bannedWord1 = banned.bannedWords[0];
-    var bannedWord2 = banned.bannedWords[1];
-    var bannedWord3 = banned.bannedWords[2];
-    var bannedWord4 = banned.bannedWords[3];
-    if (searchTerms.includes(bannedWord1) || searchTerms.includes(bannedWord2) || searchTerms.includes(bannedWord3) || searchTerms.includes(bannedWord4)) return msg.channel.createMessage({
+      searchTerms = array[0],
+      pageNumber = array[1];
+    let bannedWordBool = false;
+    banned.bannedWords.forEach(w => {
+      if (searchTerms.includes(w)) bannedWordBool = true;
+    });
+    if (bannedWordBool === true) return msg.channel.createMessage({
         content: ``,
         embed: {
           color: config.defaultColor,

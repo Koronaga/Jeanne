@@ -17,7 +17,7 @@ module.exports = {
         bot.createMessage(msg.channel.id, 'Username updated')
           .catch(err => {
             handleError(bot, __filename, msg.channel, err);
-          })
+          });
       })
       .catch(error => {
         handleError(bot, __filename, msg.channel, err);

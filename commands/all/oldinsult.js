@@ -22,7 +22,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    oldinsultTimesUsed++
     const oldinsult = require('shakespeare-insult1.1.0').random();
     if (!args) {
       const insult = oldinsult;

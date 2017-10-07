@@ -21,7 +21,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    avatarTimesUsed++
     let format = '';
     let size = 2048;
     if (!args) {

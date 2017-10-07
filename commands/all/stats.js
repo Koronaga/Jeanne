@@ -22,7 +22,6 @@ module.exports = {
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
-    statsTimesUsed++
     let totalCommandUsage = commandsProcessed + cleverbotTimesUsed;
     bot.createMessage(msg.channel.id, {
       content: ``,

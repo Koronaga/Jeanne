@@ -28,7 +28,6 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     if (!args) return 'wrong usage';
-    softbanTimesUsed++
     const str = args + "";
     const array = str.split(/ ?\| ?/),
       userToBan = array[0];
@@ -48,7 +47,7 @@ module.exports = {
         },
         description: `That is not a valid guild member. Need to specify a name, ID or mention the user.`
       }
-    })
+    });
     bot.banGuildMember(msg.channel.guild.id, user.id, deletedays, reason)
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);

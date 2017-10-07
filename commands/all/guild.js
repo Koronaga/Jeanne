@@ -26,7 +26,6 @@ module.exports = {
     args = args.toString();
     args = args.toLowerCase();
     if (args === 'info') {
-      guildinfoTimesUsed++
       const afkTimer = msg.channel.guild.afkTimeout / 60,
         owner = msg.channel.guild.members.get(msg.channel.guild.ownerID),
         roles = msg.channel.guild.roles.map(c => c).length,
@@ -123,7 +122,6 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     } else if (args === 'roles') {
-      guildrolesTimesUsed++
       bot.createMessage(msg.channel.id, {
         content: ``,
         embed: {
@@ -139,7 +137,6 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     } else if (args === 'emotes') {
-      guildemotesTimesUsed++
       bot.createMessage(msg.channel.id, {
         content: ``,
         embed: {

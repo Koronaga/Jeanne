@@ -29,7 +29,6 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     if (!args) return 'wrong usage';
-    characterTimesUsed++
     anilistApi.auth()
       .then(ani => {
         ani.characters.searchCharacters(`${args}`)
@@ -42,7 +41,7 @@ module.exports = {
             let info = char.info.replace(/&#039;/g, '\'');
             info = info.slice(0, 500);
             let readMore = "";
-            if (char.info.length > 500) readMore = `Read the full info [\`here\`](https://anilist.co/character/${char.id})`
+            if (char.info.length > 500) readMore = `Read the full info [\`here\`](https://anilist.co/character/${char.id})`;
             msg.channel.createMessage({
                 content: ``,
                 embed: {

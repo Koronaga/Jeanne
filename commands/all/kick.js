@@ -28,7 +28,6 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     if (!args) return 'wrong usage';
-    kickTimesUsed++
     const str = args + "";
     const array = str.split(/ ?\| ?/),
       userToKick = array[0],

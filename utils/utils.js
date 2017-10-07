@@ -7,6 +7,8 @@ var fs = require('fs'),
 Raven.config(sentry).install();
 var config = reload('../config.json');
 
+const WebSocket = require('ws');
+
 /**
  * Contains various functions.
  * @module utils
@@ -241,6 +243,24 @@ exports.formatTime = milliseconds => {
 }
 
 /**
+ * Converts to human readable form
+ * @arg {Number} milliseconds Time to format in milliseconds.
+ * @returns {String} The formatted time.
+ */
+exports.formatTimeForSpotify = milliseconds => {
+  let s = milliseconds / 1000;
+  let seconds = (s % 60).toFixed(0);
+  s /= 60;
+  let minutes = (s % 60).toFixed(0);
+  s /= 60;
+  let hours = (s % 24).toFixed(0);
+  s /= 24;
+  let days = s.toFixed(0);
+
+  return `${minutes}:${seconds}`;
+}
+
+/**
  * Another way to convert to human readable form
  * @arg {Number} time Time to format in milliseconds.
  * @returns {String} The formatted time.
@@ -254,7 +274,7 @@ exports.formatSeconds = time => {
   hours = hours > 9 ? hours : hours
   minutes = minutes > 9 ? minutes : minutes
   seconds = seconds > 9 ? seconds : seconds
-  return `${days} days, ${hours} hours, ${minutes} minutes and ${seconds} seconds`
+  return `${days} Days, ${hours} Hours, ${minutes} Minutes and ${seconds} Seconds`
 }
 /**
  * Another way to convert to human readable form
@@ -407,3 +427,41 @@ exports.sortProperties = (obj, sortedBy, isNumericSort, reverse) => {
     });
   return sortable; // array in format [ [ key1, val1 ], [ key2, val2 ], ... ]
 }
+
+exports.startMoeWS = () => {
+  return new Promise((resolve, reject) => {
+    const ws = new WebSocket('wss://listen.moe/api/v2/socket');
+
+    ws.on('open', function open() {
+      axios.post('https://listen.moe/api/authenticate', {
+        username: config.listenmoe_username,
+        password: config.listenmoe_password
+      }, {
+        headers: {
+          'User-Agent': USERAGENT,
+          'Accept': 'application/json',
+        },
+      }).then(res => {
+        if (res.data.success === false) return reject(res.data.message);
+        const auth = JSON.stringify({
+          "token": res.data.token
+        });
+        ws.send(auth);
+      }).catch(err => {
+        reject(err);
+      });
+    });
+
+    ws.on('message', function incoming(data) {
+      if (!data) {
+        reject(new Error('No data was returned'));
+      } else {
+        resolve(data);
+      }
+    });
+
+    setTimeout(() => {
+      ws.close();
+    }, 5000);
+  });
+};

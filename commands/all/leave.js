@@ -13,7 +13,6 @@ module.exports = {
      */
     const sendMessages = msg.channel.permissionsOf(bot.user.id).has('sendMessages');
     if (sendMessages === false) return;
-    leaveTimesUsed++
     bot.createMessage(msg.channel.id, `It's not like this server was fun anyways, b-baka!`)
       .then(msg => {
         msg.channel.guild.leave();
