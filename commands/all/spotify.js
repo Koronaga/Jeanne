@@ -35,12 +35,12 @@ module.exports = {
     if (lowerQuery !== 'typelist' && !queryType) return 'wrong usage';
 
     const queryTypePossibilities = 'album, artist, playlist, track';
-    if (lowerQuery === 'typelist') return msg.channel.createMessage('**All the types that can be used:** \n' + queryTypePossibilities.split(', ').join('\n') + '\n\n*Right now only* ***track*** *is available*')
+    if (lowerQuery === 'typelist') return msg.channel.createMessage('**All the types that can be used:** \n' + queryTypePossibilities.split(', ').join('\n'))
       .catch(err => {
         handleErrorNoMsg(bot, __filename, err);
       });
     if (queryType) queryType = queryType.toLowerCase();
-    if (!queryTypePossibilities.includes(queryType)) return msg.channel.createMessage('**Please use one of these types:** \n' + queryTypePossibilities.split(', ').join('\n') + '\n\n*Right now only* ***track*** *is available*')
+    if (!queryTypePossibilities.includes(queryType)) return msg.channel.createMessage('**Please use one of these types:** \n' + queryTypePossibilities.split(', ').join('\n'))
       .catch(err => {
         handleErrorNoMsg(bot, __filename, err);
       });
