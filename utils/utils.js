@@ -394,6 +394,37 @@ exports.handleErrorNoMsg = (bot, commandUsed, error) => {
   logger.error(error, 'ERROR');
 }
 
+exports.errorWebhook = (bot, error, type) => {
+  Raven.captureException(error);
+  if (type === 'WARN') {
+    bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
+      embeds: [{
+        title: `WARNING`,
+        color: config.warnColor,
+        description: `**${new Date().toLocaleString()}**\n\n${error}`,
+      }],
+      username: `${bot.user.username}`,
+      avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`
+    })
+    .catch(err => {
+      logger.error(err);
+    });
+  } else if (type === 'ERROR') {
+    bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
+      embeds: [{
+        title: `ERROR`,
+        color: config.errorColor,
+        description: `**${new Date().toLocaleString()}**\n\n${error}\n${error.stack}`,
+      }],
+      username: `${bot.user.username}`,
+      avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`
+    })
+    .catch(err => {
+      logger.error(err);
+    });
+  }
+}
+
 /**
  * Sort object properties (only own properties will be sorted).
  * @param {object} obj object to sort properties

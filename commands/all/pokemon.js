@@ -53,18 +53,24 @@ module.exports = {
         let evolveAt = 'lvl' + res.evolutions.map(e => e.level);
         if (evolveAt === 'lvl')
           evolveAt = 'n/a';
-        bot.createMessage(msg.channel.id, {
+        /*
+        let pokeID = '';
+        if (res.national_id.toString().length === 1) pokeID = '00' + res.national_id;
+        if (res.national_id.toString().length === 2) pokeID = '0' + res.national_id;
+        if (res.national_id.toString().length === 3) pokeID = res.national_id;
+        `https://raw.githubusercontent.com/jalyna/oakdex-pokedex-sprites/master/icons/${pokeID}.png`
+        */
+        msg.channel.createMessage({
           content: ``,
           embed: {
             color: config.defaultColor,
             author: {
-              name: `Info of ${res.names.en}`,
+              name: `${res.names.en}`,
               url: ``,
               icon_url: ``
             },
-            description: ``,
-            thumbnail: {
-              url: ``
+            image: {
+              url: `https://img.pokemondb.net/artwork/${res.names.en.toLowerCase()}.jpg`
             },
             fields: [{
                 name: `Names`,

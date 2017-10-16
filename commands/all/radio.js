@@ -49,14 +49,25 @@ module.exports = {
               console.log(`Added voice connection for guild ${realGuild.name} (${guildID})`);
               msg.channel.createMessage('Joined <#' + channelID + '> and started streaming listen.moe!')
                 .then(() => {
-                  vc.play(config.stream);
+                vc.play(config.stream, { sampleRate: 96000 });
                 })
                 .catch(err => {
                   handleError(bot, __filename, msg.channel, err);
                 });
+                vc.on("error", (err) => {
+                  handleErrorNoMsg(bot, __filename, '[vc error] ' + err);
+                });
+                /* debug stuff
+                vc.on("debug", (message) => {
+                  console.log('[vc debug] ' + message);
+                });
+                vc.on("warn", (message) => {
+                  console.log('[vc warn] ' + message);
+                });
+                */
             })
             .catch(error => {
-              console.log('Error connecting to channel ' + channel.name + ' | ' + error);
+              handleErrorNoMsg(bot, __filename, 'Error connecting to channel ' + channel.name + ' | ' + error);
             });
         }
       }

@@ -32,7 +32,7 @@ module.exports = (bot, msg, config, settingsManager) => {
     else {
       msg.channel.sendTyping();
       // http://api.program-o.com/v2/chatbot/?bot_id=6&say=${text}&convo_id=${msg.author.id}&format=json
-      axios.get(`http://api.program-o.com/v2/chatbot/?bot_id=6&say=${text}&convo_id=${msg.author.id}&format=json`).then(res => {
+      axios.get(`http://api.program-o.com/v2/chatbot/?bot_id=12&say=${text}&convo_id=${msg.author.id}&format=json`).then(res => {
         let answer = res.data.botsay;
         if (!answer) return bot.createMessage(msg.channel.id, `${msg.author.username}, I don't wanna talk right now :slight_frown:`)
           .catch(err => {

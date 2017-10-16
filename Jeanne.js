@@ -14,6 +14,7 @@ var fs = require('fs'),
   Eris = require('eris'),
   formatSeconds = require("./utils/utils.js").formatSeconds,
   handleErrorNoMsg = require("./utils/utils.js").handleErrorNoMsg,
+  errorWebhook = require("./utils/utils.js").errorWebhook,
   version = reload('./package.json').version,
   Nf = new Intl.NumberFormat('en-US'),
   round = require('./utils/utils.js').round,
@@ -133,6 +134,13 @@ function miscEvents() {
     if (bot.listeners('error').length === 0) {
       bot.on('error', (e, id) => {
         logger.error(`${e}\n${e.stack}`, `SHARD ${id} ERROR`);
+        errorWebhook(bot, e, 'ERROR');
+      });
+    }
+    if (bot.listeners('warn').length === 0) {
+      bot.on("warn", (warnMsg, id) => {
+        logger.warn(warnMsg, `SHARD ${id} WARNING`);
+        errorWebhook(bot, warnMsg, 'WARN');
       });
     }
     if (bot.listeners('shardReady').length === 0) {
@@ -344,11 +352,10 @@ process.on('SIGINT', () => {
 });
 
 process.on("uncaughtException", err => {
-  handleErrorNoMsg(bot, __filename, err);
+  logger.error(err);
 });
-
 process.on("unhandledRejection", err => {
-  handleErrorNoMsg(bot, __filename, err);
+  logger.error(err);
 });
 
 // Voice Connection Events
