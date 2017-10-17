@@ -14,7 +14,6 @@ moment = require('../node_modules/moment');
 const round = require('../utils/utils.js').round;
 
 module.exports = (bot, _settingsManager, _config, guild) => {
-  let defid = guild.defaultChannel ? guild.defaultChannel.id : null;
   const bots = bot.guilds.get(guild.id).members.filter(user => user.user.bot).length,
     total = bot.guilds.get(guild.id).memberCount,
     humans = total - bots,
@@ -94,11 +93,6 @@ module.exports = (bot, _settingsManager, _config, guild) => {
         username: `${bot.user.username}`,
         avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`
       })
-      .catch(err => {
-        handleErrorNoMsg(bot, __filename, err);
-      });
-    if (!guild.defaultChannel) return;
-    guild.defaultChannel.createMessage("Awesome a new server!\nType `j:help` for a commands list.\nYou could also view all my commands on https://cmds.jeannedarc.xyz")
       .catch(err => {
         handleErrorNoMsg(bot, __filename, err);
       });

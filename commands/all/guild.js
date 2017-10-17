@@ -34,7 +34,6 @@ module.exports = {
         afkChanID = msg.channel.guild.afkChannelID,
         createdOn = moment(msg.channel.guild.createdAt).utc().format('ddd MMM DD YYYY | kk:mm:ss') + ' UTC ' + '(' + moment(msg.channel.guild.createdAt).fromNow() + ')',
         verificationLevel = msg.channel.guild.verificationLevel,
-        defChan = msg.channel.guild.defaultChannel,
         total = msg.channel.guild.memberCount,
         bots = msg.channel.guild.members.filter(user => user.user.bot).length,
         humans = total - bots,
@@ -66,11 +65,6 @@ module.exports = {
             {
               name: `Humans:`,
               value: `${humans === null ? `n/a` : ''}${humans !== null ? humans : ''}, ${humanper === null ? `` : ''}${humanper !== null ? this.round(humanper, 2)+'%' : ''}`,
-              inline: true
-            },
-            {
-              name: `Default Channel:`,
-              value: `${defChan === null ? `n/a` : ''}${defChan !== null ? defChan.mention : ''}`,
               inline: true
             },
             {
