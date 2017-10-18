@@ -18,7 +18,7 @@ You can invite the bot to your server with https://invite.jeannedarc.xyz
 
 Open-Source
 -
-Jeanne is open-source under the GNU AGPLv3 License. If you use any of my code in your own project(s) you are required to credit me. See license for more details. (Open-Source does NOT mean that you can selfhost the bot!)
+Jeanne is open-source under the GNU GPLv3 License. If you use any of my code in your own project(s) you are required to credit me. See license for more details. (Open-Source does NOT mean that you can selfhost the bot!)
 
 Questions?
 -
