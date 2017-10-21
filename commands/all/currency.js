@@ -31,7 +31,15 @@ module.exports = {
     if (!fromCurrency) return 'wrong usage';
     if (!toCurrency) return 'wrong usage';
     currency.convert(value, fromCurrency, toCurrency, (err, conv) => {
-      if (err) return handleError(bot, __filename, msg.channel, err);
+      if (err) {
+        if ((err.message) && (err.message.includes('The result is undifined. Make sure that you are using correct currency symbols') || err.message.includes('Invalid parameter lengths'))) {
+          msg.channel.createMessage(`\\❌ Either **${fromCurrency}** or **${toCurrency}** is an unsupported currency.\nPlease use the correct currency code. (http://www.xe.com\\symbols.php)`)
+            .catch(err => handleErrorNoMsg(bot, __filename, err));
+          return;
+        }
+        handleError(bot, __filename, msg.channel, err);
+        return;
+      }
       bot.createMessage(msg.channel.id, {
         content: ``,
         embed: {
