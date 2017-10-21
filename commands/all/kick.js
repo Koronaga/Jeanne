@@ -49,6 +49,8 @@ module.exports = {
     });
     bot.kickGuildMember(msg.channel.guild.id, user.id, reason)
       .catch(err => {
+        if (err.message && err.message.includes('Privilege is too low...')) return msg.channel.createMessage(`\\❌ **My privilege is too low to kick this user.**\nI can't kick the owner of a server or people that have a higher role then I do.`)
+        .catch(err => handleErrorNoMsg(bot, __filename, err));
         handleError(bot, __filename, msg.channel, err);
       });
   }

@@ -50,9 +50,11 @@ module.exports = {
     });
     bot.banGuildMember(msg.channel.guild.id, user.id, deletedays, reason)
       .catch(err => {
+        if (err.message && err.message.includes('Privilege is too low...')) return msg.channel.createMessage(`\\❌ **My privilege is too low to ban this user.**\nI can't ban the owner of a server or people that have a higher role then I do.`)
+          .catch(err => handleErrorNoMsg(bot, __filename, err));
         handleError(bot, __filename, msg.channel, err);
       });
-    bot.unbanGuildMember(msg.channel.guild.id, user.id, 'Automatically unbanned because of sofban.')
+    bot.unbanGuildMember(msg.channel.guild.id, user.id, 'Softban.')
       .catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });

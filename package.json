@@ -33,6 +33,7 @@
     "date.js": "^0.3.1",
     "ddg": "0.0.3",
     "eris": "github:abalabahaha/eris#dev",
+    "eris-additions": "^1.2.5",
     "get-image-colors": "^1.8.1",
     "giphy-api": "^1.2.5",
     "google": "^2.1.0",

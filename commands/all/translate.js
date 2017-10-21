@@ -33,30 +33,29 @@ module.exports = {
     if (!toLang) return 'wrong usage';
     const query = text.replace(/'/g, "");
     translate(query, {
-        from: fromLang,
-        to: toLang
-      })
-      .then(res => {
-        let answer = res.text;
-        answer = answer.replace(/&#39;/, "'");
-        msg.channel.createMessage({
-            content: ``,
-            embed: {
-              color: config.defaultColor,
-              author: {
-                name: `${msg.author.username}`,
-                url: ``,
-                icon_url: `${msg.author.avatarURL}`
-              },
-              description: `${fromLang}: ${text}\n${toLang}: ${answer}`
-            }
-          })
-          .catch(err => {
-            handleError(bot, __filename, msg.channel, err);
-          });
-      })
-      .catch(err => {
+      from: fromLang,
+      to: toLang
+    }).then(res => {
+      let answer = res.text;
+      answer = answer.replace(/&#39;/, "'");
+      msg.channel.createMessage({
+        content: ``,
+        embed: {
+          color: config.defaultColor,
+          author: {
+            name: `${msg.author.username}`,
+            url: ``,
+            icon_url: `${msg.author.avatarURL}`
+          },
+          description: `${fromLang}: ${text}\n${toLang}: ${answer}`
+        }
+      }).catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
+    }).catch(err => {
+      if (err.message.includes('is not supported')) return msg.channel.createMessage(`\\❌ Either **${fromLang}** or **${toLang}** is not a supported language.\nMake sure to use ISO 639-1 language codes. (https://en.wikipedia.org/wiki\\ISO_639-1)`)
+        .catch(err => handleErrorNoMsg(bot, __filename, err));
+      handleError(bot, __filename, msg.channel, err);
+    });
   }
 };

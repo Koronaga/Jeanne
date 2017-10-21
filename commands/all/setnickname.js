@@ -29,42 +29,40 @@ module.exports = {
         handleError(bot, __filename, msg.channel, err);
       });
     bot.editGuildMember(msg.channel.guild.id, msg.author.id, {
-        nick: args
-      })
-      .then(() => {
-        if (!args) return msg.channel.createMessage({
-            content: ``,
-            embed: {
-              color: config.defaultColor,
-              author: {
-                name: ``,
-                url: ``,
-                icon_url: ``
-              },
-              description: `Successfully reset your nickname`
-            }
-          })
-          .catch(err => {
-            handleError(bot, __filename, msg.channel, err);
-          });
-        msg.channel.createMessage({
-            content: ``,
-            embed: {
-              color: config.defaultColor,
-              author: {
-                name: ``,
-                url: ``,
-                icon_url: ``
-              },
-              description: `Successfully changed your nickname to **${args}**`
-            }
-          })
-          .catch(err => {
-            handleError(bot, __filename, msg.channel, err);
-          });
-      })
-      .catch(err => {
+      nick: args
+    }).then(() => {
+      if (!args) return msg.channel.createMessage({
+        content: ``,
+        embed: {
+          color: config.defaultColor,
+          author: {
+            name: ``,
+            url: ``,
+            icon_url: ``
+          },
+          description: `Successfully reset your nickname`
+        }
+      }).catch(err => {
         handleError(bot, __filename, msg.channel, err);
       });
+      msg.channel.createMessage({
+        content: ``,
+        embed: {
+          color: config.defaultColor,
+          author: {
+            name: ``,
+            url: ``,
+            icon_url: ``
+          },
+          description: `Successfully changed your nickname to **${args}**`
+        }
+      }).catch(err => {
+        handleError(bot, __filename, msg.channel, err);
+      });
+    }).catch(err => {
+      if (err.message && err.message.includes('Privilege is too low...')) return msg.channel.createMessage(`\\❌ **My privilege is too low to change this users nickname.**\nI can't change the nickname of the owner of a server or people that have a higher role then I do.`)
+        .catch(err => handleErrorNoMsg(bot, __filename, err));
+      handleError(bot, __filename, msg.channel, err);
+    });
   }
 };

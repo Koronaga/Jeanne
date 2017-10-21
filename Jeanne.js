@@ -10,8 +10,8 @@ const randomColor = require('random-color'),
   Raven = require('raven');
 Raven.config(sentry).install();
 
-var fs = require('fs'),
-  Eris = require('eris'),
+let fs = require('fs'),
+  Eris = require('eris-additions')(require('eris')),
   formatSeconds = require("./utils/utils.js").formatSeconds,
   handleErrorNoMsg = require("./utils/utils.js").handleErrorNoMsg,
   errorWebhook = require("./utils/utils.js").errorWebhook,
@@ -37,7 +37,7 @@ cleverbotTimesUsed = 0;
 validateConfig(config).catch(() => process.exit(0));
 logger = new(reload('./utils/Logger.js'))(config.logTimestamp);
 
-var bot = new Eris(config.token, {
+let bot = new Eris(config.token, {
   autoReconnect: true,
   disableEveryone: true,
   getAllUsers: true,

@@ -19,11 +19,10 @@ module.exports = {
           .catch(err => {
             handleError(bot, __filename, msg.channel, err);
           });
-        let desc = videoInfo.description;
-        if (!desc) {
-          desc = 'n/a';
-        } else {
-          desc = desc.replace(/ ?<br> ?/g, '\n');
+        let desc = 'n/a';
+        if (videoInfo.description) {
+          desc = videoInfo.description.replace(/ ?<br> ?/g, '\n');
+          if (desc.length > 4000) desc = desc.slice(0, 4000);
         }
         msg.channel.createMessage({
             content: ``,
