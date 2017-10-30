@@ -1,10 +1,10 @@
 const reload = require('require-reload'),
   config = reload('../../config.json'),
-  handleError = require('../../utils/utils.js').handleError;
+  handleErrorNoMsg = require('../../utils/utils.js').handleErrorNoMsg;
 
 module.exports = {
-  desc: "Echo",
-  usage: "<text>",
+  desc: 'Echo',
+  usage: '<text> | [#channel]',
   aliases: ['echo'],
   guildOnly: true,
   task(bot, msg, args) {
@@ -16,23 +16,27 @@ module.exports = {
     const sendMessages = msg.channel.permissionsOf(bot.user.id).has('sendMessages');
     const embedLinks = msg.channel.permissionsOf(bot.user.id).has('embedLinks');
     if (sendMessages === false) return;
-    if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
-      .catch(err => {
-        handleError(bot, __filename, msg.channel, err);
-      });
-    bot.createMessage(msg.channel.id, {
-      content: ``,
+    if (embedLinks === false) return msg.channel.createMessage('\\❌ I\'m missing the \`embedLinks\` permission, which is required for this command to work.')
+      .catch((err) => handleErrorNoMsg(bot, __filename, err));
+    if (!args) return 'wrong usage';
+    const str = args + '';
+    const array = str.split(/ ?\| ?/),
+      text = array[0];
+    if (msg.channelMentions[0]) {
+      const chan = msg.channel.guild.channels.get(msg.channelMentions[0]);
+      chan.createMessage({
+        embed: {
+          color: config.defaultColor,
+          description: `:speech_balloon: ${text}` || 'echo'
+        }
+      }).catch((err) => handleErrorNoMsg(bot, __filename, err));
+      return;
+    }
+    msg.channel.createMessage({
       embed: {
         color: config.defaultColor,
-        author: {
-          name: ``,
-          url: ``,
-          icon_url: ``
-        },
-        description: `:speech_balloon: ${args}` || 'echo'
+        description: `:speech_balloon: ${text}` || 'echo'
       }
-    }).catch(err => {
-      handleError(bot, __filename, msg.channel, err);
-    });
+    }).catch((err) => handleErrorNoMsg(bot, __filename, err));
   }
 };

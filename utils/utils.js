@@ -1,10 +1,7 @@
 var fs = require('fs'),
   axios = require('axios'),
   reload = require('require-reload'),
-  logger = new(reload('./Logger.js'))((reload('../config.json')).logTimestamp),
-  sentry = reload('../config.json').raven_dsn,
-  Raven = require('raven');
-Raven.config(sentry).install();
+  logger = new(reload('./Logger.js'))((reload('../config.json')).logTimestamp);
 var config = reload('../config.json');
 
 const WebSocket = require('ws');
@@ -338,7 +335,6 @@ exports.getRandomInt = (min, max) => {
  * @param {object|string} error the error that was returned
  */
 exports.handleError = (bot, commandUsed, channel, error) => {
-  Raven.captureException(error);
   channel.createMessage({
       content: ``,
       embed: {
@@ -355,8 +351,8 @@ exports.handleError = (bot, commandUsed, channel, error) => {
       bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
           embeds: [{
             color: config.errorColor,
-            title: `${commandUsed}`,
-            description: `**${new Date().toLocaleString()}**\n\n${error}\n${error.stack}`,
+            title: `ERROR`,
+            description: `**${new Date().toLocaleString()}**\n\n**${commandUsed}**\n${error.stack}`,
           }],
           username: `${bot.user.username}`,
           avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`,
@@ -378,12 +374,11 @@ exports.handleError = (bot, commandUsed, channel, error) => {
  * @param {object|string} error the error that was returned
  */
 exports.handleErrorNoMsg = (bot, commandUsed, error) => {
-  Raven.captureException(error);
   bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
       embeds: [{
         color: config.errorColor,
-        title: `${commandUsed}`,
-        description: `**${new Date().toLocaleString()}**\n\n${error}\n${error.stack}`,
+        title: `ERROR`,
+        description: `**${new Date().toLocaleString()}**\n\n**${commandUsed}**\n${error.stack}`,
       }],
       username: `${bot.user.username}`,
       avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`
@@ -395,7 +390,6 @@ exports.handleErrorNoMsg = (bot, commandUsed, error) => {
 }
 
 exports.errorWebhook = (bot, error, type) => {
-  Raven.captureException(error);
   if (type === 'WARN') {
     bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
       embeds: [{

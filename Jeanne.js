@@ -1,23 +1,24 @@
-if (parseFloat(process.versions.node) < 6)
-  throw new Error('Incompatible node version. Install Node 6 or higher.');
+if (parseFloat(process.versions.node) < 8) {
+  throw new Error('Incompatible node version. Install Node 8.0 or higher.');
+}
 
 let reload = require('require-reload')(require);
 
-const randomColor = require('random-color'),
+/*const randomColor = require('random-color'),
   converter = require('hex2dec'),
-  randomFloat = require('random-floating'),
-  sentry = reload('./config.json').raven_dsn,
+  randomFloat = require('random-floating'),*/
+const sentry = reload('./config.json').raven_dsn,
   Raven = require('raven');
 Raven.config(sentry).install();
 
 let fs = require('fs'),
   Eris = require('eris-additions')(require('eris')),
-  formatSeconds = require("./utils/utils.js").formatSeconds,
-  handleErrorNoMsg = require("./utils/utils.js").handleErrorNoMsg,
-  errorWebhook = require("./utils/utils.js").errorWebhook,
-  version = reload('./package.json').version,
-  Nf = new Intl.NumberFormat('en-US'),
-  round = require('./utils/utils.js').round,
+  // formatSeconds = require("./utils/utils.js").formatSeconds,
+  // handleErrorNoMsg = require("./utils/utils.js").handleErrorNoMsg,
+  errorWebhook = require('./utils/utils.js').errorWebhook,
+  // version = reload('./package.json').version,
+  // Nf = new Intl.NumberFormat('en-US'),
+  // round = require('./utils/utils.js').round,
   validateConfig = reload('./utils/validateConfig.js'),
   CommandManager = reload('./utils/CommandManager.js'),
   utils = reload('./utils/utils.js'),
@@ -26,7 +27,7 @@ let fs = require('fs'),
   games = reload('./special/games.json'),
   CommandManagers = [],
   events = {},
-  bannedUsers = reload('./banned_users.json'),
+  // bannedUsers = reload('./banned_users.json'),
   config = reload('./config.json');
 
 USERAGENT = '';
@@ -35,19 +36,17 @@ commandsProcessed = 0;
 cleverbotTimesUsed = 0;
 
 validateConfig(config).catch(() => process.exit(0));
-logger = new(reload('./utils/Logger.js'))(config.logTimestamp);
+logger = new (reload('./utils/Logger.js'))(config.logTimestamp);
 
 let bot = new Eris(config.token, {
   autoReconnect: true,
-  disableEveryone: true,
+  compress: true,
   getAllUsers: true,
-  messageLimit: 100,
-  sequencerWait: 100,
-  moreMentions: true,
   disableEvents: config.disableEvents,
   maxShards: config.shardCount,
-  gatewayVersion: 6,
-  cleanContent: true
+  opusOnly: true,
+  restMode: true,
+  sequencerWait: 100
 });
 
 function loadCommandSets() {
@@ -138,7 +137,7 @@ function miscEvents() {
       });
     }
     if (bot.listeners('warn').length === 0) {
-      bot.on("warn", (warnMsg, id) => {
+      bot.on('warn', (warnMsg, id) => {
         logger.warn(warnMsg, `SHARD ${id} WARNING`);
         errorWebhook(bot, warnMsg, 'WARN');
       });
@@ -243,11 +242,11 @@ function reloadModule(msg) {
             msg.channel.createMessage('Reloaded utils/validateConfig.js');
             break;
           case 'Logger':
-            logger = new(reload('./utils/Logger.js'))(config.logTimestamp);
+            logger = new (reload('./utils/Logger.js'))(config.logTimestamp);
             msg.channel.createMessage('Reloaded utils/Logger.js');
             break;
           default:
-            msg.channel.createMessage("Can't reload that because it isn't already loaded");
+            msg.channel.createMessage('Can\'t reload that because it isn\'t already loaded');
             break;
         }
       }
@@ -260,7 +259,7 @@ function reloadModule(msg) {
       events[arg] = reload(`./events/${arg}.js`);
       msg.channel.createMessage(`Reloaded events/${arg}.js`);
     } else
-      msg.channel.createMessage("That event isn't loaded");
+      msg.channel.createMessage('That event isn\'t loaded');
 
   } else if (arg.startsWith('special/')) {
 
@@ -273,7 +272,7 @@ function reloadModule(msg) {
         msg.channel.createMessage('Reloaded special/games.json');
         break;
       default:
-        msg.channel.createMessage("Not found");
+        msg.channel.createMessage('Not found');
         break;
     }
 
@@ -282,7 +281,7 @@ function reloadModule(msg) {
     validateConfig = reload('./utils/validateConfig.js');
     config = reload('./config.json');
     validateConfig(config).catch(() => process.exit(0));
-    msg.channel.createMessage("Reloaded config");
+    msg.channel.createMessage('Reloaded config');
   }
 }
 
@@ -305,7 +304,7 @@ function evaluate(msg) {
   }
 }
 
-setInterval(() => { // Update the bot's status for each shard every 10 minutes
+setInterval(() => { // Update the bot status for each shard every 10 minutes
   if (games.length !== 0 && bot.uptime !== 0 && config.cycleGames === true) {
     bot.shards.forEach(shard => {
       let name = games[~~(Math.random() * games.length)];
@@ -351,19 +350,19 @@ process.on('SIGINT', () => {
   }, 5000);
 });
 
-process.on("uncaughtException", err => {
+process.on('uncaughtException', err => {
   logger.error(err);
 });
-process.on("unhandledRejection", err => {
+process.on('unhandledRejection', err => {
   logger.error(err);
 });
 
 // Voice Connection Events
-bot.on("voiceChannelLeave", (member, oldChannel) => {
+bot.on('voiceChannelLeave', (member, oldChannel) => {
   let vc = bot.voiceConnections.find((vc) => vc.id === oldChannel.guild.id);
   setTimeout(() => {
     /*
-    After 5 seconds of a meber leaving,
+    After 5 seconds of a member leaving,
     Check if the voice channel member size is 1, if the bot has a voice connection and if that last member is the bot.
     If all these are true, leave the voice connection because we don't want to play for nobody.
     */
@@ -374,11 +373,11 @@ bot.on("voiceChannelLeave", (member, oldChannel) => {
   }, 10000);
 });
 
-bot.on("voiceChannelSwitch", (member, newChannel, oldChannel) => {
+bot.on('voiceChannelSwitch', (member, newChannel, oldChannel) => {
   let vc = bot.voiceConnections.find((vc) => vc.id === oldChannel.guild.id);
   setTimeout(() => {
     /*
-    After 5 seconds of a meber leaving,
+    After 5 seconds of a member leaving,
     Check if the voice channel member size is 1, if the bot has a voice connection and if that last member is the bot.
     If all these are true, leave the voice connection because we don't want to play for nobody.
     */

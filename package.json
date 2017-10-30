@@ -56,6 +56,7 @@
     "myanimelist": "^0.1.0",
     "node-osu": "^1.2.0",
     "node-schedule": "^1.2.5",
+    "nraw": "^0.2.5",
     "oakdex-pokedex": "^0.1.2",
     "os-utils": "0.0.14",
     "overwatch-js": "^1.5.0",
@@ -78,7 +79,8 @@
     "y-currency": "^1.0.3",
     "youtube-info": "^1.1.2",
     "youtube-search": "^1.0.10",
-    "youtube-video-id": "0.0.2"
+    "youtube-video-id": "0.0.2",
+    "zlib-sync": "^0.1.2"
   },
   "devDependencies": {
     "eslint": "^4.8.0",

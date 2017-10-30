@@ -10,10 +10,12 @@ module.exports = function (config) {
       logger.error('Bot token is not defined', 'CONFIG ERROR');
       return reject();
     }
+    /*
     if (typeof config.shardCount !== 'number' || config.shardCount < 1) {
       logger.error('shardCount must be a valid positive Number', 'CONFIG ERROR');
       return reject();
     }
+    */
     if (typeof config.disableEvents !== 'object') {
       logger.error('disableEvents must be a valid Object', 'CONFIG ERROR');
       return reject();

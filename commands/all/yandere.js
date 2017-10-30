@@ -45,13 +45,17 @@ module.exports = {
       });
       if (searchBoolean === true) return msg.channel.createMessage(`\\❌ I can't show you this image, it is against Discord's ToS.`)
         .catch(err => handleErrorNoMsg(bot, __filename, err));
-      const imageUrl = res.data[0].file_url;
+      // const previewImage = res.data[0].preview_url;
+      const sampleImage = res.data[0].sample_url;
+      const post = `https://yande.re/post/show/${res.data[0].id}`;
       msg.channel.createMessage({
         content: ``,
         embed: {
           color: config.defaultColor,
+          description: `[View post](${post})\n` +
+            `[View image](${sampleImage})`,
           image: {
-            url: imageUrl
+            url: sampleImage
           }
         }
       }).catch(err => handleErrorNoMsg(bot, __filename, err));

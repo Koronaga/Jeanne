@@ -1,7 +1,8 @@
 const reload = require('require-reload'),
   config = reload('../../config.json'),
   handleError = require('../../utils/utils.js').handleError,
-  owjs = require('overwatch-js'); // ../../custom_modules/overwatch-js/index.js
+  handleErrorNoMsg = require('../../utils/utils.js').handleErrorNoMsg,
+  owjs = require('overwatch-js');
 
 module.exports = {
   desc: "Get overwatch data.",
@@ -26,7 +27,7 @@ module.exports = {
     const array = str.split(/ ?\| ?/),
       type = array[0], // profile, comp, quick
       platform = array[1], // xbl, psn, pc
-      region = array[2], // eu, us, asia, china
+      region = array[2], // eu, us, kr, cn
       username = array[3];
     const user = username.replace("#", "-");
     const lower = type.toLowerCase();
@@ -74,9 +75,11 @@ module.exports = {
               ]
             }
           }).catch(err => {
-            handleError(bot, __filename, msg.channel, err);
+            handleErrorNoMsg(bot, __filename, err);
           });
         }).catch(err => {
+          if (err.message && err.message.includes('PROFILE_NOT_FOUND')) return msg.channel.createMessage(`\\❌ Profile not found for **${username}**.\nMake sure you used the correct region \`[eu, us, kr, cn]\``)
+            .catch(err => handleErrorNoMsg(bot, __filename, err));
           handleError(bot, __filename, msg.channel, err);
         });
     } else if (lower === 'comp' || lower === 'c' || lower === 'competitive') {
@@ -138,9 +141,11 @@ module.exports = {
               ]
             }
           }).catch(err => {
-            handleError(bot, __filename, msg.channel, err);
+            handleErrorNoMsg(bot, __filename, err);
           });
         }).catch(err => {
+          if (err.message && err.message.includes('PROFILE_NOT_FOUND')) return msg.channel.createMessage(`\\❌ Profile not found for **${username}**.\nMake sure you used the correct region \`[eu, us, kr, cn]\``)
+            .catch(err => handleErrorNoMsg(bot, __filename, err));
           handleError(bot, __filename, msg.channel, err);
         });
     } else if (lower === 'quick' || lower === 'q' || lower === 'quickplay') {
@@ -205,9 +210,11 @@ module.exports = {
               ]
             }
           }).catch(err => {
-            handleError(bot, __filename, msg.channel, err);
+            handleErrorNoMsg(bot, __filename, err);
           });
         }).catch(err => {
+          if (err.message && err.message.includes('PROFILE_NOT_FOUND')) return msg.channel.createMessage(`\\❌ Profile not found for **${username}**.\nMake sure you used the correct region \`[eu, us, kr, cn]\``)
+            .catch(err => handleErrorNoMsg(bot, __filename, err));
           handleError(bot, __filename, msg.channel, err);
         });
     }
