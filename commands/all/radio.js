@@ -123,8 +123,8 @@ module.exports = {
             embed: {
               color: config.defaultColor,
               description: `Playing **${listen_moe.song_name}** by **${listen_moe.artist_name}**\n` +
-                `For **${listen_moe.listeners}** listeners + **${vcUsers.length}** Discord users in **${bot.voiceConnections.size}** channels\n` +
-                `Requested by **${requestedBy}**`,
+              `Requested by **${requestedBy}**\n` +
+                `For **${listen_moe.listeners}** listeners + **${vcUsers.length}** Discord users in **${bot.voiceConnections.size}** channels`,
               footer: {
                 text: `Info from listen.moe`,
                 icon_url: `https://b.catgirlsare.sexy/Z9xM.png`

@@ -18,7 +18,6 @@ module.exports = {
     const sendMessages = msg.channel.permissionsOf(bot.user.id).has('sendMessages');
     if (sendMessages === false) return;
     const owner = bot.users.get(config.adminIds[0]);
-
     function spamCheck(userId, args) {
       if (!antiSpam.hasOwnProperty(userId)) {
         antiSpam[userId] = args;
@@ -30,6 +29,9 @@ module.exports = {
       return true;
     }
     if (spamCheck(msg.author.id, args)) {
+      return msg.channel.createMessage(`\\❌ Cleverbot is currently disabled due to the API being down.`)
+        .catch(err => handleError(bot, __filename, msg.channel, err));
+      /*
       cleverbotTimesUsed++;
       msg.channel.sendTyping();
       if (!args) return bot.createMessage(msg.channel.id, `${msg.author.username}, What do you want to talk about?`)
@@ -52,14 +54,14 @@ module.exports = {
             .catch(err => {
               handleError(bot, __filename, msg.channel, err);
             });
-        })
-        .catch(err => {
+        }).catch(err => {
           handleError(bot, __filename, msg.channel, err);
           bot.createMessage(msg.channel.id, `${msg.author.username}, I don't wanna talk right now :slight_frown:`)
             .catch(err => {
               handleError(bot, __filename, msg.channel, err);
             });
         });
+        */
     }
   }
 };

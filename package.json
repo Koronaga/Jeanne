@@ -78,7 +78,8 @@
     "y-currency": "^1.0.3",
     "youtube-info": "^1.1.2",
     "youtube-search": "^1.0.10",
-    "youtube-video-id": "0.0.2"
+    "youtube-video-id": "0.0.2",
+    "zlib-sync": "^0.1.2"
   },
   "devDependencies": {
     "eslint": "^4.8.0",

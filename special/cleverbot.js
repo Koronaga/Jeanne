@@ -1,8 +1,9 @@
-var reload = require('require-reload')(require),
+let reload = require('require-reload')(require),
   logger = new(reload('../utils/Logger.js'))((reload('../config.json')).logTimestamp, 'yellow'),
   config = reload('../config.json'),
   antiSpam = {};
-const axios = require("axios");
+const axios = require("axios"),
+  handleErrorNoMsg = require('../utils/utils.js').handleErrorNoMsg;
 
 function spamCheck(userId, text) {
   if (!antiSpam.hasOwnProperty(userId)) { //If user not there add them
@@ -25,6 +26,9 @@ module.exports = (bot, msg, config, settingsManager) => {
     return;
   let text = msg.channel.guild === undefined ? msg.cleanContent : trimText(msg.cleanContent, msg.channel.guild.members.get(bot.user.id).nick || bot.user.username);
   if (spamCheck(msg.author.id, text)) {
+    return msg.channel.createMessage(`\\❌ Cleverbot is currently disabled due to the API being down.`)
+      .catch(err => handleErrorNoMsg(bot, __filename, err));
+    /*
     cleverbotTimesUsed++;
     logger.logCommand(msg.channel.guild === undefined ? null : msg.channel.guild.name, msg.author.username, '@' + bot.user.username, text);
     if (text === '') //If they just did @Botname
@@ -36,7 +40,7 @@ module.exports = (bot, msg, config, settingsManager) => {
         let answer = res.data.botsay;
         if (!answer) return bot.createMessage(msg.channel.id, `${msg.author.username}, I don't wanna talk right now :slight_frown:`)
           .catch(err => {
-            handleError(bot, __filename, msg.channel, err);
+            handleErrorNoMsg(bot, __filename, err)
           });
         // answer = answer.replace("Program-O", bot.user.username);
         answer = answer.replace(/Chatmundo/g, bot.user.username);
@@ -44,9 +48,10 @@ module.exports = (bot, msg, config, settingsManager) => {
         answer = answer.replace(/Elizabeth/g, `${owner.username}#${owner.discriminator}`);
         bot.createMessage(msg.channel.id, `${msg.author.username}, ${answer}`);
       }).catch(err => {
-        console.log(err);
+        handleErrorNoMsg(bot, __filename, err);
         bot.createMessage(msg.channel.id, `${msg.author.username}, I don't wanna talk right now :slight_frown:`);
       });
     }
+    */
   }
-}
+};

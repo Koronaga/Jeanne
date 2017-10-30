@@ -60,6 +60,7 @@ module.exports = {
         if (res.national_id.toString().length === 3) pokeID = res.national_id;
         `https://raw.githubusercontent.com/jalyna/oakdex-pokedex-sprites/master/icons/${pokeID}.png`
         */
+        const pokeImage = res.names.en.toLowerCase().replace(/ /g, '-');
         msg.channel.createMessage({
           content: ``,
           embed: {
@@ -70,7 +71,7 @@ module.exports = {
               icon_url: ``
             },
             image: {
-              url: `https://img.pokemondb.net/artwork/${res.names.en.toLowerCase()}.jpg`
+              url: `https://img.pokemondb.net/artwork/${pokeImage}.jpg`
             },
             fields: [{
                 name: `Names`,

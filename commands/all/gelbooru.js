@@ -47,10 +47,13 @@ module.exports = {
       if (searchBoolean === true) return msg.channel.createMessage(`\\❌ I can't show you this image, it is against Discord's ToS.`)
         .catch(err => handleErrorNoMsg(bot, __filename, err));
       const imageUrl = img[0].file_url;
+      const post = `https://gelbooru.com/index.php?page=post&s=view&id=${img[0].id}`;
       msg.channel.createMessage({
         content: ``,
         embed: {
           color: config.defaultColor,
+          description: `[View post](${post})\n` +
+            `[View image](${imageUrl})`,
           image: {
             url: imageUrl
           }

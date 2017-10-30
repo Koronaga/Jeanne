@@ -1,44 +1,44 @@
 module.exports = {
-    desc: "",
-    usage: "",
-    aliases: [],
-    cooldown: 5,
-    guildOnly: true,
-    task(bot, msg) {
-        bot.createMessage(msg.channel.id, {
-            content: ``,
-            embed: {
-                color: 0xf4ce11,
-                author: {
-                    name: ``,
-                    url: ``,
-                    icon_url: ``
-                },
-                description: ``,
-                thumbnail: {
-                    url: ``
-                },
-                image: {
-                    url: ``
-                },
-                fields: [{
-                        name: ``,
-                        value: ``,
-                        inline: true
-                    },
-                    {
-                        name: ``,
-                        value: ``,
-                        inline: true
-                    }
-                ],
-                footer: {
-                    text: ``,
-                    icon_url: ``
-                }
-            }
-        });
-    }
+  desc: "",
+  usage: "",
+  aliases: [],
+  cooldown: 5,
+  guildOnly: true,
+  task(bot, msg) {
+    bot.createMessage(msg.channel.id, {
+      content: ``,
+      embed: {
+        color: 0xf4ce11,
+        author: {
+          name: ``,
+          url: ``,
+          icon_url: ``
+        },
+        description: ``,
+        thumbnail: {
+          url: ``
+        },
+        image: {
+          url: ``
+        },
+        fields: [{
+            name: ``,
+            value: ``,
+            inline: true
+          },
+          {
+            name: ``,
+            value: ``,
+            inline: true
+          }
+        ],
+        footer: {
+          text: ``,
+          icon_url: ``
+        }
+      }
+    });
+  }
 };
 ==============================================================
 "<:vpGreenTick:" + "257437292820561920>"
@@ -63,14 +63,14 @@ if (res.data.error) return handleMsgError(msg.channel, `ERROR: ${res.data.error}
 guildOnly: true,
 ==============================================================
 /**
-         * perm checks
-         * @param {boolean} sendMessages - Checks if the bots permissions has sendMessages
-         * @param {boolean} embedLinks - Checks if the bots permissions has embedLinks
-         */
-        const sendMessages = msg.channel.permissionsOf(bot.user.id).has('sendMessages');
-        const embedLinks = msg.channel.permissionsOf(bot.user.id).has('embedLinks');
-        if (sendMessages === false) return;
-        if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
-            .catch(err => {
-                handleError(err);
-            });
+     * perm checks
+     * @param {boolean} sendMessages - Checks if the bots permissions has sendMessages
+     * @param {boolean} embedLinks - Checks if the bots permissions has embedLinks
+     */
+    const sendMessages = msg.channel.permissionsOf(bot.user.id).has('sendMessages');
+    const embedLinks = msg.channel.permissionsOf(bot.user.id).has('embedLinks');
+    if (sendMessages === false) return;
+    if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
+      .catch(err => {
+        handleError(err);
+      });

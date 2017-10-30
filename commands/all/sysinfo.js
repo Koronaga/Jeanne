@@ -38,7 +38,7 @@ module.exports = {
   Free Memory Percentage -> ${utils.round(freememPercentage * 100, 2)} %
            System Uptime -> ${utils.formatSeconds(sysUptime)}
           Process Uptime -> ${utils.formatSeconds(processUptime)}
-              Avg Load -> ${loadavg}
+                Avg Load -> ${loadavg}
 \`\`\``);
     }, 2000);
   }
