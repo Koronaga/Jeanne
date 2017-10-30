@@ -56,6 +56,7 @@
     "myanimelist": "^0.1.0",
     "node-osu": "^1.2.0",
     "node-schedule": "^1.2.5",
+    "nraw": "^0.2.5",
     "oakdex-pokedex": "^0.1.2",
     "os-utils": "0.0.14",
     "overwatch-js": "^1.5.0",
