@@ -4,7 +4,7 @@ const reload = require('require-reload'),
 
 module.exports = {
   desc: 'Echo and deletes the command message.',
-  usage: '<text>',
+  usage: '<text> | [#channel]',
   aliases: ['echod'],
   guildOnly: true,
   task(bot, msg, args) {
