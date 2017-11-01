@@ -3,32 +3,23 @@ if (parseFloat(process.versions.node) < 8) {
 }
 
 let reload = require('require-reload')(require);
+let logger;
+let CommandManagers = [];
+let events = {};
+let CommandManager = reload('./utils/CommandManager.js');
+let validateConfig = reload('./utils/validateConfig.js');
+let utils = reload('./utils/utils.js');
+let settingsManager = reload('./utils/settingsManager.js');
+let games = reload('./special/games.json');
+let config = reload('./config.json');
+let sentry = reload('./config.json').raven_dsn;
 
-/*const randomColor = require('random-color'),
-  converter = require('hex2dec'),
-  randomFloat = require('random-floating'),*/
-const sentry = reload('./config.json').raven_dsn,
-  Raven = require('raven');
+const fs = require('fs');
+const Eris = require('eris-additions')(require('eris'));
+const errorWebhook = require('./utils/utils.js').errorWebhook;
+const Raven = require('raven');
+
 Raven.config(sentry).install();
-
-let fs = require('fs'),
-  Eris = require('eris-additions')(require('eris')),
-  // formatSeconds = require("./utils/utils.js").formatSeconds,
-  // handleErrorNoMsg = require("./utils/utils.js").handleErrorNoMsg,
-  errorWebhook = require('./utils/utils.js').errorWebhook,
-  // version = reload('./package.json').version,
-  // Nf = new Intl.NumberFormat('en-US'),
-  // round = require('./utils/utils.js').round,
-  validateConfig = reload('./utils/validateConfig.js'),
-  CommandManager = reload('./utils/CommandManager.js'),
-  utils = reload('./utils/utils.js'),
-  settingsManager = reload('./utils/settingsManager.js'),
-  logger,
-  games = reload('./special/games.json'),
-  CommandManagers = [],
-  events = {},
-  // bannedUsers = reload('./banned_users.json'),
-  config = reload('./config.json');
 
 USERAGENT = '';
 
@@ -50,7 +41,7 @@ let bot = new Eris(config.token, {
 });
 
 function loadCommandSets() {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     CommandManagers = [];
     for (let prefix in config.commandSets) { //Add command sets
       let color = config.commandSets[prefix].color;
@@ -105,7 +96,7 @@ function loadEvents() { // Load all events in events/
 
 function initEvent(name) { // Setup the event listener for each loaded event.
   if (name === 'messageCreate') {
-    bot.on('messageCreate', msg => {
+    bot.on('messageCreate', (msg) => {
       if (msg.content.startsWith(config.reloadCommand) && config.adminIds.includes(msg.author.id)) //check for reload or eval command
         reloadModule(msg);
       else if (msg.content.startsWith(config.evalCommand) && config.adminIds.includes(msg.author.id))
@@ -114,7 +105,7 @@ function initEvent(name) { // Setup the event listener for each loaded event.
         events.messageCreate.handler(bot, msg, CommandManagers, config, settingsManager);
     });
   } else if (name === 'channelDelete') {
-    bot.on('channelDelete', channel => {
+    bot.on('channelDelete', (channel) => {
       settingsManager.handleDeletedChannel(channel);
     });
   } else if (name === 'ready') {
@@ -129,7 +120,7 @@ function initEvent(name) { // Setup the event listener for each loaded event.
 }
 
 function miscEvents() {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     if (bot.listeners('error').length === 0) {
       bot.on('error', (e, id) => {
         logger.error(`${e}\n${e.stack}`, `SHARD ${id} ERROR`);
@@ -143,8 +134,9 @@ function miscEvents() {
       });
     }
     if (bot.listeners('shardReady').length === 0) {
-      bot.on('shardReady', id => {
+      bot.on('shardReady', (id) => {
         logger.logBold(` SHARD ${id} CONNECTED`, 'green');
+        utils.shardWebhook(bot, id, 'ready');
       });
     }
     if (bot.listeners('disconnected').length === 0) {
@@ -155,15 +147,17 @@ function miscEvents() {
     if (bot.listeners('shardDisconnect').length === 0) {
       bot.on('shardDisconnect', (e, id) => {
         logger.error(e, `SHARD ${id} DISCONNECT`);
+        utils.shardWebhook(bot, id, 'disconnect', e);
       });
     }
     if (bot.listeners('shardResume').length === 0) {
-      bot.on('shardResume', id => {
+      bot.on('shardResume', (id) => {
         logger.logBold(` SHARD ${id} RESUMED`, 'green');
+        utils.shardWebhook(bot, id, 'resume');
       });
     }
     if (bot.listeners('guildCreate').length === 0) {
-      bot.on('guildCreate', guild => {
+      bot.on('guildCreate', (guild) => {
         logger.debug(guild.name, 'GUILD CREATE');
       });
     }
@@ -178,10 +172,9 @@ function miscEvents() {
 }
 
 function login() {
-  logger.logBold(`Logging in...`, 'green');
-  bot.connect().catch(error => {
-    logger.error(error, 'LOGIN ERROR');
-  });
+  logger.logBold('Logging in...', 'green');
+  bot.connect()
+    .catch((error) => logger.error(error, 'LOGIN ERROR'));
 }
 
 //Load commands and log in
@@ -190,9 +183,7 @@ loadCommandSets()
   .then(loadEvents)
   .then(miscEvents)
   .then(login)
-  .catch(error => {
-    logger.error(error, 'ERROR IN INIT');
-  });
+  .catch((error) => logger.error(error, 'ERROR IN INIT'));
 
 function reloadModule(msg) {
   logger.debug(`${msg.author.username}: ${msg.content}`, 'RELOAD MODULE');
@@ -209,13 +200,11 @@ function reloadModule(msg) {
       .then(initCommandManagers)
       .then(() => {
         msg.channel.createMessage('Reloaded CommandManagers');
-      }).catch(error => {
-        logger.error(error, 'ERROR IN INIT');
-      });
+      }).catch((error) => logger.error(error, 'ERROR IN INIT'));
 
   } else if (arg.startsWith('utils/')) {
 
-    fs.access(`${__dirname}/${arg}.js`, fs.R_OK | fs.F_OK, err => {
+    fs.access(`${__dirname}/${arg}.js`, fs.R_OK | fs.F_OK, (err) => {
       if (err)
         msg.channel.createMessage('That file does not exist!');
       else {
@@ -306,7 +295,7 @@ function evaluate(msg) {
 
 setInterval(() => { // Update the bot status for each shard every 10 minutes
   if (games.length !== 0 && bot.uptime !== 0 && config.cycleGames === true) {
-    bot.shards.forEach(shard => {
+    bot.shards.forEach((shard) => {
       let name = games[~~(Math.random() * games.length)];
       name = name.replace(/\$\{GUILDSIZE\}/gi, bot.guilds.size);
       name = name.replace(/\$\{USERSIZE\}/gi, bot.users.size);
@@ -317,27 +306,6 @@ setInterval(() => { // Update the bot status for each shard every 10 minutes
     });
   }
 }, 600000);
-
-// Hope this isn't api abuse owo
-// Default color 0x020003
-/* Ehh might get in trouble for this owo
-setInterval(() => {
-    const randomNumOne = randomFloat({ min: 0.3, max: 0.99, fixed: 2 });
-    const randomNumTwo = randomFloat({ min: 0.3, max: 0.99, fixed: 2 });
-    let color = randomColor(randomNumOne, randomNumTwo);
-    let hexColor = color.hexString();
-    color = hexColor.replace("#", "0x");
-    color = converter.hexToDec(`${color}`);
-
-    const reason = hexColor;
-    bot.editRole('229007062032580608', '347203487320244225', { color: color }, reason)
-        .then(() => {
-            console.log(`Updated role color to ${hexColor}!`);
-        }).catch(err => {
-            handleError(bot, err);
-        });
-}, 600000);
-*/
 
 // Process Events, so the bot doesn't crash when there is an unhandled error.
 process.on('SIGINT', () => {
@@ -350,22 +318,13 @@ process.on('SIGINT', () => {
   }, 5000);
 });
 
-process.on('uncaughtException', err => {
-  logger.error(err);
-});
-process.on('unhandledRejection', err => {
-  logger.error(err);
-});
+process.on('uncaughtException', (err) => logger.error(err));
+process.on('unhandledRejection', (err) => logger.error(err));
 
 // Voice Connection Events
 bot.on('voiceChannelLeave', (member, oldChannel) => {
   let vc = bot.voiceConnections.find((vc) => vc.id === oldChannel.guild.id);
   setTimeout(() => {
-    /*
-    After 5 seconds of a member leaving,
-    Check if the voice channel member size is 1, if the bot has a voice connection and if that last member is the bot.
-    If all these are true, leave the voice connection because we don't want to play for nobody.
-    */
     if ((oldChannel.voiceMembers.size === 1) && (vc) && (oldChannel.voiceMembers.has(bot.user.id))) {
       bot.leaveVoiceChannel(oldChannel.id);
       bot.voiceConnections.remove(vc);
@@ -376,11 +335,6 @@ bot.on('voiceChannelLeave', (member, oldChannel) => {
 bot.on('voiceChannelSwitch', (member, newChannel, oldChannel) => {
   let vc = bot.voiceConnections.find((vc) => vc.id === oldChannel.guild.id);
   setTimeout(() => {
-    /*
-    After 5 seconds of a member leaving,
-    Check if the voice channel member size is 1, if the bot has a voice connection and if that last member is the bot.
-    If all these are true, leave the voice connection because we don't want to play for nobody.
-    */
     if ((oldChannel.voiceMembers.size === 1) && (vc) && (oldChannel.voiceMembers.has(bot.user.id))) {
       bot.leaveVoiceChannel(oldChannel.id);
       bot.voiceConnections.remove(vc);

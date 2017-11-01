@@ -10,12 +10,6 @@ module.exports = function (config) {
       logger.error('Bot token is not defined', 'CONFIG ERROR');
       return reject();
     }
-    /*
-    if (typeof config.shardCount !== 'number' || config.shardCount < 1) {
-      logger.error('shardCount must be a valid positive Number', 'CONFIG ERROR');
-      return reject();
-    }
-    */
     if (typeof config.disableEvents !== 'object') {
       logger.error('disableEvents must be a valid Object', 'CONFIG ERROR');
       return reject();
@@ -30,7 +24,7 @@ module.exports = function (config) {
     }
     //Check for invalid command sets
     for (let prefix in config.commandSets) {
-      if (prefix === "") {
+      if (prefix === '') {
         logger.error('One of your commandSets has no prefix', 'CONFIG ERROR');
         return reject();
       } else if (!config.commandSets[prefix].hasOwnProperty('dir')) {
@@ -41,15 +35,15 @@ module.exports = function (config) {
     if (!config.adminIds || config.adminIds.length < 1) {
       logger.error('You must specify at least one admin id', 'CONFIG ERROR');
       return reject();
-    } else if (typeof config.adminIds[0] !== 'string' || config.adminIds[0] === "") {
+    } else if (typeof config.adminIds[0] !== 'string' || config.adminIds[0] === '') {
       logger.error('Admin ID needs to be a string', 'CONFIG ERROR');
       return reject();
     }
-    if (typeof config.reloadCommand !== 'string' || config.reloadCommand === "") {
+    if (typeof config.reloadCommand !== 'string' || config.reloadCommand === '') {
       logger.error('The reloadCommand needs to be a string', 'CONFIG ERROR');
       return reject();
     }
-    if (typeof config.evalCommand !== 'string' || config.evalCommand === "") {
+    if (typeof config.evalCommand !== 'string' || config.evalCommand === '') {
       logger.error('The evalCommand needs to be a string', 'CONFIG ERROR');
       return reject();
     }

@@ -1,3 +1,4 @@
+const config = require('../config.json');
 /**
  * @class
  * @classdesc Represents a command for the client.
@@ -27,6 +28,7 @@ class Command {
    * @arg {Object} cmd Object containing the appropriate properties including the function to run.
    * @arg {String} [cmd.usage=""]
    * @arg {String} [cmd.desc="No description"]
+   * @arg {String} [cmd.example="No example"]
    * @arg {String} [cmd.help=""No description""]
    * @arg {Function} cmd.task
    * @arg {Array<String>} [cmd.aliases=[]]
@@ -44,8 +46,9 @@ class Command {
   constructor(name, prefix, cmd, bot, config) {
     this.name = name;
     this.prefix = prefix;
-    this.usage = cmd.usage || "";
-    this.desc = cmd.desc || "No description";
+    this.usage = cmd.usage || '';
+    this.example = cmd.example || 'No example';
+    this.desc = cmd.desc || 'No description';
     this.help = cmd.help || cmd.desc || this.desc;
     this.task = cmd.task;
     this.aliases = cmd.aliases || [];
@@ -84,10 +87,18 @@ class Command {
    * @type {String}
    */
   get helpMessage() {
-    return `**❯ Command:** \`${this.prefix}${this.name} ${this.usage}\`
-**❯ Info:**\n${this.help}
-**❯ Cooldown:** ${this.cooldown} seconds
-**❯ Aliases:** ${this.aliases.join(', ') || "None"}`;
+    return {
+      embed: {
+        author: {
+          name: `${this.name.charAt(0).toUpperCase() + this.name.slice(1)}`
+        },
+        description: `**Command:** \`${this.prefix}${this.name} ${this.usage}\`\n` +
+        `**Info:**\n${this.help}\n` +
+        `${this.example === 'No exmaple' ? this.example : `**Example:**\n\`${this.prefix}${this.name} ${this.example}\``}\n` +
+        `**Cooldown:** ${this.cooldown} seconds\n` +
+        `**Aliases:** ${this.aliases.join(', ') || 'None'}`
+      }
+    };
   }
 
   /**
@@ -98,30 +109,40 @@ class Command {
    * @arg {Object} config The config Object.
    * @arg {settingsManager} settingsManager
    */
-  execute(bot, msg, suffix, config, settingsManager, logger) {
-    if (this.ownerOnly === true && !config.adminIds.includes(msg.author.id)) // ownerOnly check
-      return msg.channel.createMessage('Only the owner of this bot can use that command.').then(sentMsg => {
+  async execute(bot, msg, suffix, config, settingsManager, logger) {
+    if (this.ownerOnly === true && !config.adminIds.includes(msg.author.id)) {
+      try {
+        const sentMsg = await msg.channel.createMessage('Only the owner of this bot can use that command.');
         setTimeout(() => {
           msg.delete();
           sentMsg.delete();
         }, 6000);
-      });
-    if (this.guildOnly === true && msg.channel.guild === undefined) // guildOnly check
-      return msg.channel.createMessage('This command can only be used in a server.');
-    if (this.requiredPermission !== null && !config.adminIds.includes(msg.author.id) && !msg.channel.permissionsOf(msg.author.id).has(this.requiredPermission)) // requiredPermission check
-      return msg.channel.createMessage(`You need the ${this.requiredPermission} permission to use this command.`).then(sentMsg => {
+      } catch (e) { return; }
+      return;
+    }
+    if (this.guildOnly === true && msg.channel.guild === undefined) {
+      return msg.channel.createMessage('This command can only be used in a server.')
+        .catch(() => { return; });
+    }
+    if (this.requiredPermission !== null && !config.adminIds.includes(msg.author.id) && !msg.channel.permissionsOf(msg.author.id).has(this.requiredPermission)) {
+      try {
+        const sentMsg = await msg.channel.createMessage(`You need the ${this.requiredPermission} permission to use this command.`);
         setTimeout(() => {
           msg.delete();
           sentMsg.delete();
         }, 6000);
-      });
+      } catch (e) { return; }
+      return;
+    }
     if (this.usersOnCooldown.has(msg.author.id)) { // Cooldown check
-      return msg.channel.createMessage(`${msg.author.username}, this command can only be used every ${this.cooldown} seconds.`).then(sentMsg => {
+      try {
+        const sentMsg = await msg.channel.createMessage(`${msg.author.username}, this command can only be used every ${this.cooldown} seconds.`);
         setTimeout(() => {
           msg.delete();
           sentMsg.delete();
         }, 6000);
-      });
+      } catch (e) { return; }
+      return;
     }
 
     let result;
@@ -131,17 +152,20 @@ class Command {
       result = this.task(bot, msg, suffix, config, settingsManager); //run the command
     } catch (err) {
       logger.error(`${err}\n${err.stack}`, 'COMMAND EXECUTION ERROR');
-      if (config.errorMessage)
-        msg.channel.createMessage(config.errorMessage);
+      if (config.errorMessage) {
+        msg.channel.createMessage(config.errorMessage)
+          .catch(() => { return; });
+      }
     }
 
     if (result === 'wrong usage') {
-      msg.channel.createMessage(`${msg.author.username}, try again using the following format:\n**\`${this.prefix}${this.name} ${this.usage}\`**`).then(sentMsg => {
+      try {
+        const sentMsg = await msg.channel.createMessage(`${msg.author.username}, try again using the following format:\n**\`${this.prefix}${this.name} ${this.usage}\`**\nExample: **${this.prefix}${this.name} ${this.example}**`);
         setTimeout(() => {
           msg.delete();
           sentMsg.delete();
         }, 10000);
-      });
+      } catch (e) { return; }
     } else if (!config.adminIds.includes(msg.author.id)) {
       this.usersOnCooldown.add(msg.author.id);
       setTimeout(() => { //add the user to the cooldown list and remove them after {cooldown} seconds
@@ -150,32 +174,60 @@ class Command {
     }
   }
 
-  findMember(msg, str) {
-    if (!str || str === '') return false
-    const guild = msg.channel.guild
-    if (!guild) return msg.mentions[0] ? msg.mentions[0] : false
-    if (/^\d{17,18}/.test(str) || /^<@!?\d{17,18}>/.test(str)) {
-      const member = guild.members.get(/^<@!?\d{17,18}>/.test(str) ? str.replace(/<@!?/, '').replace('>', '') : str)
-      return member ? member.user : false
-    } else if (str.length <= 33) {
-      const isMemberName = (name, str) => name === str || name.startsWith(str) || name.includes(str)
-      const member = guild.members.find(m => {
-        if (m.nick && isMemberName(m.nick.toLowerCase(), str.toLowerCase())) return true
-        return isMemberName(m.user.username.toLowerCase(), str.toLowerCase())
-      })
-      return member ? member.user : false
-    } else return false
-  }
-
-  round(value, precision) {
-    var multiplier = Math.pow(10, precision || 0);
-    return Math.round(value * multiplier) / multiplier;
-  }
-
   /** Destroys the command */
   destroy() {
     if (typeof this.destroyFunction === 'function')
       this.destroyFunction();
+  }
+
+  /**
+ * Handle an error with a message
+ * @param {object} bot client object
+ * @param {string} commandUsed file path of the command
+ * @param {object} config config.json file
+ * @param {object} channel channel object
+ * @param {Error} error the error that was returned
+ */
+  async handleError(bot, commandUsed, channel, error) {
+    try {
+      await channel.createMessage({
+        embed: {
+          color: config.errorColor,
+          description: `${error}\n\nFor support join: https://discord.gg/Vf4ne5b`
+        }
+      });
+      await bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
+        embeds: [{
+          color: config.errorColor,
+          title: 'ERROR',
+          description: `**${new Date().toLocaleString()}**\n\n**${commandUsed}**\n${error.stack ? error.stack : error}`,
+        }],
+        username: `${bot.user.username}`,
+        avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`,
+  
+      });
+    } catch (e) { return; }
+  }
+
+  /**
+ * Handle an error without a message
+ * @param {object} bot client object
+ * @param {string} commandUsed file path of the command
+ * @param {object} config config.json file
+ * @param {Error} error the error that was returned
+ */
+  async handleErrorNoMsg(bot, commandUsed, error) {
+    try {
+      await bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
+        embeds: [{
+          color: config.errorColor,
+          title: 'ERROR',
+          description: `**${new Date().toLocaleString()}**\n\n**${commandUsed}**\n${error.stack ? error.stack : error}`,
+        }],
+        username: `${bot.user.username}`,
+        avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`
+      });
+    } catch (e) { return; }
   }
 }
 

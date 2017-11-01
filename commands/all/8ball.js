@@ -1,5 +1,3 @@
-const handleErrorNoMsg = require('../../utils/utils.js').handleErrorNoMsg;
-
 const answers = [
   'Yes!',
   'No way!',
@@ -27,8 +25,9 @@ module.exports = {
   guildOnly: true,
   async task(bot, msg, args) {
     if (!args) return 'wrong usage';
-    const choice = answers[Math.floor(Math.random() * answers.length)];
-    msg.channel.createMessage('🎱 | ' + choice)
-      .catch((err) => handleErrorNoMsg(bot, __filename, err));
+    try {
+      const choice = answers[Math.floor(Math.random() * answers.length)];
+      await msg.channel.createMessage('🎱 | ' + choice);
+    } catch (e) { return; }
   }
 };
