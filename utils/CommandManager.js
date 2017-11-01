@@ -1,8 +1,9 @@
-var reload = require('require-reload')(require),
-  fs = require('fs'),
-  Command = reload('./Command.js'),
-  _Logger = reload('./Logger.js'),
-  bannedUsers = reload('../banned_users.json');
+let reload = require('require-reload')(require);
+let fs = require('fs');
+let Command = reload('./Command.js');
+let _Logger = reload('./Logger.js');
+let bannedUsers = reload('../banned_users.json');
+let config = reload('../config.json');
 
 /**
  * @class
@@ -76,12 +77,13 @@ class CommandManager {
     let suffix = msg.content.replace(this.prefix + name, '').trim();
     if (command !== null) {
       bannedUsers = reload('../banned_users.json');
-      if ((bannedUsers.bannedUserIds.includes(msg.author.id)) && (msg.author.id !== config.adminIds[0])) return bot.createMessage(msg.channel.id, `${msg.author.mention}, You have been blacklisted from using any commands.`);
+      if ((bannedUsers.bannedUserIds.includes(msg.author.id)) && (msg.author.id !== config.adminIds[0])) return msg.channel.createMessage(`${msg.author.mention}, You have been blacklisted from using any commands.`);
       if (msg.channel.guild !== undefined && !msg.channel.permissionsOf(msg.author.id).has('manageChannels') && settingsManager.isCommandIgnored(this.prefix, command.name, msg.channel.guild.id, msg.channel.id, msg.author.id) === true)
         return;
       this.logCommand(msg, command.name, name);
-      return command.execute(bot, msg, suffix, config, settingsManager, this.logger);
-    } else if (name.toLowerCase() === "help") {
+      return command.execute(bot, msg, suffix, config, settingsManager, this.logger)
+        .catch(() => { return; });
+    } else if (name.toLowerCase() === 'help') {
       bannedUsers = reload('../banned_users.json');
       if ((bannedUsers.bannedUserIds.includes(msg.author.id)) && (msg.author.id !== config.adminIds[0])) return bot.createMessage(msg.channel.id, `${msg.author.mention}, You have been blacklisted from using any commands.`);
       return this.help(bot, msg, msg.content.replace(this.prefix + name, '').trim());
@@ -90,7 +92,7 @@ class CommandManager {
       let commandResults = [];
       for (let i = 0; i < this.fallbackCommands.length; ++i) {
         let command = this.fallbackCommands[i];
-        commandResults.push(command.execute(bot, msg, suffix, config, settingsManager, this.logger));
+        commandResults.push(command.execute(bot, msg, suffix, config, settingsManager, this.logger).catch(() => { return; }));
       }
 
       return commandResults;
@@ -130,37 +132,39 @@ class CommandManager {
    * @arg {Eris.Message} msg The message that triggered the command.
    * @arg {String} [command] The command to get help for.
    */
-  help(bot, msg, command) {
+  async help(bot, msg, command) {
     this.logger.logCommand(msg.channel.guild === undefined ? null : msg.channel.guild.name, msg.author.username, this.prefix + 'help', command);
     if (!command) {
       let messageQueue = [];
-      let currentMessage = `\n// Here's a list of my commands. For more info do: ${this.prefix}help <command>`;
+      let currentMessage = '';
       for (let cmd in this.commands) {
         if (this.commands[cmd].hidden === true)
           continue;
-        let toAdd = this.commands[cmd].helpShort;
-        if (currentMessage.length + toAdd.length >= 1900) { //If too long push to queue and reset it.
-          messageQueue.push(currentMessage);
-          currentMessage = '';
-        }
-        currentMessage += '\n' + toAdd;
+        let toAdd = this.commands[cmd].name;
+        currentMessage += ', ' + toAdd;
       }
       messageQueue.push(currentMessage);
-      msg.channel.addMessageReaction(msg.id, "✅");
-      bot.getDMChannel(msg.author.id).then(chan => {
-        let sendInOrder = setInterval(() => { //eslint-disable-line no-unused-vars
-          if (messageQueue.length > 0)
-            bot.createMessage(chan.id, '```glsl' + messageQueue.shift() + '```'); //If still messages queued send the next one.
-          else clearInterval(sendInOrder);
-        }, 300);
-      });
-
+      let commands = messageQueue.toString();
+      commands = commands.substr(2);
+      try {
+        msg.channel.createMessage({
+          embed: {
+            color: config.defaultColor,
+            title: 'Here are all my commands:',
+            description: `${commands}`,
+            footer: {
+              text: `For more info do: ${this.prefix}help <command>`
+            }
+          }
+        });
+      } catch (error) { return; }
     } else {
       let cmd = this.checkForMatch(command);
-      if (cmd === null) //If no matching command
+      if (cmd === null) { //If no matching command
         bot.createMessage(msg.channel.id, `Command \`${this.prefix}${command}\` not found`);
-      else
+      } else {
         bot.createMessage(msg.channel.id, cmd.helpMessage);
+      }
     }
   }
 
@@ -173,7 +177,7 @@ class CommandManager {
    * @arg {settingsManager} settingsManager The bot's {@link settingsManager}.
    */
   reload(bot, channelId, command, config, settingsManager) {
-    fs.access(`${this.directory}${command}.js`, fs.R_OK | fs.F_OK, error => {
+    fs.access(`${this.directory}${command}.js`, fs.R_OK | fs.F_OK, (error) => {
       if (error)
         bot.createMessage(channelId, 'Command does not exist');
       else {

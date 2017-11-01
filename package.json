@@ -1,6 +1,6 @@
 {
   "name": "jeannedarc",
-  "version": "3.1.03",
+  "version": "3.1.05",
   "description": "A fast cute Discord bot with a large variety of commands.",
   "author": "Pepijn \"Kurozero\" van den Broek",
   "main": "Jeanne.js",
@@ -12,10 +12,10 @@
     "url": "https://github.com/KurozeroPB/Jeanne/issues"
   },
   "engines": {
-    "node": ">=6.5.0"
+    "node": ">=8.0.0"
   },
   "scripts": {
-    "start": "node Jeanne.js"
+    "start": "node --no-deprecation Jeanne.js"
   },
   "license": "GPL-3.0",
   "dependencies": {
@@ -23,6 +23,7 @@
     "adorasult": "^0.2.0",
     "aesthetics": "^2.1.0",
     "anilist-api-pt": "^1.0.0",
+    "apiai": "^4.0.3",
     "ascii-art-reverse": "0.0.1",
     "axios": "^0.16.2",
     "blasphemy": "0.0.2",
@@ -34,6 +35,7 @@
     "ddg": "0.0.3",
     "eris": "github:abalabahaha/eris#dev",
     "eris-additions": "^1.2.5",
+    "fire-emblem-heroes-stats": "^0.9.14",
     "get-image-colors": "^1.8.1",
     "giphy-api": "^1.2.5",
     "google": "^2.1.0",

@@ -43,7 +43,7 @@ function destroy() {
  * @returns {Promise} Resolves when done modifying settings.
  */
 function setWelcome(guildId, channelId, message) {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     if (!genericSettings.hasOwnProperty(guildId))
       genericSettings[guildId] = {};
     if (!genericSettings[guildId].hasOwnProperty('welcome')) {
@@ -55,7 +55,7 @@ function setWelcome(guildId, channelId, message) {
         updateGeneric = true;
       }
     } else {
-      if (message && (genericSettings[guildId].welcome.message != message || genericSettings[guildId].welcome.channelId != channelId)) {
+      if (message && (genericSettings[guildId].welcome.message !== message || genericSettings[guildId].welcome.channelId !== channelId)) {
         genericSettings[guildId].welcome.message = message; //Changing message
         genericSettings[guildId].welcome.channelId = channelId;
         updateGeneric = true;
@@ -109,7 +109,7 @@ function setEventChannel(guildId, channelId) {
   } else if (channelId) {
     if (!genericSettings.hasOwnProperty(guildId)) {
       genericSettings[guildId] = {
-        "events": {
+        'events': {
           channelId,
           subbed: []
         }
@@ -140,7 +140,7 @@ function subEvents(eventArray, channel) {
       genericSettings[channel.guild.id] = {};
     if (!genericSettings[channel.guild.id].hasOwnProperty('events'))
       setEventChannel(channel.guild.id, channel.id);
-    eventArray = eventArray.map(i => i.substr(1).toLowerCase());
+    eventArray = eventArray.map((i) => i.substr(1).toLowerCase());
     let subbedEvents = [];
     for (let e of eventList) {
       if (eventArray.includes(e) && !genericSettings[channel.guild.id].events.subbed.includes(e)) {
@@ -168,7 +168,7 @@ function unsubEvents(eventArray, channel) {
   return new Promise((resolve, reject) => {
     if (!genericSettings.hasOwnProperty(channel.guild.id) || !genericSettings[channel.guild.id].hasOwnProperty('events'))
       return reject('You are not subscribed to any events');
-    eventArray = eventArray.map(i => i.substr(1).toLowerCase());
+    eventArray = eventArray.map((i) => i.substr(1).toLowerCase());
     let unsubbedEvents = [];
     for (let e of eventList) {
       if (eventArray.includes(e) && genericSettings[channel.guild.id].events.subbed.includes(e)) {
@@ -296,7 +296,7 @@ function addIgnoreForUserOrChannel(guildId, type, id, command) {
       return resolve(false);
     }
 
-    let prefix = Object.keys(commandList).find(p => command.startsWith(p));
+    let prefix = Object.keys(commandList).find((p) => command.startsWith(p));
     command = command.replace(prefix, '');
 
     if (command === 'all') {
@@ -309,7 +309,7 @@ function addIgnoreForUserOrChannel(guildId, type, id, command) {
           if (commandSettings[guildId][type][id][i][0] === prefix)
             commandSettings[guildId][type][id].splice(i, 1);
         }
-        commandSettings[guildId][type][id].push(prefix + 'all')
+        commandSettings[guildId][type][id].push(prefix + 'all');
       } else
         return resolve(false);
       updateCommand = true;
@@ -365,7 +365,7 @@ function removeIgnoreForUserOrChannel(guildId, type, id, command) {
       return resolve(false);
     }
 
-    let prefix = Object.keys(commandList).find(p => command.startsWith(p));
+    let prefix = Object.keys(commandList).find((p) => command.startsWith(p));
     command = command.replace(prefix, '');
 
     if (command === 'all') {
@@ -470,20 +470,20 @@ function addIgnoreForGuild(guildId, command) {
       return resolve(false);
     }
 
-    let prefix = Object.keys(commandList).find(p => command.startsWith(p));
+    let prefix = Object.keys(commandList).find((p) => command.startsWith(p));
     command = command.replace(prefix, '');
 
     if (command === 'all') {
       if (prefix === undefined)
         commandSettings[guildId].guildIgnores = ['all'];
-      else if (commandSettings[guildId].guildIgnores.length == 0)
+      else if (commandSettings[guildId].guildIgnores.length === 0)
         commandSettings[guildId].guildIgnores.push(prefix + 'all');
       else if (!commandSettings[guildId].guildIgnores.includes(prefix + 'all')) {
         for (let i = 0; i < commandSettings[guildId].guildIgnores.length; i++) {
           if (commandSettings[guildId].guildIgnores[i][0] === prefix)
             commandSettings[guildId].guildIgnores.splice(i, 1);
         }
-        commandSettings[guildId].guildIgnores.push(prefix + 'all')
+        commandSettings[guildId].guildIgnores.push(prefix + 'all');
       } else {
         removeIfEmptyArray(commandSettings[guildId], 'guildIgnores', updateCommand);
         removeIfEmpty(commandSettings, guildId, updateCommand);
@@ -538,7 +538,7 @@ function removeIgnoreForGuild(guildId, command) {
       return resolve(false);
     }
 
-    let prefix = Object.keys(commandList).find(p => command.startsWith(p));
+    let prefix = Object.keys(commandList).find((p) => command.startsWith(p));
     command = command.replace(prefix, '');
 
     if (command === 'all') {

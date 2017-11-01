@@ -29,7 +29,7 @@ module.exports = {
       chan.createMessage({
         embed: {
           color: config.defaultColor,
-          description: `:speech_balloon: ${text}` || 'echo'
+          description: `${text}` || 'echo'
         }
       }).catch((err) => handleErrorNoMsg(bot, __filename, err));
       return;
@@ -37,7 +37,7 @@ module.exports = {
     msg.channel.createMessage({
       embed: {
         color: config.defaultColor,
-        description: `:speech_balloon: ${text}` || 'echo'
+        description: `${text}` || 'echo'
       }
     }).catch((err) => handleErrorNoMsg(bot, __filename, err));
   }

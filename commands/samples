@@ -1,40 +1,40 @@
 module.exports = {
-  desc: "",
-  usage: "",
+  desc: '',
+  usage: '',
+  exmaple: '',
   aliases: [],
   cooldown: 5,
   guildOnly: true,
-  task(bot, msg) {
-    bot.createMessage(msg.channel.id, {
-      content: ``,
+  task(bot, msg, config) {
+    msg.channel.createMessage({
       embed: {
-        color: 0xf4ce11,
+        color: config.defaultColor,
         author: {
-          name: ``,
-          url: ``,
-          icon_url: ``
+          name: '',
+          url: '',
+          icon_url: ''
         },
-        description: ``,
+        description: '',
         thumbnail: {
-          url: ``
+          url: ''
         },
         image: {
-          url: ``
+          url: ''
         },
         fields: [{
-            name: ``,
-            value: ``,
+            name: '',
+            value: '',
             inline: true
           },
           {
-            name: ``,
-            value: ``,
+            name: '',
+            value: '',
             inline: true
           }
         ],
         footer: {
-          text: ``,
-          icon_url: ``
+          text: '',
+          icon_url: ''
         }
       }
     });

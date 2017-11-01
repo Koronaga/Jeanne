@@ -1,7 +1,7 @@
 const reload = require('require-reload'),
   config = reload('../../config.json'),
   handleError = require('../../utils/utils.js').handleError,
-  Kitsu = require('kitsu.js');
+  Kitsu = require('../../custom_modules/kitsu/index');
 
 const kitsu = new Kitsu();
 

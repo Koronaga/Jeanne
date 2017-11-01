@@ -1,27 +1,17 @@
-var reload = require('require-reload')(require),
-  cleverbot = reload('../special/cleverbot.js'),
-  utils = reload('../utils/utils.js'),
-  points = reload('../db/points.json'),
-  message = reload('../db/message.json'),
-  bannedUsers = reload('../banned_users.json'),
-  updatePoints = false,
-  updateMessage = false,
-  config = reload('../config.json'),
-  error,
-  logger,
-  logger = new(reload('../utils/Logger.js'))(config.logTimestamp);
-
-const handleError = require('../utils/utils.js').handleError,
-  handleErrorNoMsg = require("../utils/utils.js").handleErrorNoMsg;
+let reload = require('require-reload')(require);
+let cleverbot = reload('../special/cleverbot.js');
+let utils = reload('../utils/utils.js');
+let points = reload('../db/points.json');
+let message = reload('../db/message.json');
+let updatePoints = false;
+let updateMessage = false;
 /*
     Vision = require('@google-cloud/vision'),
     jeanneVision = require('../Jeanne-ca41da280a76.json');
 
 const visionClient = new Vision({
     projectId: `${jeanneVision.project_id}`,
-    keyFilename: `/home/kurozero/Desktop/Jeanne/Jeanne-ca41da280a76.json`
-    // /home/kurozero/Desktop/Jeanne/Jeanne-ca41da280a76.json
-    // D:/JeanneDev/Jeanne-ca41da280a76.json
+    keyFilename: `/home/kurozero/DiscordBots/Jeanne/Jeanne-ca41da280a76.json
 });
 */
 
@@ -29,11 +19,10 @@ const fs = require('fs');
 
 module.exports = {
   handler(bot, msg, CommandManagers, config, settingsManager) {
+    if (!msg.author) return;
     if (msg.author.bot === true) return;
     if (!msg.channel.guild) return bot.createMessage(msg.channel.id, 'Commands do not work in DMs.')
-      .catch(err => {
-        handleError(bot, __filename, msg.channel, err);
-      });
+      .catch(() => { return; });
 
     /*
     if (msg.channel.guild.id === '229007062032580608' && msg.attachments[0] && msg.channel.id !== '311667653771132928' && msg.channel.id !== '311663280588455937') {
@@ -58,13 +47,11 @@ module.exports = {
                                         handleErrorNoMsg(bot, __filename, err);
                                     });
                             }, 3000);
-                        })
-                        .catch(error => {
+                        }).catch(error => {
                             handleErrorNoMsg(bot, __filename, error);
                         });
                 }
-            })
-            .catch(error => {
+            }).catch(error => {
                 handleErrorNoMsg(bot, __filename, error);
             });
     }
@@ -72,12 +59,7 @@ module.exports = {
 
     for (let i = 0; i < CommandManagers.length; i++) {
       if ((msg.content.startsWith(CommandManagers[i].prefix)) && (!msg.channel.guild)) return msg.channel.createMessage('Commands can only be used in a server/guild.')
-        .catch(err => {
-          if (!err.response) return logger.error('\n' + err, 'ERROR');
-          error = JSON.parse(err.response);
-          if ((!error.code) && (!error.message)) return logger.error('\n' + err, 'ERROR');
-          logger.error(error.code + '\n' + error.message, 'ERROR');
-        });
+        .catch(() => { return; });
       if (msg.content.startsWith(CommandManagers[i].prefix))
         return CommandManagers[i].processCommand(bot, msg, config, settingsManager);
     }
@@ -97,13 +79,12 @@ module.exports = {
     if (curLevel > userData.level) {
       // Level up!
       userData.level = curLevel;
-      let message = JSON.parse(fs.readFileSync(`./db/message.json`, 'utf8'));
+      let message = JSON.parse(fs.readFileSync('./db/message.json', 'utf8'));
       if (config.nowelcomemessageGuild.includes(msg.channel.guild.id)) return;
-      if ((!message[msg.channel.guild.id]) || (message[msg.channel.guild.id].type.includes("true"))) {
-        bot.createMessage(msg.channel.id, `<@${msg.author.id}> You've leveled up to level **${curLevel}**!`).catch(error => {
-          return;
-        });
-      } else if (message[msg.channel.guild.id].type.includes("false")) {
+      if ((!message[msg.channel.guild.id]) || (message[msg.channel.guild.id].type.includes('true'))) {
+        bot.createMessage(msg.channel.id, `<@${msg.author.id}> You've leveled up to level **${curLevel}**!`)
+          .catch(() => { return; });
+      } else if (message[msg.channel.guild.id].type.includes('false')) {
         return;
       }
     }
@@ -111,13 +92,13 @@ module.exports = {
   reloadCleverbot(bot, channelId) {
     try {
       cleverbot = reload('../special/cleverbot.js');
-      bot.createMessage(channelId, "Reloaded special/cleverbot");
+      bot.createMessage(channelId, 'Reloaded special/cleverbot');
     } catch (error) {
       console.error(error);
       bot.createMessage(channelId, `Error reloading cleverbot: ${error}`);
     }
   }
-}
+};
 
 // points/message shit
 const interval = setInterval(() => {
@@ -131,13 +112,13 @@ const interval = setInterval(() => {
   }
 }, 30000);
 
-function handleShutdown() {
+function handleShutdown() { // eslint-disable-line no-unused-vars
   return Promise.all([utils.safeSave('db/points', '.json', JSON.stringify(points)), utils.safeSave('db/message', '.json', JSON.stringify(message))]);
 }
 
-function destroy() {
+function destroy() { // eslint-disable-line no-unused-vars
   clearInterval(interval);
-  if (updateCommand === true)
+  if (updateCommand === true) // eslint-disable-line no-undef
     utils.safeSave('db/points', '.json', JSON.stringify(points));
   if (updateMessage === true)
     utils.safeSave('db/message', '.json', JSON.stringify(message));
