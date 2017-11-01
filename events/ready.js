@@ -30,7 +30,7 @@ module.exports = (bot, config, games, utils) => {
       embed: {
         color: config.defaultColor,
         author: {
-          name: 'Jeanne d\'Arc Live Statistics',
+          name: 'Jeanne d\'Arc Live Statistics (TEST)',
           url: 'https://jeannedarc.xyz/',
           icon_url: `${bot.user.avatarURL}`
         },
