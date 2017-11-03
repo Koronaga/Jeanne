@@ -9,11 +9,7 @@ module.exports = {
     msg.channel.createMessage({
       embed: {
         color: config.defaultColor,
-        author: {
-          name: '',
-          url: '',
-          icon_url: ''
-        },
+        title: '',
         description: '',
         thumbnail: {
           url: ''
@@ -40,37 +36,11 @@ module.exports = {
     });
   }
 };
-==============================================================
-"<:vpGreenTick:" + "257437292820561920>"
-msg.addReaction("Thonkang~4:224495947051171840")
-==============================================================
-const reload = require('require-reload'),
-    config = reload('../../config.json'),
-    handleError = require('../../utils/utils.js').handleError,
-    handleMsgError = require('../../utils/utils.js').handleMsgError,
-==============================================================
-.catch(err => {
-                    handleError(err);
-                });
-==============================================================
-.catch(err => {
-                handleMsgError(msg.channel, err);
-            });
+//===================================================================================//
+const sendMessages = msg.channel.permissionsOf(bot.user.id).has('sendMessages');
+const embedLinks = msg.channel.permissionsOf(bot.user.id).has('embedLinks');
+if (sendMessages === false) return;
+if (embedLinks === false) return msg.channel.createMessage('<:RedCross:373596012755025920> | I'm missing the \`embedLinks\` permission, which is required for this command to work.')
+  .catch((err) => this.catchError(e, msg));
 
-if (err) return handleMsgError(msg.channel, err);
-if (res.data.error) return handleMsgError(msg.channel, `ERROR: ${res.data.error}`);
-//
-guildOnly: true,
-==============================================================
-/**
-     * perm checks
-     * @param {boolean} sendMessages - Checks if the bots permissions has sendMessages
-     * @param {boolean} embedLinks - Checks if the bots permissions has embedLinks
-     */
-    const sendMessages = msg.channel.permissionsOf(bot.user.id).has('sendMessages');
-    const embedLinks = msg.channel.permissionsOf(bot.user.id).has('embedLinks');
-    if (sendMessages === false) return;
-    if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
-      .catch(err => {
-        handleError(err);
-      });
+this.catchError(e, msg);

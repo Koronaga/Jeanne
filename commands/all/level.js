@@ -1,10 +1,9 @@
-const reload = require('require-reload'),
+let reload = require('require-reload'),
   config = reload('../../config.json'),
-  handleError = require('../../utils/utils.js').handleError,
   fs = require('fs');
 
 module.exports = {
-  desc: "Get your level and points.",
+  desc: '',
   aliases: ['lvl', 'points', 'profile', 'rank'],
   cooldown: 5,
   task(bot, msg, args) {
@@ -16,138 +15,83 @@ module.exports = {
     const sendMessages = msg.channel.permissionsOf(bot.user.id).has('sendMessages');
     const embedLinks = msg.channel.permissionsOf(bot.user.id).has('embedLinks');
     if (sendMessages === false) return;
-    if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
-      .catch(err => {
-        handleError(bot, __filename, msg.channel, err);
-      });
+    if (embedLinks === false) return msg.channel.createMessage('<:RedCross:373596012755025920> | I\'m missing the \`embedLinks\` permission, which is required for this command to work.')
+      .catch((e) => this.catchMessage(e, msg));
     if (!args) {
-      let points = JSON.parse(fs.readFileSync(`./db/points.json`, 'utf8'));
-      if (!points) return bot.createMessage(msg.channel.id, {
-        content: ``,
+      let points = JSON.parse(fs.readFileSync('./db/points.json', 'utf8'));
+      if (!points) return msg.channel.createMessage({
         embed: {
           color: 0xff0000,
-          author: {
-            name: ``,
-            url: ``,
-            icon_url: ``
-          },
-          description: `Couldn't find your data.`
+          description: 'Couldn\'t find your data.'
         }
-      }).catch(err => {
-        handleError(bot, __filename, msg.channel, err);
-      });
+      }).catch((err) => this.catchMessage(msg, err));
       let userData = points[msg.author.id];
       if (!userData) return bot.createMessage(msg.channel.id, {
-        content: ``,
         embed: {
           color: 0xff0000,
-          author: {
-            name: ``,
-            url: ``,
-            icon_url: ``
-          },
-          description: `Oh it looks like you do not have any points yet, better start talking and stop lurking boii.`
+          description: 'Oh it looks like you do not have any points yet, better start talking and stop lurking boii.'
         }
-      }).catch(err => {
-        handleError(bot, __filename, msg.channel, err);
-      });
+      }).catch((e) => this.catchMessage(e, msg));
       bot.createMessage(msg.channel.id, {
-        content: ``,
         embed: {
           color: config.defaultColor,
           author: {
             name: `Profile of ${msg.author.username}`,
-            url: ``,
-            icon_url: ``
           },
-          description: ``,
           fields: [{
-              name: `Level`,
-              value: `${userData.level}`,
-              inline: true
-            },
-            {
-              name: `Points`,
-              value: `${userData.points}`,
-              inline: true
-            }
+            name: 'Level',
+            value: `${userData.level}`,
+            inline: true
+          },
+          {
+            name: 'Points',
+            value: `${userData.points}`,
+            inline: true
+          }
           ]
         }
-      }).catch(err => {
-        handleError(bot, __filename, msg.channel, err);
-      });
+      }).catch((err) => this.catchMessage(err, msg));
     } else {
-      const user = this.findMember(msg, args)
+      const user = this.findMember(msg, args);
       if (!user) return bot.createMessage(msg.channel.id, {
-        content: ``,
         embed: {
           color: config.errorColor,
-          author: {
-            name: ``,
-            url: ``,
-            icon_url: ``
-          },
-          description: `That is not a valid guild member. Need to specify a name, ID or mention the user.`
+          description: 'That is not a valid guild member. Need to specify a name, ID or mention the user.'
         }
-      }).catch(err => {
-        handleError(bot, __filename, msg.channel, err);
-      });
-      // const userID = msg.channel.guild.members.get(user.id);
-      let points = JSON.parse(fs.readFileSync(`./db/points.json`, 'utf8'));
+      }).catch((e) => this.catchMessage(e, msg));
+      let points = JSON.parse(fs.readFileSync('./db/points.json', 'utf8'));
       if (!points) return bot.createMessage(msg.channel.id, {
-        content: ``,
         embed: {
           color: config.errorColor,
-          author: {
-            name: ``,
-            url: ``,
-            icon_url: ``
-          },
-          description: `Couldn't find your data.`
+          description: 'Couldn\'t find your data.'
         }
-      }).catch(err => {
-        handleError(bot, __filename, msg.channel, err);
-      });
+      }).catch((err) => this.catchMessage(err, msg));
       let userData = points[user.id];
       if (!userData) return bot.createMessage(msg.channel.id, {
-        content: ``,
         embed: {
           color: config.errorColor,
-          author: {
-            name: ``,
-            url: ``,
-            icon_url: ``
-          },
-          description: `Oh it looks like you do not have any points yet, better start talking and stop lurking boii.`
+          description: 'Oh it looks like you do not have any points yet, better start talking and stop lurking boii.'
         }
-      }).catch(err => {
-        handleError(bot, __filename, msg.channel, err);
-      });
+      }).catch((err) => this.catchMessage(err, msg));
       bot.createMessage(msg.channel.id, {
-        content: ``,
         embed: {
           color: config.defaultColor,
           author: {
             name: `Profile of ${user.username}`,
-            url: ``,
-            icon_url: ``
           },
-          description: ``,
           fields: [{
-              name: `Level`,
-              value: `${userData.level}`,
-              inline: true
-            },
-            {
-              name: `Points`,
-              value: `${userData.points}`,
-              inline: true
-            }
+            name: 'Level',
+            value: `${userData.level}`,
+            inline: true
+          },
+          {
+            name: 'Points',
+            value: `${userData.points}`,
+            inline: true
+          }
           ]
         }
-      }).catch(err => {
-        handleError(bot, __filename, msg.channel, err);
-      });
+      }).catch((err) => this.catchMessage(err, msg));
     }
   }
 };

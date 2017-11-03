@@ -22,7 +22,7 @@ module.exports = {
     if (!suffix) return 'wrong usage';
     const args = suffix.split(/ ?\| ?/);
     const option = args[0];
-    const thing = args[1];
+    let thing = args[1];
     if (!option) return 'wrong usage';
     if (!thing) return 'wrong usage';
     if (option === 'hero') {
@@ -42,7 +42,7 @@ module.exports = {
             title: hero.name,
             description: '<:SilverStar:375369363651559424> <:SilverStar:375369363651559424> <:SilverStar:375369363651559424> <:SilverStar:375369363651559424>',
             thumbnail: {
-              url: hero.assets.portrait['113px']
+              url: hero.assets.portrait['113px'].replace(/ /g, '%20')
             },
             fields: [
               {
@@ -81,7 +81,7 @@ module.exports = {
             title: hero.name,
             description: ':star: :star: :star: :star: :star:',
             thumbnail: {
-              url: hero.assets.portrait['113px']
+              url: hero.assets.portrait['113px'].replace(/ /g, '%20')
             },
             fields: [
               {
@@ -108,6 +108,7 @@ module.exports = {
           }
         });
       } else {
+        thing = thing.replace(/ ?\(TD\)/gi, ' (Trick or Defeat!)');
         const hero = feh.getHero(thing);
         let skillNames = '';
         hero.skills.forEach((s) => {
@@ -120,7 +121,7 @@ module.exports = {
             title: hero.name,
             description: '**Skills:**\n' + skillNames,
             thumbnail: {
-              url: hero.assets.portrait['113px']
+              url: hero.assets.portrait['113px'].replace(/ /g, '%20')
             },
             fields: [
               {

@@ -23,11 +23,12 @@ module.exports = {
   usage: '<question>',
   cooldown: 5,
   guildOnly: true,
-  async task(bot, msg, args) {
+  task(bot, msg, args) {
+    const sendMessages = msg.channel.permissionsOf(bot.user.id).has('sendMessages');
+    if (sendMessages === false) return;
     if (!args) return 'wrong usage';
-    try {
-      const choice = answers[Math.floor(Math.random() * answers.length)];
-      await msg.channel.createMessage('🎱 | ' + choice);
-    } catch (e) { return; }
+    const choice = answers[Math.floor(Math.random() * answers.length)];
+    msg.channel.createMessage('🎱 | ' + choice)
+      .catch((e) => this.catchError(e, msg));
   }
 };

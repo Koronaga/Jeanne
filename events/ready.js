@@ -19,7 +19,7 @@ module.exports = (bot, config, games, utils) => {
   });
   logger.logWithHeader('READY', 'bgGreen', 'black', `S:${Nf.format(bot.guilds.size)} U:${Nf.format(bot.users.size)} AVG:${Nf.format((bot.users.size / bot.guilds.size).toFixed(2))}`);
   USERAGENT = `${bot.user.username}/${version} - (https://github.com/KurozeroPB/Jeanne)`;
-  /* Updates stats message in the support guild once the client is ready 
+  /* Updates stats message in the support guild once the client is ready */
   setInterval(() => {
     logger.logWithHeader('SUCCESS', 'bgGreen', 'black', 'Updated stats message');
     const version = reload('../package.json').version;
@@ -101,5 +101,5 @@ module.exports = (bot, config, games, utils) => {
       }
     }).catch(() => { return; });
   }, 20000);
-  */
+  /**/
 };

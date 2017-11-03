@@ -22,38 +22,36 @@ const WebSocket = require('ws');
  */
 
 exports.safeSave = (file, ext, data, minSize = 5, log = true) => {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     if (!file || !ext || !data)
       return reject(new Error('Invalid arguments'));
     if (file.startsWith('/')) file = file.substr(1);
     if (!ext.startsWith('.')) ext = '.' + ext;
-
-    fs.writeFile(`${__dirname}/../${file}-temp${ext}`, (data, error) => {
-      if (error) {
-        logger.error(error, 'SAFE SAVE WRITE');
-        reject(error);
+    try {
+      await fs.writeFileSync(`${__dirname}/../${file}-temp${ext}`, data);
+    } catch (error) {
+      logger.error(error, 'SAFE SAVE WRITE');
+      reject(error);
+    }
+    try {
+      let stats = await fs.statSync(`${__dirname}/../${file}-temp${ext}`);
+      if (stats['size'] < minSize) {
+        logger.debug('Prevented file from being overwritten', 'SAFE SAVE');
+        resolve(false);
       } else {
-        fs.stat(`${__dirname}/../${file}-temp${ext}`, (err, stats) => {
-          if (err) {
-            logger.error(err, 'SAFE SAVE STAT');
-            reject(err);
-          } else if (stats['size'] < minSize) {
-            logger.debug('Prevented file from being overwritten', 'SAFE SAVE');
-            resolve(false);
-          } else {
-            fs.rename(`${__dirname}/../${file}-temp${ext}`, `${__dirname}/../${file}${ext}`, (e) => {
-              if (e) {
-                logger.error(e, 'SAFE SAVE RENAME');
-                reject(e);
-              } else
-                resolve(true);
-            });
-            if (log === true)
-              logger.debug(`Updated ${file}${ext}`, 'SAFE SAVE');
-          }
-        });
+        try {
+          await fs.renameSync(`${__dirname}/../${file}-temp${ext}`, `${__dirname}/../${file}${ext}`);
+          resolve(true);
+          if (log === true) logger.debug(`Updated ${file}${ext}`, 'SAFE SAVE');
+        } catch (error) {
+          logger.error(error, 'SAFE SAVE RENAME');
+          reject(error);
+        }
       }
-    });
+    } catch (error) {
+      logger.error(error, 'SAFE SAVE STAT');
+      reject(error);
+    }
   });
 };
 
@@ -301,28 +299,24 @@ exports.getRandomInt = (min, max) => {
  * @param {object} channel channel object
  * @param {object|string} error the error that was returned
  */
-exports.handleError = async (bot, commandUsed, channel, error) => {
-  try {
-    await channel.createMessage({
-      embed: {
-        color: config.errorColor,
-        description: `${error}\n\nFor support join: https://discord.gg/Vf4ne5b`
-      }
-    });
-    await bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
-      embeds: [{
-        color: config.errorColor,
-        title: 'ERROR',
-        description: `**${new Date().toLocaleString()}**\n\n**${commandUsed}**\n${error.stack}`,
-      }],
-      username: `${bot.user.username}`,
-      avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`,
+exports.handleError = (bot, commandUsed, channel, error) => {
+  channel.createMessage({
+    embed: {
+      color: config.errorColor,
+      description: `${error}\n\nFor support join: https://discord.gg/Vf4ne5b`
+    }
+  }).catch((e) => logger.error(e, 'ERROR'));
+  bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
+    embeds: [{
+      color: config.errorColor,
+      title: 'ERROR',
+      description: `**${new Date().toLocaleString()}**\n\n**${commandUsed}**\n${error.stack}`,
+    }],
+    username: `${bot.user.username}`,
+    avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`,
 
-    });
-    logger.error(error, 'ERROR');
-  } catch (e) {
-    logger.error(e, 'ERROR');
-  }
+  }).catch((e) => logger.error(e, 'ERROR'));
+  logger.error(error, 'ERROR');
 };
 
 /**
@@ -331,52 +325,40 @@ exports.handleError = async (bot, commandUsed, channel, error) => {
  * @param {string} commandUsed file path of the command
  * @param {object|string} error the error that was returned
  */
-exports.handleErrorNoMsg = async (bot, commandUsed, error) => {
-  try {
-    await bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
+exports.handleErrorNoMsg = (bot, commandUsed, error) => {
+  bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
+    embeds: [{
+      color: config.errorColor,
+      title: 'ERROR',
+      description: `**${new Date().toLocaleString()}**\n\n**${commandUsed}**\n${error.stack}`,
+    }],
+    username: `${bot.user.username}`,
+    avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`
+  }).catch((e) => logger.error(e, 'ERROR'));
+  logger.error(error, 'ERROR');
+};
+
+exports.errorWebhook = (bot, error, type) => {
+  if (type === 'WARN') {
+    bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
       embeds: [{
-        color: config.errorColor,
-        title: 'ERROR',
-        description: `**${new Date().toLocaleString()}**\n\n**${commandUsed}**\n${error.stack}`,
+        title: 'WARNING',
+        color: config.warnColor,
+        description: `**${new Date().toLocaleString()}**\n\n${error}`,
       }],
       username: `${bot.user.username}`,
       avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`
-    });
-    logger.error(error, 'ERROR');
-  } catch (e) {
-    logger.error(e, 'ERROR');
-  }
-};
-
-exports.errorWebhook = async (bot, error, type) => {
-  if (type === 'WARN') {
-    try {
-      await bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
-        embeds: [{
-          title: 'WARNING',
-          color: config.warnColor,
-          description: `**${new Date().toLocaleString()}**\n\n${error}`,
-        }],
-        username: `${bot.user.username}`,
-        avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`
-      });
-    } catch (e) {
-      logger.error(e, 'ERROR');
-    }
+    }).catch((e) => logger.error(e, 'ERROR'));
   } else if (type === 'ERROR') {
-    try {
-      await bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
-        embeds: [{
-          title: 'ERROR',
-          color: config.errorColor,
-          description: `**${new Date().toLocaleString()}**\n\n${error.stack ? error.stack : error}`,
-        }],
-        username: `${bot.user.username}`,
-        avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`
-      });
-    } catch (e) {
-      logger.error(e, 'ERROR');
-    }
+    bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
+      embeds: [{
+        title: 'ERROR',
+        color: config.errorColor,
+        description: `**${new Date().toLocaleString()}**\n\n${error.stack ? error.stack : error}`,
+      }],
+      username: `${bot.user.username}`,
+      avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`
+    }).catch((e) => logger.error(e, 'ERROR'));
   }
 };
 

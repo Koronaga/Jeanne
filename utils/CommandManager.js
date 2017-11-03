@@ -81,8 +81,7 @@ class CommandManager {
       if (msg.channel.guild !== undefined && !msg.channel.permissionsOf(msg.author.id).has('manageChannels') && settingsManager.isCommandIgnored(this.prefix, command.name, msg.channel.guild.id, msg.channel.id, msg.author.id) === true)
         return;
       this.logCommand(msg, command.name, name);
-      return command.execute(bot, msg, suffix, config, settingsManager, this.logger)
-        .catch(() => { return; });
+      return command.execute(bot, msg, suffix, config, settingsManager, this.logger);
     } else if (name.toLowerCase() === 'help') {
       bannedUsers = reload('../banned_users.json');
       if ((bannedUsers.bannedUserIds.includes(msg.author.id)) && (msg.author.id !== config.adminIds[0])) return bot.createMessage(msg.channel.id, `${msg.author.mention}, You have been blacklisted from using any commands.`);
@@ -132,7 +131,7 @@ class CommandManager {
    * @arg {Eris.Message} msg The message that triggered the command.
    * @arg {String} [command] The command to get help for.
    */
-  async help(bot, msg, command) {
+  help(bot, msg, command) {
     this.logger.logCommand(msg.channel.guild === undefined ? null : msg.channel.guild.name, msg.author.username, this.prefix + 'help', command);
     if (!command) {
       let messageQueue = [];
@@ -146,18 +145,16 @@ class CommandManager {
       messageQueue.push(currentMessage);
       let commands = messageQueue.toString();
       commands = commands.substr(2);
-      try {
-        msg.channel.createMessage({
-          embed: {
-            color: config.defaultColor,
-            title: 'Here are all my commands:',
-            description: `${commands}`,
-            footer: {
-              text: `For more info do: ${this.prefix}help <command>`
-            }
+      msg.channel.createMessage({
+        embed: {
+          color: config.defaultColor,
+          title: 'Here are all my commands:',
+          description: `${commands}`,
+          footer: {
+            text: `For more info do: ${this.prefix}help <command>`
           }
-        });
-      } catch (error) { return; }
+        }
+      }).catch(() => { return; });
     } else {
       let cmd = this.checkForMatch(command);
       if (cmd === null) { //If no matching command

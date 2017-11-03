@@ -93,10 +93,10 @@ class Command {
           name: `${this.name.charAt(0).toUpperCase() + this.name.slice(1)}`
         },
         description: `**Command:** \`${this.prefix}${this.name} ${this.usage}\`\n` +
-        `**Info:**\n${this.help}\n` +
-        `${this.example === 'No exmaple' ? this.example : `**Example:**\n\`${this.prefix}${this.name} ${this.example}\``}\n` +
-        `**Cooldown:** ${this.cooldown} seconds\n` +
-        `**Aliases:** ${this.aliases.join(', ') || 'None'}`
+          `**Info:**\n${this.help}\n` +
+          `${this.example === 'No exmaple' ? this.example : `**Example:**\n\`${this.prefix}${this.name} ${this.example}\``}\n` +
+          `**Cooldown:** ${this.cooldown} seconds\n` +
+          `**Aliases:** ${this.aliases.join(', ') || 'None'}`
       }
     };
   }
@@ -109,15 +109,15 @@ class Command {
    * @arg {Object} config The config Object.
    * @arg {settingsManager} settingsManager
    */
-  async execute(bot, msg, suffix, config, settingsManager, logger) {
+  execute(bot, msg, suffix, config, settingsManager, logger) {
     if (this.ownerOnly === true && !config.adminIds.includes(msg.author.id)) {
-      try {
-        const sentMsg = await msg.channel.createMessage('Only the owner of this bot can use that command.');
-        setTimeout(() => {
-          msg.delete();
-          sentMsg.delete();
-        }, 6000);
-      } catch (e) { return; }
+      msg.channel.createMessage('Only the owner of this bot can use that command.')
+        .then((m) => {
+          setTimeout(() => {
+            msg.delete();
+            m.delete();
+          }, 6000);
+        }).catch(() => { return; });
       return;
     }
     if (this.guildOnly === true && msg.channel.guild === undefined) {
@@ -125,23 +125,23 @@ class Command {
         .catch(() => { return; });
     }
     if (this.requiredPermission !== null && !config.adminIds.includes(msg.author.id) && !msg.channel.permissionsOf(msg.author.id).has(this.requiredPermission)) {
-      try {
-        const sentMsg = await msg.channel.createMessage(`You need the ${this.requiredPermission} permission to use this command.`);
-        setTimeout(() => {
-          msg.delete();
-          sentMsg.delete();
-        }, 6000);
-      } catch (e) { return; }
+      msg.channel.createMessage(`You need the ${this.requiredPermission} permission to use this command.`)
+        .then((m) => {
+          setTimeout(() => {
+            msg.delete();
+            m.delete();
+          }, 6000);
+        }).catch(() => { return; });
       return;
     }
     if (this.usersOnCooldown.has(msg.author.id)) { // Cooldown check
-      try {
-        const sentMsg = await msg.channel.createMessage(`${msg.author.username}, this command can only be used every ${this.cooldown} seconds.`);
-        setTimeout(() => {
-          msg.delete();
-          sentMsg.delete();
-        }, 6000);
-      } catch (e) { return; }
+      msg.channel.createMessage(`${msg.author.username}, this command can only be used every ${this.cooldown} seconds.`)
+        .then((m) => {
+          setTimeout(() => {
+            msg.delete();
+            m.delete();
+          }, 6000);
+        }).catch(() => { return; });
       return;
     }
 
@@ -159,13 +159,13 @@ class Command {
     }
 
     if (result === 'wrong usage') {
-      try {
-        const sentMsg = await msg.channel.createMessage(`${msg.author.username}, try again using the following format:\n**\`${this.prefix}${this.name} ${this.usage}\`**\nExample: **${this.prefix}${this.name} ${this.example}**`);
-        setTimeout(() => {
-          msg.delete();
-          sentMsg.delete();
-        }, 10000);
-      } catch (e) { return; }
+      msg.channel.createMessage(`${msg.author.username}, try again using the following format:\n**\`${this.prefix}${this.name} ${this.usage}\`**\nExample: **${this.prefix}${this.name} ${this.example}**`)
+        .then((m) => {
+          setTimeout(() => {
+            msg.delete();
+            m.delete();
+          }, 10000);
+        });
     } else if (!config.adminIds.includes(msg.author.id)) {
       this.usersOnCooldown.add(msg.author.id);
       setTimeout(() => { //add the user to the cooldown list and remove them after {cooldown} seconds
@@ -188,25 +188,22 @@ class Command {
  * @param {object} channel channel object
  * @param {Error} error the error that was returned
  */
-  async handleError(bot, commandUsed, channel, error) {
-    try {
-      await channel.createMessage({
-        embed: {
-          color: config.errorColor,
-          description: `${error}\n\nFor support join: https://discord.gg/Vf4ne5b`
-        }
-      });
-      await bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
-        embeds: [{
-          color: config.errorColor,
-          title: 'ERROR',
-          description: `**${new Date().toLocaleString()}**\n\n**${commandUsed}**\n${error.stack ? error.stack : error}`,
-        }],
-        username: `${bot.user.username}`,
-        avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`,
-  
-      });
-    } catch (e) { return; }
+  handleError(bot, commandUsed, channel, error) {
+    channel.createMessage({
+      embed: {
+        color: config.errorColor,
+        description: `${error}\n\nFor support join: https://discord.gg/Vf4ne5b`
+      }
+    }).catch(() => { return; });
+    bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
+      embeds: [{
+        color: config.errorColor,
+        title: 'ERROR',
+        description: `**${new Date().toLocaleString()}**\n\n**${commandUsed}**\n${error.stack ? error.stack : error}`,
+      }],
+      username: `${bot.user.username}`,
+      avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`,
+    }).catch(() => { return; });
   }
 
   /**
@@ -216,18 +213,42 @@ class Command {
  * @param {object} config config.json file
  * @param {Error} error the error that was returned
  */
-  async handleErrorNoMsg(bot, commandUsed, error) {
-    try {
-      await bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
-        embeds: [{
-          color: config.errorColor,
-          title: 'ERROR',
-          description: `**${new Date().toLocaleString()}**\n\n**${commandUsed}**\n${error.stack ? error.stack : error}`,
-        }],
-        username: `${bot.user.username}`,
-        avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`
+  handleErrorNoMsg(bot, commandUsed, error) {
+    bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
+      embeds: [{
+        color: config.errorColor,
+        title: 'ERROR',
+        description: `**${new Date().toLocaleString()}**\n\n**${commandUsed}**\n${error.stack ? error.stack : error}`,
+      }],
+      username: `${bot.user.username}`,
+      avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`
+    }).catch(() => { return; });
+  }
+
+  findMember(msg, str) {
+    if (!str || str === '') return false;
+    const guild = msg.channel.guild;
+    if (!guild) return msg.mentions[0] ? msg.mentions[0] : false;
+    if (/^\d{17,18}/.test(str) || /^<@!?\d{17,18}>/.test(str)) {
+      const member = guild.members.get(/^<@!?\d{17,18}>/.test(str) ? str.replace(/<@!?/, '').replace('>', '') : str);
+      return member ? member.user : false;
+    } else if (str.length <= 33) {
+      const isMemberName = (name, str) => name === str || name.startsWith(str) || name.includes(str);
+      const member = guild.members.find((m) => {
+        if (m.nick && isMemberName(m.nick.toLowerCase(), str.toLowerCase())) return true;
+        return isMemberName(m.user.username.toLowerCase(), str.toLowerCase());
       });
-    } catch (e) { return; }
+      return member ? member.user : false;
+    } else return false;
+  }
+
+  catchMessage(error, msg) {
+    if (error.message) {
+      if (error.message.includes('Privilege is too low...') || error.message.includes('Missing Permissions')) {
+        msg.channel.createMessage(error.message)
+          .catch(() => { return; });
+      } else return;
+    } else return;
   }
 }
 
