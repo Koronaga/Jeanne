@@ -1,62 +1,34 @@
-const reload = require('require-reload'),
-  config = reload('../../config.json'),
-  handleError = require('../../utils/utils.js').handleError,
-  catMe = require('cat-me');
+const catMe = require('cat-me');
 
 module.exports = {
-  desc: "Sends a unicode cat ;3",
-  usage: "[option] ('list' to view all options)",
+  desc: 'Sends a unicode cat ;3',
+  usage: '[option] (\'list\' to view all options)',
   cooldown: 5,
   guildOnly: true,
-  task(bot, msg, args) {
-    /**
-     * perm checks
-     * @param {boolean} sendMessages - Checks if the bots permissions has sendMessages
-     * @param {boolean} embedLinks - Checks if the bots permissions has embedLinks
-     */
-    const sendMessages = msg.channel.permissionsOf(bot.user.id).has('sendMessages');
-    const embedLinks = msg.channel.permissionsOf(bot.user.id).has('embedLinks');
-    if (sendMessages === false) return;
-    if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
-      .catch(err => {
-        handleError(bot, __filename, msg.channel, err);
-      });
+  botPermissions: ['sendMessages', 'embedLinks'],
+  task(bot, msg, args, config) {
     let cat = catMe();
     if (!args) return msg.channel.createMessage(`\`\`\`${cat}\`\`\``)
-      .catch(err => {
-        handleError(bot, __filename, msg.channel, err);
-      });
+      .catch((err) => this.catchMessage(err, msg));
     let lower = args.toLowerCase();
-    if (lower === 'list') {
-      msg.channel.createMessage({
-          content: ``,
-          embed: {
-            color: config.defaultColor,
-            author: {
-              name: `All cat options:`,
-              url: ``,
-              icon_url: ``
-            },
-            description: `grumpy
-approaching
-tubby
-confused
-playful
-thoughtful
-delighted
-nyan
-resting`
-          }
-        })
-        .catch(err => {
-          handleError(bot, __filename, msg.channel, err);
-        });
-    } else {
-      cat = catMe(`${args}`);
-      msg.channel.createMessage(`\`\`\`${cat}\`\`\``)
-        .catch(err => {
-          handleError(bot, __filename, msg.channel, err);
-        });
-    }
+    if (lower === 'list') return msg.channel.createMessage({
+      embed: {
+        color: config.defaultColor,
+        title: 'All cat options:',
+        description: 'grumpy\n' +
+        'approaching\n' +
+        'tubby\n' +
+        'confused\n' +
+        'playful\n' +
+        'thoughtful\n' +
+        'delighted\n' +
+        'nyan\n' +
+        'resting'
+      }
+    }).catch((err) => this.catchMessage(err, msg));
+
+    cat = catMe(`${args}`);
+    msg.channel.createMessage(`\`\`\`${cat}\`\`\``)
+      .catch((err) => this.catchMessage(err, msg));
   }
 };

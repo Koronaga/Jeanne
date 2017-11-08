@@ -1,32 +1,19 @@
-const reload = require('require-reload'),
-  config = reload('../../config.json'),
-  handleError = require('../../utils/utils.js').handleError,
-  randomColor = require('random-color'),
-  hexRgb = require('hex-rgb'),
-  converter = require('hex2dec'),
-  randomFloat = require('random-floating'),
-  rgbHex = require('rgb-hex');
+const randomColor = require('random-color');
+const hexRgb = require('hex-rgb');
+const converter = require('hex2dec');
+const randomFloat = require('random-floating');
+const rgbHex = require('rgb-hex');
 const baseURI = 'https://api.lepeli.fr';
 
 module.exports = {
-  desc: "Previews a random color or a color you give in the args.",
-  usage: "<random/#hex_code/rgb(r, g, b,)>",
+  desc: 'Previews a random color or a color you give in the args.',
+  usage: '<random/#hex_code/rgb(r, g, b,)>',
+  example: 'rgb(255, 0, 43)',
   aliases: ['colour'],
   cooldown: 5,
   guildOnly: true,
+  botPermissions: ['sendMessages', 'embedLinks'],
   task(bot, msg, args) {
-    /**
-     * perm checks
-     * @param {boolean} sendMessages - Checks if the bots permissions has sendMessages
-     * @param {boolean} embedLinks - Checks if the bots permissions has embedLinks
-     */
-    const sendMessages = msg.channel.permissionsOf(bot.user.id).has('sendMessages');
-    const embedLinks = msg.channel.permissionsOf(bot.user.id).has('embedLinks');
-    if (sendMessages === false) return;
-    if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
-      .catch(err => {
-        handleError(bot, __filename, msg.channel, err);
-      });
     if (!args) return 'wrong usage';
     const type = args.toLowerCase();
     if (type === 'random') {
@@ -47,126 +34,94 @@ module.exports = {
       // convert to rgb
       const rgb = hexRgb(`${hex}`).join(', ');
       // make usable for dec
-      const hex2 = hex.replace("#", "0x");
+      const hex2 = hex.replace('#', '0x');
       // convert to decimal
       const dec = converter.hexToDec(`${hex2}`);
-      bot.createMessage(msg.channel.id, {
-        content: ``,
+      msg.channel.createMessage({
         embed: {
           color: dec,
-          author: {
-            name: ``,
-            url: ``,
-            icon_url: ``
-          },
-          description: ``,
           thumbnail: {
-            url: baseURI + `/color/index.php?color=${hex.replace("#", "")}`
+            url: baseURI + `/color/index.php?color=${hex.replace('#', '')}`
           },
           fields: [{
-              name: `Hex`,
-              value: `${hex.toUpperCase()}`,
-              inline: false
-            },
-            {
-              name: `RGB`,
-              value: `(${rgb})`,
-              inline: false
-            },
-            {
-              name: `Decimal`,
-              value: `${dec}`,
-              inline: false
-            }
-          ]
+            name: 'Hex',
+            value: `${hex.toUpperCase()}`,
+            inline: false
+          },
+          {
+            name: 'RGB',
+            value: `(${rgb})`,
+            inline: false
+          },
+          {
+            name: 'Decimal',
+            value: `${dec}`,
+            inline: false
+          }]
         }
-      }).catch(err => {
-        handleError(bot, __filename, msg.channel, err);
-      });
+      }).catch((err) => this.catchMessage(err, msg));
     } else if (type.startsWith('#')) {
       const hexRegex = /^#[0-9a-fA-F]{6}$/.test(type);
-      if (hexRegex === false) return msg.channel.createMessage('\\❌ Invalid hex code. Use the following format \`#hex_code\`, e.g. \`#F4CE11\`');
+      if (hexRegex === false) return msg.channel.createMessage('<:RedCross:373596012755025920> | Invalid hex code. Use the following format \`#hex_code\`, e.g. \`#F4CE11\`');
       const hex = type,
         rgb = hexRgb(`${hex}`).join(', '),
         embedHex = hex.replace('#', '0x'),
         decimal = converter.hexToDec(`${embedHex}`);
-      bot.createMessage(msg.channel.id, {
-        content: ``,
+      msg.channel.createMessage({
         embed: {
           color: decimal,
-          author: {
-            name: ``,
-            url: ``,
-            icon_url: ``
-          },
-          description: ``,
           thumbnail: {
-            url: baseURI + `/color/index.php?color=${hex.replace("#", "")}`
+            url: baseURI + `/color/index.php?color=${hex.replace('#', '')}`
           },
           fields: [{
-              name: `Hex`,
-              value: `${hex.toUpperCase()}`,
-              inline: false
-            },
-            {
-              name: `RGB`,
-              value: `(${rgb})`,
-              inline: false
-            },
-            {
-              name: `Decimal`,
-              value: `${decimal}`,
-              inline: false
-            }
-          ]
+            name: 'Hex',
+            value: `${hex.toUpperCase()}`,
+            inline: false
+          },
+          {
+            name: 'RGB',
+            value: `(${rgb})`,
+            inline: false
+          },
+          {
+            name: 'Decimal',
+            value: `${decimal}`,
+            inline: false
+          }]
         }
-      }).catch(err => {
-        handleError(bot, __filename, msg.channel, err);
-      });
+      }).catch((err) => this.catchMessage(err, msg));
     } else if (type.startsWith('rgb')) {
       const rgbRegex = /^rgb\(\d{1,3}, ?\d{1,3}, ?\d{1,3}\)$/.test(type);
-      if (rgbRegex === false) return msg.channel.createMessage('\\❌ Invalid rgb code. Use the following format \`rgb(r, g, b,)\`, e.g. \`rgb(244, 206, 17)\`');
+      if (rgbRegex === false) return msg.channel.createMessage('<:RedCross:373596012755025920> | Invalid rgb code. Use the following format \`rgb(r, g, b,)\`, e.g. \`rgb(244, 206, 17)\`');
       const rgb = type,
         hexcode = rgbHex(`${rgb}`),
         hex = '#' + hexcode,
         embedHex = '0x' + hexcode,
         decimal = converter.hexToDec(`${embedHex}`),
         embedRgb = rgb.replace('rgb', '').replace(/, ?/g, ', ');
-      bot.createMessage(msg.channel.id, {
-        content: ``,
+      msg.channel.createMessage({
         embed: {
           color: decimal,
-          author: {
-            name: ``,
-            url: ``,
-            icon_url: ``
-          },
-          description: ``,
           thumbnail: {
             url: baseURI + `/color/index.php?color=${hexcode}`
           },
           fields: [{
-              name: `Hex`,
-              value: `${hex.toUpperCase()}`,
-              inline: false
-            },
-            {
-              name: `RGB`,
-              value: `${embedRgb}`,
-              inline: false
-            },
-            {
-              name: `Decimal`,
-              value: `${decimal}`,
-              inline: false
-            }
-          ]
+            name: 'Hex',
+            value: `${hex.toUpperCase()}`,
+            inline: false
+          },
+          {
+            name: 'RGB',
+            value: `${embedRgb}`,
+            inline: false
+          },
+          {
+            name: 'Decimal',
+            value: `${decimal}`,
+            inline: false
+          }]
         }
-      }).catch(err => {
-        handleError(bot, __filename, msg.channel, err);
-      });
-    } else {
-      return 'wrong usage';
-    }
+      }).catch((err) => this.catchMessage(err, msg));
+    } else return 'wrong usage';
   }
 };

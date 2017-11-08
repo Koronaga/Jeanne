@@ -21,14 +21,18 @@ const answers = [
 module.exports = {
   desc: 'ya know, 8ball does 8ball things.',
   usage: '<question>',
+  example: 'Am I going to fail my test tomorrow?',
   cooldown: 5,
   guildOnly: true,
-  task(bot, msg, args) {
-    const sendMessages = msg.channel.permissionsOf(bot.user.id).has('sendMessages');
-    if (sendMessages === false) return;
+  botPermissions: ['sendMessages', 'embedLinks'],
+  task(bot, msg, args, config) {
     if (!args) return 'wrong usage';
     const choice = answers[Math.floor(Math.random() * answers.length)];
-    msg.channel.createMessage('🎱 | ' + choice)
-      .catch((e) => this.catchError(e, msg));
+    msg.channel.createMessage({
+      embed: {
+        color: config.defaultColor,
+        description: '🎱 | ' + choice
+      }
+    }).catch((err) => this.catchMessage(err, msg));
   }
 };

@@ -1,71 +1,34 @@
-const reload = require('require-reload'),
-  config = reload('../../config.json'),
-  handleError = require('../../utils/utils.js').handleError,
-  catFacts = require('cat-facts'),
-  request = require('request');
+const catFacts = require('cat-facts');
+const axios = require('axios');
 
 module.exports = {
-  desc: "Gives you a random catfact with a cute cat image.",
+  desc: 'Gives you a random catfact with a cute cat image.',
   cooldown: 5,
   guildOnly: true,
   aliases: ['catfact'],
-  task(bot, msg) {
-    /**
-     * perm checks
-     * @param {boolean} sendMessages - Checks if the bots permissions has sendMessages
-     * @param {boolean} embedLinks - Checks if the bots permissions has embedLinks
-     */
-    const sendMessages = msg.channel.permissionsOf(bot.user.id).has('sendMessages');
-    const embedLinks = msg.channel.permissionsOf(bot.user.id).has('embedLinks');
-    if (sendMessages === false) return;
-    if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
-      .catch(err => {
-        handleError(bot, __filename, msg.channel, err);
-      });
+  botPermissions: ['sendMessages', 'embedLinks'],
+  task(bot, msg, _, config) {
     let randomFact = catFacts.random();
-    request("http://random.cat/meow", function (err, response, body) {
-      if (err) return handleError(bot, __filename, msg.channel, err);
-      var cat = JSON.parse(body);
-      if (!cat) return bot.createMessage(msg.channel.id, {
-        content: ``,
-        embed: {
-          color: config.errorColor,
-          author: {
-            name: ``,
-            url: ``,
-            icon_url: ``
-          },
-          description: `Woops looks like something bad happened, please try again.`,
-          fields: [{
-            name: `For support join:`,
-            value: `https://discord.gg/Vf4ne5b`,
-            inline: true
-          }]
-        }
-      }).catch(err => {
-        handleError(bot, __filename, msg.channel, err);
-      });
-      bot.createMessage(msg.channel.id, {
-        content: ``,
+    axios.get('http://random.cat/meow', {
+      headers: {
+        'User-Agent': USERAGENT
+      }
+    }).then((res) => {
+      const cat = res.data;
+      msg.channel.createMessage({
         embed: {
           color: config.defaultColor,
-          author: {
-            name: `Click here for the direct image url`,
-            url: `${cat.file}`,
-            icon_url: ``
-          },
-          description: ``,
+          title: `${msg.author.username} requested a cat ;3`,
+          url: `${cat.file}`,
           thumbnail: {
             url: `${cat.file}`
           },
           fields: [{
-            name: `**Cat fact:**`,
+            name: '**Cat fact:**',
             value: `${randomFact}`
           }]
         }
-      }).catch(err => {
-        handleError(bot, __filename, msg.channel, err);
-      });
-    });
+      }).catch((err) => this.catchMessage(err, msg));
+    }).catch((err) => this.catchError(bot, msg, __filename, err));
   }
 };

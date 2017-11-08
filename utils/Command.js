@@ -57,7 +57,9 @@ class Command {
     this.ownerOnly = !!cmd.ownerOnly;
     this.guildOnly = !!cmd.guildOnly;
     this.fallback = !!cmd.fallback;
+    this.nsfw = !!cmd.nsfw;
     this.requiredPermission = cmd.requiredPermission || null;
+    this.botPermissions = cmd.botPermissions || [];
     this.timesUsed = 0;
     this.usersOnCooldown = new Set();
     this.destroyFunction = cmd.destroy;
@@ -93,10 +95,10 @@ class Command {
           name: `${this.name.charAt(0).toUpperCase() + this.name.slice(1)}`
         },
         description: `**Command:** \`${this.prefix}${this.name} ${this.usage}\`\n` +
-          `**Info:**\n${this.help}\n` +
-          `${this.example === 'No exmaple' ? this.example : `**Example:**\n\`${this.prefix}${this.name} ${this.example}\``}\n` +
-          `**Cooldown:** ${this.cooldown} seconds\n` +
-          `**Aliases:** ${this.aliases.join(', ') || 'None'}`
+        `**Info:**\n${this.help}\n` +
+        `${this.example === 'No exmaple' ? this.example : `**Example:**\n\`${this.prefix}${this.name} ${this.example}\``}\n` +
+        `**Cooldown:** ${this.cooldown} seconds\n` +
+        `**Aliases:** ${this.aliases.join(', ') || 'None'}`
       }
     };
   }
@@ -110,12 +112,26 @@ class Command {
    * @arg {settingsManager} settingsManager
    */
   execute(bot, msg, suffix, config, settingsManager, logger) {
+    if (this.nsfw === true && !config.adminIds.includes(msg.author.id)) {
+      const nsfw = settingsManager.getNSFW(msg.channel.guild.id, msg.channel.id);
+      if (!nsfw) return msg.channel.createMessage('You can only use this command in **nsfw** channels, use \`j:settings nsfw <allow/deny>\`.')
+        .then((m) => {
+          setTimeout(() => {
+            msg.delete()
+              .catch(() => { return; });
+            m.delete()
+              .catch(() => { return; });
+          }, 6000);
+        }).catch(() => { return; });
+    }
     if (this.ownerOnly === true && !config.adminIds.includes(msg.author.id)) {
       msg.channel.createMessage('Only the owner of this bot can use that command.')
         .then((m) => {
           setTimeout(() => {
-            msg.delete();
-            m.delete();
+            msg.delete()
+              .catch(() => { return; });
+            m.delete()
+              .catch(() => { return; });
           }, 6000);
         }).catch(() => { return; });
       return;
@@ -124,22 +140,33 @@ class Command {
       return msg.channel.createMessage('This command can only be used in a server.')
         .catch(() => { return; });
     }
+    if (this.botPermissions !== []) {
+      let permMessage = '';
+      let missingPerms = false;
+      this.botPermissions.forEach((p) => {
+        const perm = msg.channel.permissionsOf(bot.user.id).has(p);
+        if (perm === false) {
+          permMessage += p + ', ';
+          missingPerms = true;
+        }
+      });
+      permMessage = permMessage.slice(0, -2);
+      if (missingPerms === true) return msg.channel.createMessage(`<:RedCross:373596012755025920> | I'm missing the \`${permMessage}\` permission(s) which is required for this command to work properly.`)
+        .catch(() => { return; });
+    }
     if (this.requiredPermission !== null && !config.adminIds.includes(msg.author.id) && !msg.channel.permissionsOf(msg.author.id).has(this.requiredPermission)) {
       msg.channel.createMessage(`You need the ${this.requiredPermission} permission to use this command.`)
-        .then((m) => {
-          setTimeout(() => {
-            msg.delete();
-            m.delete();
-          }, 6000);
-        }).catch(() => { return; });
+        .catch(() => { return; });
       return;
     }
     if (this.usersOnCooldown.has(msg.author.id)) { // Cooldown check
       msg.channel.createMessage(`${msg.author.username}, this command can only be used every ${this.cooldown} seconds.`)
         .then((m) => {
           setTimeout(() => {
-            msg.delete();
-            m.delete();
+            msg.delete()
+              .catch(() => { return; });
+            m.delete()
+              .catch(() => { return; });
           }, 6000);
         }).catch(() => { return; });
       return;
@@ -162,10 +189,12 @@ class Command {
       msg.channel.createMessage(`${msg.author.username}, try again using the following format:\n**\`${this.prefix}${this.name} ${this.usage}\`**\nExample: **${this.prefix}${this.name} ${this.example}**`)
         .then((m) => {
           setTimeout(() => {
-            msg.delete();
-            m.delete();
+            msg.delete()
+              .catch(() => { return; });
+            m.delete()
+              .catch(() => { return; });
           }, 10000);
-        });
+        }).catch(() => { return; });
     } else if (!config.adminIds.includes(msg.author.id)) {
       this.usersOnCooldown.add(msg.author.id);
       setTimeout(() => { //add the user to the cooldown list and remove them after {cooldown} seconds
@@ -179,33 +208,6 @@ class Command {
     if (typeof this.destroyFunction === 'function')
       this.destroyFunction();
   }
-
-  /**
- * Handle an error with a message
- * @param {object} bot client object
- * @param {string} commandUsed file path of the command
- * @param {object} config config.json file
- * @param {object} channel channel object
- * @param {Error} error the error that was returned
- */
-  handleError(bot, commandUsed, channel, error) {
-    channel.createMessage({
-      embed: {
-        color: config.errorColor,
-        description: `${error}\n\nFor support join: https://discord.gg/Vf4ne5b`
-      }
-    }).catch(() => { return; });
-    bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
-      embeds: [{
-        color: config.errorColor,
-        title: 'ERROR',
-        description: `**${new Date().toLocaleString()}**\n\n**${commandUsed}**\n${error.stack ? error.stack : error}`,
-      }],
-      username: `${bot.user.username}`,
-      avatarURL: `${bot.user.dynamicAvatarURL('png', 2048)}`,
-    }).catch(() => { return; });
-  }
-
   /**
  * Handle an error without a message
  * @param {object} bot client object
@@ -213,7 +215,9 @@ class Command {
  * @param {object} config config.json file
  * @param {Error} error the error that was returned
  */
-  handleErrorNoMsg(bot, commandUsed, error) {
+  catchError(bot, msg, commandUsed, error) {
+    msg.channel.createMessage('An error occurred and has been reported to my creator.\nIf this keeps happening you can join the support server for more help.')
+      .catch(() => { return; });
     bot.executeWebhook(config.errWebhookID, config.errWebhookToken, {
       embeds: [{
         color: config.errorColor,
@@ -244,8 +248,18 @@ class Command {
 
   catchMessage(error, msg) {
     if (error.message) {
-      if (error.message.includes('Privilege is too low...') || error.message.includes('Missing Permissions')) {
-        msg.channel.createMessage(error.message)
+      if (error.message.includes('Privilege is too low...')) {
+        msg.channel.createMessage('```glsl\n- My privileges are too low to execute this action!\n' +
+          '- Remember I can not edit the server owner or users with a higher role than I have.\n' +
+          '- Join here to get more support if needed: discord.gg/Vf4ne5b```')
+          .catch(() => { return; });
+      } else if (error.message.includes('Missing Permissions')) {
+        msg.channel.createMessage('```diff\n- I\'m missing required permissions to execute this action!\n' +
+          '- Join here to get more support if needed: discord.gg/Vf4ne5b```')
+          .catch(() => { return; });
+      } else if (error.message.includes('Missing Access')) {
+        msg.channel.createMessage('```glsl\n- I\'m missing access to execute this action!\n' +
+          '- Join here to get more support if needed: discord.gg/Vf4ne5b```')
           .catch(() => { return; });
       } else return;
     } else return;

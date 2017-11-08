@@ -1,104 +1,94 @@
-const reload = require('require-reload'),
-  config = reload('../../config.json'),
-  handleError = require('../../utils/utils.js').handleError,
-  Anime = require('malapi').Anime;
+const Kitsu = require('kawaii-kitsune');
+const kitsu = new Kitsu();
 
 module.exports = {
-  desc: "Shows info about an anime.",
-  usage: "<anime_name>",
+  desc: 'Shows info about an anime.',
+  usage: '<anime_name>',
+  example: 'fate/apocrypha',
   cooldown: 10,
   guildOnly: true,
-  task(bot, msg, args) {
-    /**
-     * perm checks
-     * @param {boolean} sendMessages - Checks if the bots permissions has sendMessages
-     * @param {boolean} embedLinks - Checks if the bots permissions has embedLinks
-     */
-    const sendMessages = msg.channel.permissionsOf(bot.user.id).has('sendMessages');
-    const embedLinks = msg.channel.permissionsOf(bot.user.id).has('embedLinks');
-    if (sendMessages === false) return;
-    if (embedLinks === false) return msg.channel.createMessage(`\\❌ I'm missing the \`embedLinks\` permission, which is required for this command to work.`)
-      .catch(err => {
-        handleError(bot, __filename, msg.channel, err);
-      });
+  botPermissions: ['sendMessages', 'embedLinks'],
+  task(bot, msg, args, config, settingsManager) {
     if (!args) return 'wrong usage';
-    Anime.fromName(args)
-      .then(anime => {
-        var genre = anime.genres.toString();
-        var genres = genre.split(/, ?/).join(', ');
+    kitsu.searchAnime(args)
+      .then((res) => {
+        const anime = res[0];
+        const nsfw = settingsManager.getNSFW(msg.channel.guild.id, msg.channel.id);
+        if (anime.nsfw === true && !nsfw) return msg.channel.createMessage()
+          .catch((err) => this.catchMessage(msg, err));
         msg.channel.createMessage({
-            content: ``,
-            embed: {
-              color: config.defaultColor,
-              type: `rich`,
-              author: {
-                name: `${anime.title}`,
-                icon_url: ``
+          embed: {
+            color: config.defaultColor,
+            title: anime.titles.english ? anime.titles.english : anime.titles.romaji,
+            url: anime.slug ? 'https://kitsu.io/anime/' + anime.slug : '',
+            thumbnail: {
+              url: anime.posterImage.original ? anime.posterImage.original : ''
+            },
+            description: anime.synopsis.replace(/<br\\?>/gi, '\n'),
+            fields: [
+              {
+                name: 'Episodes',
+                value: `${anime.episodeCount ? anime.episodeCount : '-'}`,
+                inline: true
               },
-              description: `${anime.synopsis.split("\r")[0]}`,
-              url: `${anime.detailsLink}`,
-              image: {
-                url: `${anime.image}`
+              {
+                name: 'Episode length',
+                value: `${anime.episodeLength ? anime.episodeLength : '-'}`,
+                inline: true
               },
-              fields: [{
-                  name: `Type`,
-                  value: `${anime.type}`,
-                  inline: true
-                },
-                {
-                  name: `Episodes`,
-                  value: `${anime.episodes}`,
-                  inline: true
-                },
-                {
-                  name: `Status`,
-                  value: `${anime.status}`,
-                  inline: true
-                },
-                {
-                  name: `Score`,
-                  value: `${anime.statistics.score.value}`,
-                  inline: true
-                },
-                {
-                  name: `Ranking`,
-                  value: `${anime.statistics.ranking}`,
-                  inline: true
-                },
-                {
-                  name: `Favorites`,
-                  value: `${anime.statistics.favorites}`,
-                  inline: true
-                },
-                {
-                  name: `Aired`,
-                  value: `${anime.aired}`,
-                  inline: false
-                },
-                {
-                  name: `Genres`,
-                  value: `${genres}`,
-                  inline: false
-                },
-                {
-                  name: `Alternative titles`,
-                  value: `${anime.alternativeTitles.english}
-${anime.alternativeTitles.japanese}`,
-                  inline: false
-                }
-              ],
-              footer: {
-                icon_url: `https://b.catgirlsare.sexy/Jxmy.png`,
-                text: `All information is provided by My Anime List`
+              {
+                name: 'Show type',
+                value: anime.showType ? anime.showType : '-',
+                inline: true
+              },
+              {
+                name: 'Average rating',
+                value: anime.averageRating ? anime.averageRating : '-',
+                inline: true
+              },
+              {
+                name: 'Rating rank',
+                value: `${anime.ratingRank ? anime.ratingRank : '-'}`,
+                inline: true
+              },
+              {
+                name: 'Popularity rank',
+                value: `${anime.popularityRank ? anime.popularityRank : '-'}`,
+                inline: true
+              },
+              {
+                name: 'Users',
+                value: `${anime.userCount ? anime.userCount : '-'}`,
+                inline: true
+              },
+              {
+                name: 'Favorites',
+                value: `${anime.favoritesCount ? anime.favoritesCount : '-'}`,
+                inline: true
+              },
+              {
+                name: 'Age rating',
+                value: anime.ageRating ? anime.ageRating : '-',
+                inline: true
+              },
+              {
+                name: 'Age rating guide',
+                value: anime.ageRatingGuide ? anime.ageRatingGuide : '-',
+                inline: true
+              },
+              {
+                name: 'Trailer',
+                value: anime.youtubeVideoId ? 'https://youtube.com/watch?v=' + anime.youtubeVideoId : '-',
+                inline: true
+              },
+              {
+                name: 'Start/End',
+                value: `${anime.startDate ? anime.startDate : '?'} until ${anime.endDate ? anime.endDate : '?'}`,
+                inline: false
               }
-            }
-          })
-          .catch(err => {
-            handleError(bot, __filename, msg.channel, err);
-          });
-      })
-      .catch(err => {
-        handleError(bot, __filename, msg.channel, err);
-      });
+            ]
+          }
+        }).catch((err) => this.catchMessage(err, msg));
+      }).catch((err) => this.catchError(bot, msg, __filename, err));
   }
 };
