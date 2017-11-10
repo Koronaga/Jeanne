@@ -14,7 +14,7 @@ module.exports = {
       .then((res) => {
         const anime = res[0];
         const nsfw = settingsManager.getNSFW(msg.channel.guild.id, msg.channel.id);
-        if (anime.nsfw === true && !nsfw) return msg.channel.createMessage()
+        if (anime.nsfw === true && !nsfw) return msg.channel.createMessage('<:RedCross:373596012755025920> | The anime that was found is nsfw, please try again in an nsfw channel.\nUse \`j:settings nsfw allow\` to allow nsfw.')
           .catch((err) => this.catchMessage(msg, err));
         msg.channel.createMessage({
           embed: {

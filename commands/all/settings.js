@@ -222,6 +222,15 @@ function checkIgnores(bot, msg, suffix, settingsManager) {
   }
 }
 
+function updateGuildInvDelete(bot, msg, settingsManager, suffix) {
+  if (suffix === 'enable')
+    settingsManager.enableDeleteInvites(msg, msg.channel.guild.id);
+  else if (suffix === 'disable')
+    settingsManager.disableDeleteInvites(msg, msg.channel.guild.id);
+  else
+    msg.channel.createMessage('<:RedCross:373596012755025920> | You need to either specify `enable` or `disable`').catch(() => { return; });
+}
+
 module.exports = {
   desc: "Adjust a server's settings.",
   help: `Modify how the bot works on a server.
@@ -249,6 +258,8 @@ module.exports = {
         addIgnores(bot, msg, suffix.substr(7).trim().toLowerCase(), settingsManager);
       else if (suffix.startsWith('unignore'))
         removeIgnores(bot, msg, suffix.substr(9).trim().toLowerCase(), settingsManager);
+      else if (suffix.startsWith('deleteinvites'))
+        updateGuildInvDelete(bot, msg, settingsManager, suffix.substr(14).trim().toLowerCase());
       else
         return 'wrong usage';
     } else

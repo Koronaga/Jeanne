@@ -5,58 +5,35 @@ let points = reload('../db/points.json');
 let message = reload('../db/message.json');
 let updatePoints = false;
 let updateMessage = false;
-/*
-    Vision = require('@google-cloud/vision'),
-    jeanneVision = require('../Jeanne-ca41da280a76.json');
-
-const visionClient = new Vision({
-    projectId: `${jeanneVision.project_id}`,
-    keyFilename: `/home/kurozero/DiscordBots/Jeanne/Jeanne-ca41da280a76.json
-});
-*/
-
 const fs = require('fs');
 
 module.exports = {
   handler(bot, msg, CommandManagers, config, settingsManager) {
     if (!msg.author) return;
     if (msg.author.bot === true) return;
+
+    const invCheck = new RegExp(/(https:\/\/)?discord\.gg\/(\w+\b)/gi);
+    settingsManager.getDeleteInvitesGuild(msg.channel.guild.id)
+      .then(() => {
+        if (invCheck.test(msg.content)) {
+          msg.delete()
+            .then(() => {
+              msg.channel.createMessage(`${msg.member.mention} Sending invites is not allwed in this server.`)
+                .then((m) => {
+                  setTimeout(() => {
+                    m.delete()
+                      .catch(() => { return; });
+                  }, 2000);
+                }).catch(() => {
+                  msg.channel.createMessage('<:RedCross:373596012755025920> | Auto delete invite links is enabled but I can\'t delete messages. Please give me the required permissions!')
+                    .catch(() => { return; });
+                });
+            });
+        }
+      }).catch(() => { return; });
+      
     if (!msg.channel.guild) return bot.createMessage(msg.channel.id, 'Commands do not work in DMs.')
       .catch(() => { return; });
-
-    /*
-    if (msg.channel.guild.id === '229007062032580608' && msg.attachments[0] && msg.channel.id !== '311667653771132928' && msg.channel.id !== '311663280588455937') {
-        const image = {
-            source: {
-                imageUri: `${msg.attachments[0].proxy_url}`
-            }
-        };
-        visionClient.safeSearchDetection(image)
-            .then(res => {
-                const data = res[0].safeSearchAnnotation;
-                if (data.adult === 'VERY_LIKELY' || data.adult === 'LIKELY') {
-                    bot.deleteMessage(msg.channel.id, msg.id, 'NSFW content outside of our NSFW channels')
-                        .catch(err => {
-                            handleError(bot, __filename, msg.channel, err);
-                        });
-                    msg.channel.createMessage(`${msg.author.mention}, NSFW content goes in <#311667653771132928> or <#311663280588455937>`)
-                        .then(sentMsg => {
-                            setTimeout(() => {
-                                bot.deleteMessage(sentMsg.channel.id, sentMsg.id, 'setTimeout')
-                                    .catch(err => {
-                                        handleErrorNoMsg(bot, __filename, err);
-                                    });
-                            }, 3000);
-                        }).catch(error => {
-                            handleErrorNoMsg(bot, __filename, error);
-                        });
-                }
-            }).catch(error => {
-                handleErrorNoMsg(bot, __filename, error);
-            });
-    }
-    */
-
     for (let i = 0; i < CommandManagers.length; i++) {
       if ((msg.content.startsWith(CommandManagers[i].prefix)) && (!msg.channel.guild)) return msg.channel.createMessage('Commands can only be used in a server/guild.')
         .catch(() => { return; });

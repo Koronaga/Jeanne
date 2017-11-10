@@ -81,7 +81,7 @@ function getWelcome(guild, member, raw) {
     return raw === true ?
       [genericSettings[guild.id].welcome.channelId, genericSettings[guild.id].welcome.message] :
       [genericSettings[guild.id].welcome.channelId,
-        genericSettings[guild.id].welcome.message.replace(/\$\{USER\}/gi, member.user.username).replace(/\$\{SERVER\}/gi, guild.name).replace(/\$\{MENTION\}/gi, member.user.mention)
+      genericSettings[guild.id].welcome.message.replace(/\$\{USER\}/gi, member.user.username).replace(/\$\{SERVER\}/gi, guild.name).replace(/\$\{MENTION\}/gi, member.user.mention)
       ]; //replace with names
   return null;
 }
@@ -711,6 +711,40 @@ function removeIfEmptyArray(obj, key, updater) {
   }
 }
 
+function enableDeleteInvites(msg, guildID) {
+  if (!commandSettings.hasOwnProperty(guildID))
+    commandSettings[guildID] = {};
+  if (!commandSettings[guildID].hasOwnProperty('deleteInvites'))
+    commandSettings[guildID].deleteInvites = '';
+  
+  msg.channel.createMessage('<:CheckCheck:377989994461134848> | Auto deleting invites enabled.').catch(() => { return; });
+  commandSettings[guildID].deleteInvites = true;
+  utils.safeSave('db/commandSettings', '.json', JSON.stringify(commandSettings));
+}
+
+function disableDeleteInvites(msg, guildID) {
+  if (!commandSettings.hasOwnProperty(guildID))
+    commandSettings[guildID] = {};
+  if (!commandSettings[guildID].hasOwnProperty('deleteInvites'))
+    commandSettings[guildID].deleteInvites = '';
+  
+  msg.channel.createMessage('<:CheckCheck:377989994461134848> | Auto deleting invites disabled.').catch(() => { return; });
+  commandSettings[guildID].deleteInvites = false;
+  utils.safeSave('db/commandSettings', '.json', JSON.stringify(commandSettings));
+}
+
+function getDeleteInvitesGuild(guildID) {
+  return new Promise((resolve, reject) => {
+    if (!commandSettings[guildID].deleteInvites) {
+      reject(false);
+    } else if (commandSettings[guildID].deleteInvites === true) {
+      resolve(true);
+    } else if (commandSettings[guildID].deleteInvites === false) {
+      reject(false);
+    }
+  });
+}
+
 module.exports = {
   destroy,
   handleShutdown,
@@ -732,5 +766,8 @@ module.exports = {
   addIgnoreForGuild,
   removeIgnoreForGuild,
   isCommandIgnored,
-  checkIgnoresFor
+  checkIgnoresFor,
+  enableDeleteInvites,
+  disableDeleteInvites,
+  getDeleteInvitesGuild
 };
