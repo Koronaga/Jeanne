@@ -24,4 +24,5 @@ Questions?
 -
 Join the Jeanne server:
 
-[![Discord](https://discordapp.com/api/guilds/240059867744698368/embed.png?style=banner3)](https://discord.gg/Vf4ne5b)
+[![Discord](https://discordapp.com/api/guilds/240059867744698368/embed.png?style=banner3)](https://discord.gg/Vf4ne5b)<br/>
+[![Discord Bots](https://discordbots.org/api/widget/237578660708745216.png)](https://discordbots.org/bot/237578660708745216?utm_source=widget)
